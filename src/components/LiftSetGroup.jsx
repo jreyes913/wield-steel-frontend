@@ -3,12 +3,13 @@
 // It returns a <tbody> because a table may hold many, and each one is a visual group.
 
 import { useState } from "react";
-import { createLiftSubset, deleteLiftSet } from "../api.js";
+import { createLiftSet, createLiftSubset, deleteLiftSet } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import LiftSubsetRow from "./LiftSubsetRow.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
-function LiftSetGroup({ set, exercises, muscleGroups, onChanged, onError }) {
+// liftId and nextSetPosition are only needed to copy the set onto the end of the lift.
+function LiftSetGroup({ set, liftId, nextSetPosition, exercises, muscleGroups, onChanged, onError }) {
   // The "add exercise" row stays hidden until asked for, so a normal set stays compact.
   const [isAddingExercise, setIsAddingExercise] = useState(false);
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
@@ -40,6 +41,26 @@ function LiftSetGroup({ set, exercises, muscleGroups, onChanged, onError }) {
     }
   }
 
+  // Creates a new set at the end of the lift with the same exercises, reps, RIR and weight.
+  // One request creates the set and all of its subsets together.
+  async function handleCopySet() {
+    try {
+      await createLiftSet(liftId, {
+        position: nextSetPosition,
+        subsets: set.subsets.map((subset) => ({
+          exercise_id: subset.exercise.id,
+          position: subset.position,
+          reps: subset.reps,
+          rir: subset.rir,
+          weight: subset.weight,
+        })),
+      });
+      onChanged();
+    } catch (err) {
+      onError(err.message);
+    }
+  }
+
   async function handleDeleteSet() {
     if (!window.confirm("Delete this whole set?")) {
       return;
@@ -57,6 +78,7 @@ function LiftSetGroup({ set, exercises, muscleGroups, onChanged, onError }) {
       <tr className="set-header">
         <td colSpan={4}>Set {set.position}</td>
         <td className="actions">
+          <button type="button" onClick={handleCopySet}>Copy set</button>
           <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
         </td>
       </tr>

@@ -133,6 +133,8 @@ function LiftDetail() {
             <LiftSetGroup
               key={set.id}
               set={set}
+              liftId={lift.id}
+              nextSetPosition={nextPosition(lift.sets)}
               exercises={exercises}
               muscleGroups={muscleGroups}
               onChanged={loadLift}

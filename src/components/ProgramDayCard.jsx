@@ -87,6 +87,8 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
             <ProgramSetGroup
               key={set.id}
               set={set}
+              dayId={day.id}
+              nextSetPosition={nextPosition(day.sets)}
               exercises={exercises}
               muscleGroups={muscleGroups}
               onChanged={onChanged}
