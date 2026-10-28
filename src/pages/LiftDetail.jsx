@@ -4,9 +4,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getLift, updateLift, deleteLift, getExercises, getMuscleGroups } from "../api.js";
-import AddLiftSetForm from "../components/AddLiftSetForm.jsx";
+import AddLiftSetFooter from "../components/AddLiftSetFooter.jsx";
 import ApplyProgramForm from "../components/ApplyProgramForm.jsx";
-import LiftSetCard from "../components/LiftSetCard.jsx";
+import LiftSetGroup from "../components/LiftSetGroup.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
 function LiftDetail() {
@@ -116,26 +116,39 @@ function LiftDetail() {
       </form>
 
       <h2>Sets</h2>
-      {lift.sets.length === 0 && <p>No sets yet.</p>}
-      {lift.sets.map((set) => (
-        <LiftSetCard
-          key={set.id}
-          set={set}
-          exercises={exercises}
-          muscleGroups={muscleGroups}
-          onChanged={loadLift}
-          onError={setError}
-        />
-      ))}
-
-      <AddLiftSetForm
-        liftId={lift.id}
-        position={nextPosition(lift.sets)}
-        exercises={exercises}
-        muscleGroups={muscleGroups}
-        onChanged={loadLift}
-        onError={setError}
-      />
+      {lift.sets.length === 0 && <p>No sets yet. Add the first one in the last row.</p>}
+      <div className="table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Reps</th>
+              <th>RIR</th>
+              <th>Weight</th>
+              <th></th>
+            </tr>
+          </thead>
+          {/* Each set is its own <tbody>, so its rows stay visually grouped. */}
+          {lift.sets.map((set) => (
+            <LiftSetGroup
+              key={set.id}
+              set={set}
+              exercises={exercises}
+              muscleGroups={muscleGroups}
+              onChanged={loadLift}
+              onError={setError}
+            />
+          ))}
+          <AddLiftSetFooter
+            liftId={lift.id}
+            position={nextPosition(lift.sets)}
+            exercises={exercises}
+            muscleGroups={muscleGroups}
+            onChanged={loadLift}
+            onError={setError}
+          />
+        </table>
+      </div>
 
       <ApplyProgramForm liftId={lift.id} onChanged={loadLift} onError={setError} />
     </div>

@@ -111,16 +111,14 @@ function ProgramDetail() {
           Name
           <input value={name} onChange={(e) => setName(e.target.value)} required />
         </label>
-        <div className="form-row">
-          <label>
-            Start date (optional)
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-          </label>
-          <label>
-            End date (optional)
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-          </label>
-        </div>
+        <label>
+          Start date (optional)
+          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        </label>
+        <label>
+          End date (optional)
+          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+        </label>
         <button type="submit">Save</button>
       </form>
 

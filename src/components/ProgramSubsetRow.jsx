@@ -1,5 +1,5 @@
-// One exercise inside a program set, on the program detail page.
-// Shows exercise and reps, and switches to an edit form when "Edit" is clicked.
+// One exercise inside a program set, shown as a table row on the program detail page.
+// "Edit" turns the cells into inputs in place; Save or Cancel turns them back.
 // (Program subsets only have reps; there is no weight or RIR in a plan.)
 
 import { useState } from "react";
@@ -12,8 +12,7 @@ function ProgramSubsetRow({ subset, exercises, muscleGroups, onChanged, onError 
   const [selectedExerciseId, setSelectedExerciseId] = useState(String(subset.exercise.id));
   const [reps, setReps] = useState(subset.reps ?? "");
 
-  async function handleSave(event) {
-    event.preventDefault();
+  async function handleSave() {
     try {
       await updateProgramSubset(subset.id, {
         exercise_id: Number(selectedExerciseId),
@@ -40,34 +39,41 @@ function ProgramSubsetRow({ subset, exercises, muscleGroups, onChanged, onError 
 
   if (!isEditing) {
     return (
-      <li>
-        {subset.exercise.name}: {subset.reps ?? "–"} reps{" "}
-        <button type="button" onClick={() => setIsEditing(true)}>Edit</button>{" "}
-        <button type="button" onClick={handleDelete}>Delete</button>
-      </li>
+      <tr>
+        <td>{subset.exercise.name}</td>
+        <td>{subset.reps ?? "–"}</td>
+        <td className="actions">
+          <button type="button" onClick={() => setIsEditing(true)}>Edit</button>
+          <button type="button" className="danger" onClick={handleDelete}>Delete</button>
+        </td>
+      </tr>
     );
   }
 
   return (
-    <li>
-      <form onSubmit={handleSave}>
-        <label>
-          Exercise
-          <ExerciseSelect
-            exercises={exercises}
-            muscleGroups={muscleGroups}
-            value={selectedExerciseId}
-            onChange={setSelectedExerciseId}
-          />
-        </label>
-        <label>
-          Reps
-          <input type="number" step="1" value={reps} onChange={(e) => setReps(e.target.value)} />
-        </label>
-        <button type="submit">Save</button>{" "}
+    <tr>
+      <td>
+        <ExerciseSelect
+          exercises={exercises}
+          muscleGroups={muscleGroups}
+          value={selectedExerciseId}
+          onChange={setSelectedExerciseId}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          step="1"
+          aria-label="Reps"
+          value={reps}
+          onChange={(e) => setReps(e.target.value)}
+        />
+      </td>
+      <td className="actions">
+        <button type="button" className="primary" onClick={handleSave}>Save</button>
         <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-      </form>
-    </li>
+      </td>
+    </tr>
   );
 }
 

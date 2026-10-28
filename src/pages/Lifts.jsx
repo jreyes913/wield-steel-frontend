@@ -69,14 +69,26 @@ function Lifts() {
       </form>
 
       {lifts.length === 0 && <p>No lifts yet.</p>}
-      <ul className="list">
-        {lifts.map((lift) => (
-          <li key={lift.id}>
-            <Link to={`/lifts/${lift.id}`}>{lift.date}</Link>
-            {lift.body_weight !== null && ` — body weight ${lift.body_weight}`}
-          </li>
-        ))}
-      </ul>
+      {lifts.length > 0 && (
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Body weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lifts.map((lift) => (
+                <tr key={lift.id}>
+                  <td><Link to={`/lifts/${lift.id}`}>{lift.date}</Link></td>
+                  <td>{lift.body_weight ?? "–"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

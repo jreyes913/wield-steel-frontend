@@ -1,15 +1,16 @@
-// One day of a program: rename or delete the day, see its sets, and add a new set.
+// One day of a program: a name bar (rename or delete the day) above a table of
+// its sets, with a row at the bottom to add a new set.
 
 import { useState } from "react";
 import { updateProgramDay, deleteProgramDay, createProgramSet } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
-import ProgramSetCard from "./ProgramSetCard.jsx";
+import ProgramSetGroup from "./ProgramSetGroup.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
 function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
   const [dayName, setDayName] = useState(day.name);
 
-  // Fields for the "add a set" form.
+  // Fields for the "new set" row at the bottom of the table.
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [reps, setReps] = useState("");
 
@@ -35,8 +36,11 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
     }
   }
 
-  async function handleAddSet(event) {
-    event.preventDefault();
+  async function handleAddSet() {
+    if (selectedExerciseId === "") {
+      onError("Choose an exercise first.");
+      return;
+    }
     try {
       await createProgramSet(day.id, {
         position: nextPosition(day.sets),
@@ -58,44 +62,66 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
 
   return (
     <div className="card">
-      <form onSubmit={handleRename}>
-        <label>
-          Day name
-          <input value={dayName} onChange={(e) => setDayName(e.target.value)} required />
-        </label>
-        <button type="submit">Rename</button>{" "}
-        <button type="button" onClick={handleDeleteDay}>Delete day</button>
-      </form>
-
-      <h3>Sets</h3>
-      {day.sets.length === 0 && <p>No sets yet.</p>}
-      {day.sets.map((set) => (
-        <ProgramSetCard
-          key={set.id}
-          set={set}
-          exercises={exercises}
-          muscleGroups={muscleGroups}
-          onChanged={onChanged}
-          onError={onError}
+      <form onSubmit={handleRename} className="inline-form">
+        <input
+          aria-label="Day name"
+          value={dayName}
+          onChange={(e) => setDayName(e.target.value)}
+          required
         />
-      ))}
-
-      <form onSubmit={handleAddSet}>
-        <label>
-          Add a set: exercise
-          <ExerciseSelect
-            exercises={exercises}
-            muscleGroups={muscleGroups}
-            value={selectedExerciseId}
-            onChange={setSelectedExerciseId}
-          />
-        </label>
-        <label>
-          Reps
-          <input type="number" step="1" value={reps} onChange={(e) => setReps(e.target.value)} />
-        </label>
-        <button type="submit">Add set</button>
+        <button type="submit">Rename</button>
+        <button type="button" className="danger" onClick={handleDeleteDay}>Delete day</button>
       </form>
+
+      <div className="table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Reps</th>
+              <th></th>
+            </tr>
+          </thead>
+          {/* Each set is its own <tbody>, so its rows stay visually grouped. */}
+          {day.sets.map((set) => (
+            <ProgramSetGroup
+              key={set.id}
+              set={set}
+              exercises={exercises}
+              muscleGroups={muscleGroups}
+              onChanged={onChanged}
+              onError={onError}
+            />
+          ))}
+          <tfoot>
+            <tr className="set-header">
+              <td colSpan={3}>New set</td>
+            </tr>
+            <tr className="new-row">
+              <td>
+                <ExerciseSelect
+                  exercises={exercises}
+                  muscleGroups={muscleGroups}
+                  value={selectedExerciseId}
+                  onChange={setSelectedExerciseId}
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  step="1"
+                  aria-label="Reps"
+                  value={reps}
+                  onChange={(e) => setReps(e.target.value)}
+                />
+              </td>
+              <td className="actions">
+                <button type="button" className="primary" onClick={handleAddSet}>Add set</button>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 }

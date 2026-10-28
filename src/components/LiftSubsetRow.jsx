@@ -1,5 +1,5 @@
-// One exercise inside a set on the lift detail page.
-// Shows the numbers, and switches to an edit form when "Edit" is clicked.
+// One exercise inside a set, shown as a table row on the lift detail page.
+// "Edit" turns the cells into inputs in place; Save or Cancel turns them back.
 
 import { useState } from "react";
 import { updateLiftSubset, deleteLiftSubset } from "../api.js";
@@ -9,14 +9,13 @@ import { numberOrNull } from "../formHelpers.js";
 function LiftSubsetRow({ subset, exercises, muscleGroups, onChanged, onError }) {
   const [isEditing, setIsEditing] = useState(false);
 
-  // The form fields start with the current values. "" stands in for null.
+  // The edit fields start with the current values. "" stands in for null.
   const [selectedExerciseId, setSelectedExerciseId] = useState(String(subset.exercise.id));
   const [reps, setReps] = useState(subset.reps ?? "");
   const [rir, setRir] = useState(subset.rir ?? "");
   const [weight, setWeight] = useState(subset.weight ?? "");
 
-  async function handleSave(event) {
-    event.preventDefault();
+  async function handleSave() {
     try {
       await updateLiftSubset(subset.id, {
         exercise_id: Number(selectedExerciseId),
@@ -45,50 +44,61 @@ function LiftSubsetRow({ subset, exercises, muscleGroups, onChanged, onError }) 
 
   if (!isEditing) {
     return (
-      <li>
-        {subset.exercise.name}: {subset.reps ?? "–"} reps, RIR {subset.rir ?? "–"}, weight{" "}
-        {subset.weight ?? "–"}{" "}
-        <button type="button" onClick={() => setIsEditing(true)}>Edit</button>{" "}
-        <button type="button" onClick={handleDelete}>Delete</button>
-      </li>
+      <tr>
+        <td>{subset.exercise.name}</td>
+        <td>{subset.reps ?? "–"}</td>
+        <td>{subset.rir ?? "–"}</td>
+        <td>{subset.weight ?? "–"}</td>
+        <td className="actions">
+          <button type="button" onClick={() => setIsEditing(true)}>Edit</button>
+          <button type="button" className="danger" onClick={handleDelete}>Delete</button>
+        </td>
+      </tr>
     );
   }
 
   return (
-    <li>
-      <form onSubmit={handleSave}>
-        <label>
-          Exercise
-          <ExerciseSelect
-            exercises={exercises}
-            muscleGroups={muscleGroups}
-            value={selectedExerciseId}
-            onChange={setSelectedExerciseId}
-          />
-        </label>
-        <div className="form-row">
-          <label>
-            Reps
-            <input type="number" step="1" value={reps} onChange={(e) => setReps(e.target.value)} />
-          </label>
-          <label>
-            RIR
-            <input type="number" step="1" value={rir} onChange={(e) => setRir(e.target.value)} />
-          </label>
-          <label>
-            Weight
-            <input
-              type="number"
-              step="any"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Save</button>{" "}
+    <tr>
+      <td>
+        <ExerciseSelect
+          exercises={exercises}
+          muscleGroups={muscleGroups}
+          value={selectedExerciseId}
+          onChange={setSelectedExerciseId}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          step="1"
+          aria-label="Reps"
+          value={reps}
+          onChange={(e) => setReps(e.target.value)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          step="1"
+          aria-label="RIR"
+          value={rir}
+          onChange={(e) => setRir(e.target.value)}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          step="any"
+          aria-label="Weight"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        />
+      </td>
+      <td className="actions">
+        <button type="button" className="primary" onClick={handleSave}>Save</button>
         <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-      </form>
-    </li>
+      </td>
+    </tr>
   );
 }
 

@@ -75,28 +75,46 @@ function Programs() {
           Name
           <input value={name} onChange={(e) => setName(e.target.value)} required />
         </label>
-        <div className="form-row">
-          <label>
-            Start date (optional)
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-          </label>
-          <label>
-            End date (optional)
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-          </label>
-        </div>
+        <label>
+          Start date (optional)
+          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        </label>
+        <label>
+          End date (optional)
+          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+        </label>
         <button type="submit">Add program</button>
       </form>
 
       {programs.length === 0 && <p>No programs yet.</p>}
-      <ul className="list">
-        {programs.map((program) => (
-          <li key={program.id}>
-            <Link to={`/programs/${program.id}`}>{program.name}</Link>{" "}
-            <button type="button" onClick={() => handleDelete(program)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      {programs.length > 0 && (
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Start</th>
+                <th>End</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {programs.map((program) => (
+                <tr key={program.id}>
+                  <td><Link to={`/programs/${program.id}`}>{program.name}</Link></td>
+                  <td>{program.start_date ?? "–"}</td>
+                  <td>{program.end_date ?? "–"}</td>
+                  <td className="actions">
+                    <button type="button" className="danger" onClick={() => handleDelete(program)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

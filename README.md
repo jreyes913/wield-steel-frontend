@@ -39,15 +39,15 @@ src/
   components/
     NavBar.jsx            Top navigation and Sign out button.
     ExerciseSelect.jsx    Exercise dropdown grouped by muscle group (used by lifts and programs).
-    AddLiftSetForm.jsx    Form to add a set to a lift.
-    LiftSetCard.jsx       One set on a lift, with add-exercise and delete-set.
-    LiftSubsetRow.jsx     One exercise in a lift set, with inline edit/delete.
+    AddLiftSetFooter.jsx  Bottom row of the lift table: inputs that add a new set.
+    LiftSetGroup.jsx      One set in the lift table: header row, exercise rows, add-exercise row.
+    LiftSubsetRow.jsx     One exercise row in a lift set; Edit turns its cells into inputs.
     ApplyProgramForm.jsx  Pick a program and day to apply to a lift.
     BodyWeightChart.jsx   Body weight line chart.
     StrengthChart.jsx     Strength line chart with exercise/metric/date pickers.
-    ProgramDayCard.jsx    One program day: rename, delete, sets, add a set.
-    ProgramSetCard.jsx    One set in a program day, with add-exercise and delete-set.
-    ProgramSubsetRow.jsx  One exercise in a program set, with inline edit/delete.
+    ProgramDayCard.jsx    One program day: name bar plus a table of its sets.
+    ProgramSetGroup.jsx   One set in a program day's table: header row, exercise rows, add row.
+    ProgramSubsetRow.jsx  One exercise row in a program set; Edit turns its cells into inputs.
 ```
 
 ## How a request flows
