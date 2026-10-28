@@ -17,5 +17,10 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // Every page loads its data by calling an async function from useEffect,
+      // which this rule flags even though it is the standard, correct pattern.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])
