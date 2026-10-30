@@ -33,7 +33,7 @@
 }
 
 [data-amplify-authenticator] h3 {
-  color: #f28c38;
+  color: var(--color-brand);
   font-weight: 700;
   letter-spacing: 0.03em;
 }
@@ -41,23 +41,23 @@
 [data-amplify-authenticator] button {
   min-height: 44px;
   border-radius: 8px;
-  background-color: #f28c38;
+  background-color: var(--color-brand);
   color: #f4f4f4;
 }
 
 [data-amplify-authenticator] .amplify-button--small {
   background-color: #fff;
-  color: #f28c38;
+  color: var(--color-brand);
 }
 
 :root {
-  --amplify-colors-brand-primary-10: #fff4ea;
-  --amplify-colors-brand-primary-20: #fde2ca;
-  --amplify-colors-brand-primary-40: #f7b57a;
-  --amplify-colors-brand-primary-60: #f28c38;
-  --amplify-colors-brand-primary-80: #e68131;
-  --amplify-colors-brand-primary-90: #d97b2f;
-  --amplify-colors-brand-primary-100: #c66d25;
+  --amplify-colors-brand-primary-10: #d5ffee;
+  --amplify-colors-brand-primary-20: #91fbcf;
+  --amplify-colors-brand-primary-40: #0dde87;
+  --amplify-colors-brand-primary-60: var(--color-brand);
+  --amplify-colors-brand-primary-80: #15b170;
+  --amplify-colors-brand-primary-90: var(--color-brand-dark);
+  --amplify-colors-brand-primary-100: #1c9663;
 
   --amplify-radii-small: 8px;
   --amplify-radii-medium: 10px;
@@ -70,17 +70,17 @@
 }
 
 [data-amplify-authenticator] a {
-  color: #f28c38;
+  color: var(--color-brand);
 }
 
 [data-amplify-authenticator] a:hover {
-  color: #d97b2f;
+  color: var(--color-brand-dark);
 }
 
 :root {
-  --color-orange: #f28c38;
-  --color-orange-dark: #d97b2f;
-  --color-orange-tint: rgba(242, 140, 56, 0.1);
+  --color-brand: #0cbd73;        /* emerald green */
+  --color-brand-dark: #1fa76e;   /* hover / pressed */
+  --color-brand-tint: rgba(12, 189, 115, 0.1);
 
   --color-text: #333333;
   --color-muted: #707070;
@@ -144,7 +144,7 @@ h1 {
   font-size: clamp(1.8rem, 4vw, 2.2rem);
   font-weight: 700;
 
-  color: var(--color-orange);
+  color: var(--color-brand);
 
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -202,8 +202,8 @@ p {
 }
 
 .navbar a:hover {
-  color: var(--color-orange);
-  background: var(--color-orange-tint);
+  color: var(--color-brand);
+  background: var(--color-brand-tint);
 }
 
 .navbar a.active {
@@ -272,8 +272,8 @@ p {
 .app textarea:focus {
   outline: none;
 
-  border-color: var(--color-orange);
-  box-shadow: 0 0 0 3px var(--color-orange-tint);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-tint);
 }
 
 /* =========================================================
@@ -323,26 +323,26 @@ p {
 }
 
 .app button:hover {
-  color: var(--color-orange);
+  color: var(--color-brand);
 
-  background: var(--color-orange-tint);
-  border-color: var(--color-orange);
+  background: var(--color-brand-tint);
+  border-color: var(--color-brand);
 }
 
 .app button.primary,
 .app button[type="submit"] {
   color: #fff;
 
-  background: var(--color-orange);
-  border-color: var(--color-orange);
+  background: var(--color-brand);
+  border-color: var(--color-brand);
 }
 
 .app button.primary:hover,
 .app button[type="submit"]:hover {
   color: #fff;
 
-  background: var(--color-orange-dark);
-  border-color: var(--color-orange-dark);
+  background: var(--color-brand-dark);
+  border-color: var(--color-brand-dark);
 }
 
 .app button.danger {
@@ -436,7 +436,7 @@ p {
 }
 
 .data-table .set-header td {
-  background: var(--color-orange-tint);
+  background: var(--color-brand-tint);
 
   font-size: 12px;
   font-weight: 700;
