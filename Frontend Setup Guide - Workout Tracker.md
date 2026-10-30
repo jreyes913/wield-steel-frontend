@@ -132,7 +132,7 @@ Your API's login check would reject the token-less preflight, so three things ar
 
 ### 5.2 Set the allowed origins (CORS)
 
-1. Open **API Gateway** (region **us-east-2**) → your API `workout-api`.
+1. Open **API Gateway** (region **us-east-2**) → your API `wield-steel-backend`.
 2. Left menu: **Develop → CORS → Configure**.
 3. Fill in:
 
@@ -150,7 +150,7 @@ Your API's login check would reject the token-less preflight, so three things ar
 
 1. API Gateway → **Develop → Routes → Create**.
 2. Route: method **OPTIONS**, path `/{proxy+}` → **Create**.
-3. Click the new route → **Attach integration** → choose `workout-api` (the Lambda).
+3. Click the new route → **Attach integration** → choose `wield-steel-backend` (the Lambda).
 4. Make sure **no authorizer** is attached to this route. (The existing `ANY /{proxy+}` route keeps the `cognito` authorizer.)
 5. Auto-deploy is on, so no extra deploy is needed. If you turned it off, deploy.
 
@@ -201,8 +201,8 @@ Open PowerShell and go to the folder where you keep projects. Then download the 
 
 ```powershell
 cd $HOME\Desktop
-git clone https://github.com/jreyes913/workout-tracker-web.git
-cd workout-tracker-web
+git clone https://github.com/jreyes913/wield-steel-frontend.git
+cd wield-steel-frontend
 ```
 
 If you do not have the repo (for example, you are starting a new project), see [Appendix A](#appendix-a--recreating-the-project-from-nothing).
@@ -380,7 +380,7 @@ git push -u origin master
 
 1. Open **AWS Amplify** (region **us-east-2**).
 2. **Create new app** → **GitHub** → **Next**, then authorize AWS to read your repos.
-3. Pick the repo `workout-tracker-web` and the branch **`master`** → **Next**.
+3. Pick the repo `wield-steel-frontend` and the branch **`master`** → **Next**.
 4. Amplify detects Vite. The defaults are correct:
    - Build command: `npm run build`
    - Output directory: `dist`
@@ -562,8 +562,8 @@ Only needed if you do not have the GitHub repo, or want the same setup for a new
 
 ```powershell
 # 1. Create a Vite + React project (choose: React, then JavaScript)
-npm create vite@latest workout-tracker-web
-cd workout-tracker-web
+npm create vite@latest wield-steel-frontend
+cd wield-steel-frontend
 
 # 2. Pin React to version 18 (the project depends on it; do not upgrade)
 npm install react@18 react-dom@18
@@ -687,7 +687,7 @@ These are **not secret** (they appear in the website's code). Never share passwo
 | API URL (`VITE_API_URL`) | `https://r6z25oo3o9.execute-api.us-east-2.amazonaws.com` |
 | User pool ID (`VITE_USER_POOL_ID`) | `us-east-2_LAaNM8OAn` |
 | App client ID (`VITE_USER_POOL_CLIENT_ID`) | `6u276gi81pj6p7jbvmmspp2je6` |
-| GitHub repo | `https://github.com/jreyes913/workout-tracker-web` |
+| GitHub repo | `https://github.com/jreyes913/wield-steel-frontend` |
 | Git branch | `master` |
 | Local address | `http://localhost:5173` (exactly) |
 | Live site | `https://master.d2gypyesmndbtg.amplifyapp.com` |
