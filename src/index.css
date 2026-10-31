@@ -518,3 +518,215 @@ p {
     min-width: 500px;
   }
 }
+
+/* =========================================================
+   Lift comparison (lift detail page)
+   ========================================================= */
+
+.lift-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+/* Two columns need more room than the normal 960px page. */
+.page:has(.lift-layout--comparing) {
+  max-width: 1440px;
+}
+
+.lift-layout--comparing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+
+  align-items: start;
+}
+
+/* The past lift: brand green background, white text. Its table stays white. */
+.lift-history {
+  color: #fff;
+  background: var(--color-brand);
+
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+
+  padding: 20px;
+}
+
+.lift-history-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.lift-history-label {
+  margin-bottom: 4px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  opacity: 0.9;
+}
+
+.lift-history .lift-history-date {
+  margin-bottom: 0;
+
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.lift-history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.app .lift-history-actions button {
+  color: var(--color-brand-dark);
+  background: #fff;
+  border-color: #fff;
+}
+
+.app .lift-history-actions button:hover {
+  color: #fff;
+  background: var(--color-brand-dark);
+  border-color: #fff;
+}
+
+.lift-history .table-wrap {
+  color: var(--color-text);
+  margin-bottom: 0;
+}
+
+/* The read-only table has no buttons column, so it can be narrower. */
+.data-table--read-only {
+  min-width: 420px;
+}
+
+/* Calendar for picking the comparison date. */
+.compare-picker-hint {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.compare-picker-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  align-items: center;
+
+  margin: 16px 0;
+}
+
+.compare-picker-choices p {
+  flex-basis: 100%;
+  margin-bottom: 0;
+}
+
+.calendar {
+  max-width: 360px;
+  margin-bottom: 16px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+}
+
+.calendar-month {
+  font-weight: 700;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-weekday {
+  padding: 4px 0;
+
+  text-align: center;
+
+  color: var(--color-muted);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.app .calendar-nav {
+  min-height: 36px;
+  padding: 4px 14px;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.app .calendar-day {
+  min-height: 0;
+  aspect-ratio: 1;
+  padding: 0;
+
+  font-size: 14px;
+
+  border-radius: 8px;
+}
+
+/* Days with a lift: the same green tint and border the app uses for focus. */
+.app .calendar-day--available {
+  color: var(--color-brand-dark);
+  background: var(--color-brand-tint);
+  border-color: var(--color-brand);
+  font-weight: 700;
+}
+
+.app .calendar-day--selected,
+.app .calendar-day--selected:hover {
+  color: #fff;
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.app .calendar-day:disabled,
+.app .calendar-nav:disabled {
+  color: #c4c4c4;
+  background: transparent;
+  border-color: transparent;
+
+  cursor: not-allowed;
+}
+
+/* Narrower screens: stack the past lift above the current one. */
+@media (max-width: 1100px) {
+  .lift-layout--comparing {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .lift-history {
+    padding: 12px;
+  }
+
+  .data-table--read-only {
+    min-width: 0;
+  }
+}

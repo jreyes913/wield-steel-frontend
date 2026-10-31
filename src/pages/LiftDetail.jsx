@@ -1,13 +1,15 @@
 // Lift detail page: shows one lift with its sets, and lets me edit or delete the
 // lift, add sets, and apply a program day.
+// It can also show a past lift beside it (read-only) for comparison.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getLift, updateLift, deleteLift, getExercises, getMuscleGroups } from "../api.js";
-import AddLiftSetFooter from "../components/AddLiftSetFooter.jsx";
 import ApplyProgramForm from "../components/ApplyProgramForm.jsx";
-import LiftSetGroup from "../components/LiftSetGroup.jsx";
-import { numberOrNull, nextPosition } from "../formHelpers.js";
+import CompareLiftPicker from "../components/CompareLiftPicker.jsx";
+import HistoricalLiftPanel from "../components/HistoricalLiftPanel.jsx";
+import LiftSetsTable from "../components/LiftSetsTable.jsx";
+import { numberOrNull } from "../formHelpers.js";
 
 function LiftDetail() {
   const { id } = useParams();
@@ -22,6 +24,16 @@ function LiftDetail() {
   // Fields for the "edit lift" form.
   const [date, setDate] = useState("");
   const [bodyWeight, setBodyWeight] = useState("");
+
+  // Comparison with a past lift. Both are tagged with the lift they were opened
+  // on, so going to a different lift's page starts with no comparison.
+  // comparison: { forLiftId, lift } where lift is null while it loads.
+  const [pickingForLiftId, setPickingForLiftId] = useState(null);
+  const [comparison, setComparison] = useState(null);
+  // Counts comparison requests, so a slow response for an older pick is ignored.
+  const latestComparisonRequest = useRef(0);
+  const isPicking = pickingForLiftId === id;
+  const activeComparison = comparison?.forLiftId === id ? comparison : null;
 
   // Child components call this after every successful change.
   async function loadLift() {
@@ -77,6 +89,33 @@ function LiftDetail() {
     }
   }
 
+  // Loads the chosen past lift into the comparison column. Read-only: this only
+  // fetches the lift, it never changes it.
+  async function handlePickComparison(pastLiftId) {
+    const requestNumber = ++latestComparisonRequest.current;
+    setPickingForLiftId(null);
+    setComparison({ forLiftId: id, liftId: pastLiftId, lift: null });
+    try {
+      const pastLift = await getLift(pastLiftId);
+      if (requestNumber === latestComparisonRequest.current) {
+        setComparison({ forLiftId: id, liftId: pastLiftId, lift: pastLift });
+      }
+    } catch (err) {
+      if (requestNumber === latestComparisonRequest.current) {
+        setComparison(null);
+        setError(err.message);
+      }
+    }
+  }
+
+  // Back to the single-column page. Only the comparison state is cleared, so any
+  // edits in progress on the current lift stay as they were.
+  function handleRemoveComparison() {
+    latestComparisonRequest.current++;
+    setComparison(null);
+    setPickingForLiftId(null);
+  }
+
   if (loading) {
     return <p>Loading…</p>;
   }
@@ -92,67 +131,71 @@ function LiftDetail() {
 
   return (
     <div>
-      <Link to="/">← All lifts</Link>
-      <h1>Lift on {lift.date}</h1>
+      <div className="lift-toolbar">
+        <Link to="/">← All lifts</Link>
+        {!isPicking && !activeComparison && (
+          <button type="button" onClick={() => setPickingForLiftId(id)}>
+            Compare with a past lift
+          </button>
+        )}
+      </div>
       {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSaveLift} className="card">
-        <h2>Edit lift</h2>
-        <label>
-          Date
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-        </label>
-        <label>
-          Body weight (whole number, optional)
-          <input
-            type="number"
-            step="1"
-            value={bodyWeight}
-            onChange={(e) => setBodyWeight(e.target.value)}
-          />
-        </label>
-        <button type="submit">Save</button>{" "}
-        <button type="button" onClick={handleDeleteLift}>Delete lift</button>
-      </form>
+      {isPicking && (
+        <CompareLiftPicker
+          currentLift={lift}
+          selectedLiftId={activeComparison?.liftId}
+          onPick={handlePickComparison}
+          onCancel={() => setPickingForLiftId(null)}
+          onError={setError}
+        />
+      )}
 
-      <h2>Sets</h2>
-      {lift.sets.length === 0 && <p>No sets yet. Add the first one in the last row.</p>}
-      <div className="table-wrap">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Exercise</th>
-              <th>Reps</th>
-              <th>RIR</th>
-              <th>Weight</th>
-              <th></th>
-            </tr>
-          </thead>
-          {/* Each set is its own <tbody>, so its rows stay visually grouped. */}
-          {lift.sets.map((set) => (
-            <LiftSetGroup
-              key={set.id}
-              set={set}
-              liftId={lift.id}
-              nextSetPosition={nextPosition(lift.sets)}
-              exercises={exercises}
-              muscleGroups={muscleGroups}
-              onChanged={loadLift}
-              onError={setError}
-            />
-          ))}
-          <AddLiftSetFooter
-            liftId={lift.id}
-            position={nextPosition(lift.sets)}
+      {/* The current lift always stays in the same place in this tree, so opening
+          or closing the comparison never resets what is being typed into it. */}
+      <div className={activeComparison ? "lift-layout lift-layout--comparing" : "lift-layout"}>
+        {activeComparison && (
+          <HistoricalLiftPanel
+            lift={activeComparison.lift}
+            onChangeDate={() => setPickingForLiftId(id)}
+            onRemove={handleRemoveComparison}
+          />
+        )}
+
+        <section className="lift-current">
+          <h1>Lift on {lift.date}</h1>
+
+          <form onSubmit={handleSaveLift} className="card">
+            <h2>Edit lift</h2>
+            <label>
+              Date
+              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+            </label>
+            <label>
+              Body weight (whole number, optional)
+              <input
+                type="number"
+                step="1"
+                value={bodyWeight}
+                onChange={(e) => setBodyWeight(e.target.value)}
+              />
+            </label>
+            <button type="submit">Save</button>{" "}
+            <button type="button" onClick={handleDeleteLift}>Delete lift</button>
+          </form>
+
+          <h2>Sets</h2>
+          <LiftSetsTable
+            lift={lift}
             exercises={exercises}
             muscleGroups={muscleGroups}
             onChanged={loadLift}
             onError={setError}
           />
-        </table>
-      </div>
 
-      <ApplyProgramForm liftId={lift.id} onChanged={loadLift} onError={setError} />
+          <ApplyProgramForm liftId={lift.id} onChanged={loadLift} onError={setError} />
+        </section>
+      </div>
     </div>
   );
 }

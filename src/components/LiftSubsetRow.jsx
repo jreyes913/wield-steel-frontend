@@ -6,7 +6,8 @@ import { updateLiftSubset, deleteLiftSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
-function LiftSubsetRow({ subset, exercises, muscleGroups, onChanged, onError }) {
+// readOnly (the historical comparison) shows the values only: no Edit or Delete.
+function LiftSubsetRow({ subset, readOnly = false, exercises, muscleGroups, onChanged, onError }) {
   const [isEditing, setIsEditing] = useState(false);
 
   // The edit fields start with the current values. "" stands in for null.
@@ -42,17 +43,19 @@ function LiftSubsetRow({ subset, exercises, muscleGroups, onChanged, onError }) 
     }
   }
 
-  if (!isEditing) {
+  if (readOnly || !isEditing) {
     return (
       <tr>
         <td>{subset.exercise.name}</td>
         <td>{subset.reps ?? "–"}</td>
         <td>{subset.rir ?? "–"}</td>
         <td>{subset.weight ?? "–"}</td>
-        <td className="actions">
-          <button type="button" onClick={() => setIsEditing(true)}>Edit</button>
-          <button type="button" className="danger" onClick={handleDelete}>Delete</button>
-        </td>
+        {!readOnly && (
+          <td className="actions">
+            <button type="button" onClick={() => setIsEditing(true)}>Edit</button>
+            <button type="button" className="danger" onClick={handleDelete}>Delete</button>
+          </td>
+        )}
       </tr>
     );
   }

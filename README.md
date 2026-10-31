@@ -53,7 +53,8 @@ src/
   index.css           The only stylesheet.
   pages/
     Lifts.jsx         List of lifts + form to log one.
-    LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day.
+    LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day,
+                      compare it side by side with a past lift.
     Progress.jsx      Page holding the two charts.
     Programs.jsx      List of programs + form to create one.
     ProgramDetail.jsx One program: edit it and manage its days.
@@ -64,6 +65,10 @@ src/
     AddLiftSetFooter.jsx  Bottom row of the lift table: inputs that add a new set.
     LiftSetGroup.jsx      One set in the lift table: header row, exercise rows, add-exercise row.
     LiftSubsetRow.jsx     One exercise row in a lift set; Edit turns its cells into inputs.
+    LiftSetsTable.jsx     A lift's sets table; readOnly mode drops every button and input.
+    CompareLiftPicker.jsx Card for choosing a past lift to compare against.
+    LiftDatePicker.jsx    Month calendar where only dates with a lift can be picked.
+    HistoricalLiftPanel.jsx Green, read-only column showing the past lift being compared.
     ApplyProgramForm.jsx  Pick a program and day to apply to a lift.
     BodyWeightChart.jsx   Body weight line chart.
     StrengthChart.jsx     Strength line chart with exercise/metric/date pickers.

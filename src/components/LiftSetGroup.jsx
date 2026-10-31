@@ -9,7 +9,17 @@ import LiftSubsetRow from "./LiftSubsetRow.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
 // liftId and nextSetPosition are only needed to copy the set onto the end of the lift.
-function LiftSetGroup({ set, liftId, nextSetPosition, exercises, muscleGroups, onChanged, onError }) {
+// readOnly (the historical comparison) shows the set without any buttons or inputs.
+function LiftSetGroup({
+  set,
+  readOnly = false,
+  liftId,
+  nextSetPosition,
+  exercises,
+  muscleGroups,
+  onChanged,
+  onError,
+}) {
   // The "add exercise" row stays hidden until asked for, so a normal set stays compact.
   const [isAddingExercise, setIsAddingExercise] = useState(false);
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
@@ -77,16 +87,19 @@ function LiftSetGroup({ set, liftId, nextSetPosition, exercises, muscleGroups, o
     <tbody>
       <tr className="set-header">
         <td colSpan={4}>Set {set.position}</td>
-        <td className="actions">
-          <button type="button" onClick={handleCopySet}>Copy set</button>
-          <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
-        </td>
+        {!readOnly && (
+          <td className="actions">
+            <button type="button" onClick={handleCopySet}>Copy set</button>
+            <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
+          </td>
+        )}
       </tr>
 
       {set.subsets.map((subset) => (
         <LiftSubsetRow
           key={subset.id}
           subset={subset}
+          readOnly={readOnly}
           exercises={exercises}
           muscleGroups={muscleGroups}
           onChanged={onChanged}
@@ -94,7 +107,7 @@ function LiftSetGroup({ set, liftId, nextSetPosition, exercises, muscleGroups, o
         />
       ))}
 
-      {!isAddingExercise && (
+      {!readOnly && !isAddingExercise && (
         <tr>
           <td colSpan={5}>
             <button type="button" onClick={() => setIsAddingExercise(true)}>
@@ -104,7 +117,7 @@ function LiftSetGroup({ set, liftId, nextSetPosition, exercises, muscleGroups, o
         </tr>
       )}
 
-      {isAddingExercise && (
+      {!readOnly && isAddingExercise && (
         <tr className="new-row">
           <td>
             <ExerciseSelect
