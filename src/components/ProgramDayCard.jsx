@@ -1,14 +1,30 @@
-// One day of a program: a name bar (rename or delete the day) above a table of
-// its sets. A toolbar on top acts on the ticked sets (add an exercise, copy,
-// delete), and a row at the bottom adds a new set.
+// One day of a program: a name bar (rename or delete the day) above its sets, one
+// collapsible table per block (sets with the same exercises; see blocks.js). A
+// toolbar on top acts on the ticked sets (add an exercise, copy, delete), and a
+// last table adds a new set. Blocks start at A on every day.
 
 import { useState } from "react";
 import { updateProgramDay, deleteProgramDay, createProgramSet, deleteProgramSet } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import ProgramSetGroup from "./ProgramSetGroup.jsx";
 import SetActionsToolbar from "./SetActionsToolbar.jsx";
+import SetBlock from "./SetBlock.jsx";
+import { groupSetsIntoBlocks } from "../blocks.js";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 import { useSetSelection } from "../setSelection.js";
+
+// Every table in a day shares these column widths, so stacked tables line up.
+function ProgramColumns() {
+  return (
+    <colgroup>
+      <col className="col-select" />
+      <col className="col-set" />
+      <col />
+      <col className="col-num" />
+      <col className="col-actions" />
+    </colgroup>
+  );
+}
 
 function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
   const [dayName, setDayName] = useState(day.name);
@@ -118,73 +134,96 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
         <button type="button" className="danger" onClick={handleDeleteDay}>Delete day</button>
       </form>
 
-      <div className="table-wrap">
+      {day.sets.length > 0 && (
         <SetActionsToolbar
           selection={selection}
           onCopy={handleCopySets}
           onDelete={handleDeleteSets}
         />
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th className="select-cell">
-                <input
-                  type="checkbox"
-                  aria-label="Select all sets"
-                  checked={selection.allSelected}
-                  onChange={selection.toggleAll}
-                  disabled={day.sets.length === 0}
-                />
-              </th>
-              <th className="set-cell">Set</th>
-              <th>Exercise</th>
-              <th>Reps</th>
-              <th></th>
-            </tr>
-          </thead>
-          {/* Each set is its own <tbody>, so its rows stay visually grouped. */}
-          {day.sets.map((set) => (
-            <ProgramSetGroup
-              key={set.id}
-              set={set}
-              isSelected={selection.isSelected(set.id)}
-              onToggleSelected={() => selection.toggle(set.id)}
-              isAddingExercise={selection.addingToSetId === set.id}
-              onDoneAddingExercise={() => selection.setAddingToSetId(null)}
-              exercises={exercises}
-              muscleGroups={muscleGroups}
-              onChanged={onChanged}
-              onError={onError}
-            />
-          ))}
-          <tfoot>
-            <tr className="new-row">
-              <td className="select-cell"></td>
-              <td className="set-cell"><strong>New</strong></td>
-              <td>
-                <ExerciseSelect
-                  exercises={exercises}
-                  muscleGroups={muscleGroups}
-                  value={selectedExerciseId}
-                  onChange={setSelectedExerciseId}
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  step="1"
-                  aria-label="Reps"
-                  value={reps}
-                  onChange={(e) => setReps(e.target.value)}
-                />
-              </td>
-              <td className="actions">
-                <button type="button" className="primary" onClick={handleAddSet}>Add set</button>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      )}
+
+      {/* Keyed by the block's exercises, so a block stays collapsed or open even
+          when its letter changes. */}
+      {groupSetsIntoBlocks(day.sets).map((block) => (
+        <SetBlock
+          key={block.key}
+          block={block}
+          collapsible
+          forceOpen={block.sets.some((set) => set.id === selection.addingToSetId)}
+        >
+          <table className="data-table blocks-table">
+            <ProgramColumns />
+            <thead>
+              <tr>
+                <th className="select-cell">
+                  <input
+                    type="checkbox"
+                    aria-label={`Select all sets in block ${block.label}`}
+                    checked={selection.areAllSelected(block.sets)}
+                    onChange={() => selection.toggleGroup(block.sets)}
+                  />
+                </th>
+                <th className="set-cell">Set</th>
+                <th>Exercise</th>
+                <th>Reps</th>
+                <th></th>
+              </tr>
+            </thead>
+            {/* Each set is its own <tbody>, so its rows stay visually grouped. */}
+            {block.sets.map((set) => (
+              <ProgramSetGroup
+                key={set.id}
+                set={set}
+                isSelected={selection.isSelected(set.id)}
+                onToggleSelected={() => selection.toggle(set.id)}
+                isAddingExercise={selection.addingToSetId === set.id}
+                onDoneAddingExercise={() => selection.setAddingToSetId(null)}
+                exercises={exercises}
+                muscleGroups={muscleGroups}
+                onChanged={onChanged}
+                onError={onError}
+              />
+            ))}
+          </table>
+        </SetBlock>
+      ))}
+
+      <section className="block">
+        <div className="block-header">
+          <span className="block-label">New set</span>
+        </div>
+        <div className="table-wrap">
+          <table className="data-table blocks-table">
+            <ProgramColumns />
+            <tfoot>
+              <tr className="new-row">
+                <td className="select-cell"></td>
+                <td className="set-cell"><strong>New</strong></td>
+                <td>
+                  <ExerciseSelect
+                    exercises={exercises}
+                    muscleGroups={muscleGroups}
+                    value={selectedExerciseId}
+                    onChange={setSelectedExerciseId}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    step="1"
+                    aria-label="Reps"
+                    value={reps}
+                    onChange={(e) => setReps(e.target.value)}
+                  />
+                </td>
+                <td className="actions">
+                  <button type="button" className="primary" onClick={handleAddSet}>Add set</button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
     </div>
   );
 }

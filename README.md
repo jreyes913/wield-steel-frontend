@@ -50,6 +50,7 @@ src/
   api.js              Every backend call, built on one shared request() helper.
   formHelpers.js      Small form helpers: numberOrNull, todayAsDateString, nextPosition.
   setSelection.js     useSetSelection: which sets are ticked in a sets table.
+  blocks.js           Groups a day's sets into Blocks A, B, C… by their exercises (display only).
   chartSetup.js       Registers the Chart.js pieces our line charts use.
   index.css           The only stylesheet.
   pages/
@@ -68,6 +69,7 @@ src/
     LiftSubsetRow.jsx     One exercise row in a lift set; Edit turns its cells into inputs.
     LiftSetsTable.jsx     A lift's sets table; readOnly mode drops every button and input.
     SetActionsToolbar.jsx Bar above a sets table: add exercise / copy / delete the ticked sets.
+    SetBlock.jsx          One Block: header bar (letter, exercises, set count) above its table.
     CompareLiftPicker.jsx Card for choosing a past lift to compare against.
     LiftDatePicker.jsx    Month calendar where only dates with a lift can be picked.
     HistoricalLiftPanel.jsx Green, read-only column showing the past lift being compared.

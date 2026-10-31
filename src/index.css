@@ -449,13 +449,11 @@ p {
 }
 
 .data-table .set-cell {
-  width: 1%; /* as narrow as its content, so the other columns keep their room */
   white-space: nowrap;
 }
 
 /* Checkbox column: picks sets for the toolbar above the table. */
 .data-table .select-cell {
-  width: 1%;
   padding-right: 0;
 }
 
@@ -472,7 +470,7 @@ p {
   cursor: pointer;
 }
 
-/* Bar above a sets table with the actions for the ticked sets. */
+/* Bar above a lifting day's block tables with the actions for the ticked sets. */
 .set-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -480,9 +478,114 @@ p {
 
   align-items: center;
 
+  margin-bottom: 12px;
   padding: 10px 14px;
 
+  color: var(--color-text);
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+}
+
+/* =========================================================
+   Blocks: one table per group of sets with the same exercises
+   ========================================================= */
+
+.block {
+  margin-bottom: 16px;
+}
+
+/* The bar on top of each block's table. Solid colours, so it reads the same on
+   a white card and on the green comparison panel. */
+.block-header,
+.app .block-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+
+  align-items: baseline;
+
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 8px 14px;
+
+  text-align: left;
+
+  color: var(--color-text);
+  background: #e9f7f0;
+
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+
+  box-shadow: none;
+}
+
+.app button.block-header:hover {
+  color: var(--color-text);
+  background: var(--color-button-hover);
+  border-color: var(--color-border);
+}
+
+.block--collapsed .block-header,
+.app .block--collapsed .block-header {
   border-bottom: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.block-toggle {
+  width: 1em;
+  color: var(--color-brand-dark);
+}
+
+.block-label {
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.block-summary {
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.block .table-wrap {
+  margin-bottom: 0;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Fixed column widths (set on each table's <colgroup>), so a day's stacked block
+   tables line up with each other. The exercise column takes what is left. */
+.blocks-table {
+  table-layout: fixed;
+}
+
+.blocks-table .col-select {
+  width: 36px;
+}
+
+.blocks-table .col-set {
+  width: 64px;
+}
+
+.blocks-table .col-num {
+  width: 100px;
+}
+
+.blocks-table .col-actions {
+  width: 170px;
+}
+
+/* Wide enough for the exercise dropdown beside three number inputs and the buttons. */
+.blocks-table.lift-sets-table {
+  min-width: 760px;
 }
 
 .set-toolbar-count {
@@ -689,6 +792,27 @@ p {
 
 .lift-layout--comparing .data-table select {
   min-width: 140px;
+}
+
+.lift-layout--comparing .blocks-table .col-num {
+  width: 80px;
+}
+
+.lift-layout--comparing .blocks-table .col-actions {
+  width: 150px;
+}
+
+.lift-layout--comparing .blocks-table.lift-sets-table {
+  min-width: 640px;
+}
+
+/* The past lift's numbers are plain text, so their columns can be narrower. */
+.lift-layout--comparing .blocks-table.data-table--read-only .col-num {
+  width: 64px;
+}
+
+.lift-layout--comparing .blocks-table.data-table--read-only .col-set {
+  width: 48px;
 }
 
 .app .lift-layout--comparing .data-table .actions button {
