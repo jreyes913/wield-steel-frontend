@@ -84,7 +84,7 @@ function ProgramSetGroup({ set, dayId, nextSetPosition, exercises, muscleGroups,
       ))}
 
       {!isAddingExercise && (
-        <tr>
+        <tr className="set-actions-row">
           <td className="set-cell">{emptySetNumber}</td>
           <td colSpan={2}>
             <button type="button" onClick={() => setIsAddingExercise(true)}>

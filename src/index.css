@@ -46,7 +46,7 @@
 }
 
 [data-amplify-authenticator] .amplify-button--small {
-  background-color: #fff;
+  background-color: var(--color-button);
   color: var(--color-brand);
 }
 
@@ -88,6 +88,12 @@
   --color-background: #f4f4f4;
   --color-surface: #ffffff;
   --color-border: #e2e2e2;
+
+  /* Buttons are shaded so they stand out from white cards and the grey page. */
+  --color-button: #e6ebe8;
+  --color-button-border: #c9d2cd;
+  --color-button-hover: #d2efe1;
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.12);
 
   --color-danger: #c0392b;
   --color-success: #1b6e2d;
@@ -307,10 +313,12 @@ p {
   font-weight: 600;
 
   color: var(--color-text);
-  background: var(--color-surface);
+  background: var(--color-button);
 
-  border: 1.5px solid var(--color-border);
+  border: 1.5px solid var(--color-button-border);
   border-radius: 999px;
+
+  box-shadow: var(--shadow-button);
 
   padding: 10px 18px;
 
@@ -323,9 +331,9 @@ p {
 }
 
 .app button:hover {
-  color: var(--color-brand);
+  color: var(--color-brand-dark);
 
-  background: var(--color-brand-tint);
+  background: var(--color-button-hover);
   border-color: var(--color-brand);
 }
 
@@ -440,6 +448,19 @@ p {
   white-space: nowrap;
 }
 
+/* The row under each set (add exercise, copy set, delete set) is kept short so
+   it reads as a footer to the set, not as another exercise row. */
+.data-table .set-actions-row td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.app .data-table .set-actions-row button {
+  min-height: auto;
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
 /* A heavier line where one set ends and the next begins. */
 .data-table tbody + tbody tr:first-child td,
 .data-table tbody + tfoot tr:first-child td {
@@ -542,7 +563,9 @@ p {
 
 .lift-layout--comparing {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* The past lift's table has no buttons or inputs, so it needs less room than
+     the editable current lift. */
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   gap: 24px;
 
   align-items: start;
@@ -595,9 +618,7 @@ p {
 }
 
 .app .lift-history-actions button {
-  color: var(--color-brand-dark);
-  background: #fff;
-  border-color: #fff;
+  border-color: var(--color-button-border);
 }
 
 .app .lift-history-actions button:hover {
@@ -611,9 +632,31 @@ p {
   margin-bottom: 0;
 }
 
-/* The read-only table has no buttons column, so it can be narrower. */
+/* The read-only table has no buttons or inputs, so it can shrink to fit. */
 .data-table--read-only {
-  min-width: 420px;
+  min-width: 0;
+}
+
+/* Tighter cells while comparing, so the editable table fits its column without
+   scrolling on a normal monitor. */
+.lift-layout--comparing .data-table th,
+.lift-layout--comparing .data-table td {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.lift-layout--comparing .data-table input[type="number"] {
+  min-width: 56px;
+}
+
+.lift-layout--comparing .data-table select {
+  min-width: 140px;
+}
+
+.app .lift-layout--comparing .data-table .actions button {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 4px;
 }
 
 /* Calendar for picking the comparison date. */
@@ -711,6 +754,7 @@ p {
   color: #c4c4c4;
   background: transparent;
   border-color: transparent;
+  box-shadow: none;
 
   cursor: not-allowed;
 }
@@ -725,9 +769,5 @@ p {
 @media (max-width: 480px) {
   .lift-history {
     padding: 12px;
-  }
-
-  .data-table--read-only {
-    min-width: 0;
   }
 }

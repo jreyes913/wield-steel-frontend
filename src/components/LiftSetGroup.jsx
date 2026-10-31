@@ -111,7 +111,7 @@ function LiftSetGroup({
       )}
 
       {!readOnly && !isAddingExercise && (
-        <tr>
+        <tr className="set-actions-row">
           <td className="set-cell">{emptySetNumber}</td>
           <td colSpan={4}>
             <button type="button" onClick={() => setIsAddingExercise(true)}>
