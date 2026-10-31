@@ -8,7 +8,7 @@ Cognito account, then log lifts, view progress charts, and manage programs.
 1. Install dependencies (once): `npm install`
 2. Make sure `.env.local` exists in the project root with:
    ```
-   VITE_API_URL=https://r6z25oo3o9.execute-api.us-east-2.amazonaws.com
+   VITE_API_URL=https://dwclwdsouqbt4.cloudfront.net
    VITE_USER_POOL_ID=us-east-2_LAaNM8OAn
    VITE_USER_POOL_CLIENT_ID=6u276gi81pj6p7jbvmmspp2je6
    ```
@@ -18,6 +18,28 @@ Cognito account, then log lifts, view progress charts, and manage programs.
    CORS settings only allow it, and `vite.config.js` refuses to switch ports.
 
 Other commands: `npm run build` (production build), `npm run lint`.
+
+## Where the API lives
+
+The frontend calls the API through CloudFront, never API Gateway directly:
+
+```
+browser → CloudFront (dwclwdsouqbt4.cloudfront.net) + WAF → API Gateway (r6z25oo3o9) → Lambda
+```
+
+- **CloudFront** distribution `EDARORIJXGK3R`: HTTPS only, no caching, passes every
+  header except `Host` through (so `Authorization` and CORS still work).
+- **WAF** web ACL `wield-steel-waf` (in us-east-1, as CloudFront requires) runs the
+  AWS managed Common and SQL-injection rule sets. Blocked requests get a plain
+  `403` from CloudFront, which `request()` shows as an error. If a normal-looking
+  request gets a 403, check the WAF's sampled requests in the AWS console.
+- **API Gateway** stage `$default` is throttled to 200 requests/second (burst 500).
+  Over that, calls get `429 Too Many Requests`.
+- **Production** builds on Amplify (app `d2gypyesmndbtg`) read `VITE_API_URL` from
+  the Amplify app's environment variables, not from `.env.local`. Change it there
+  and redeploy if the API address ever changes.
+
+The old `execute-api` address still answers and bypasses the WAF; don't use it.
 
 ## Folder structure
 
@@ -60,8 +82,10 @@ Take "log a lift" as an example:
 3. `request()` asks Amplify for the current session (`fetchAuthSession()`, which
    refreshes an expired token automatically) and sends the call with
    `Authorization: Bearer <access token>`.
-4. API Gateway checks the token, then the Lambda reads the user's identity **from
-   the token**. That is why the frontend never sends an `athlete_id`.
+4. The call goes to CloudFront, where the WAF screens it (see "Where the API
+   lives" below), and is passed on to API Gateway. API Gateway checks the token,
+   then the Lambda reads the user's identity **from the token**. That is why the
+   frontend never sends an `athlete_id`.
 5. The Lambda replies with JSON. On success `request()` returns it. On failure
    (`{"error": ...}` or API Gateway's `{"message": ...}`) it throws an `Error` with
    that message.
