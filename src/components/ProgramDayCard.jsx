@@ -77,6 +77,7 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
         <table className="data-table">
           <thead>
             <tr>
+              <th className="set-cell">Set</th>
               <th>Exercise</th>
               <th>Reps</th>
               <th></th>
@@ -96,10 +97,8 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
             />
           ))}
           <tfoot>
-            <tr className="set-header">
-              <td colSpan={3}>New set</td>
-            </tr>
             <tr className="new-row">
+              <td className="set-cell"><strong>New</strong></td>
               <td>
                 <ExerciseSelect
                   exercises={exercises}

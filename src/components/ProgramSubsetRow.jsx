@@ -7,7 +7,8 @@ import { updateProgramSubset, deleteProgramSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
-function ProgramSubsetRow({ subset, exercises, muscleGroups, onChanged, onError }) {
+// setNumber is shown (bold) in the Set column on the set's first exercise only.
+function ProgramSubsetRow({ subset, setNumber, exercises, muscleGroups, onChanged, onError }) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedExerciseId, setSelectedExerciseId] = useState(String(subset.exercise.id));
   const [reps, setReps] = useState(subset.reps ?? "");
@@ -37,9 +38,12 @@ function ProgramSubsetRow({ subset, exercises, muscleGroups, onChanged, onError 
     }
   }
 
+  const setCell = <td className="set-cell">{setNumber && <strong>{setNumber}</strong>}</td>;
+
   if (!isEditing) {
     return (
       <tr>
+        {setCell}
         <td>{subset.exercise.name}</td>
         <td>{subset.reps ?? "–"}</td>
         <td className="actions">
@@ -52,6 +56,7 @@ function ProgramSubsetRow({ subset, exercises, muscleGroups, onChanged, onError 
 
   return (
     <tr>
+      {setCell}
       <td>
         <ExerciseSelect
           exercises={exercises}

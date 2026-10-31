@@ -435,14 +435,15 @@ p {
   min-width: 170px;
 }
 
-.data-table .set-header td {
-  background: var(--color-brand-tint);
+.data-table .set-cell {
+  width: 1%; /* as narrow as its content, so the other columns keep their room */
+  white-space: nowrap;
+}
 
-  font-size: 12px;
-  font-weight: 700;
-
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+/* A heavier line where one set ends and the next begins. */
+.data-table tbody + tbody tr:first-child td,
+.data-table tbody + tfoot tr:first-child td {
+  border-top: 2px solid var(--color-border);
 }
 
 .data-table .new-row td {

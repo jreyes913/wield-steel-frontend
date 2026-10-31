@@ -1,5 +1,6 @@
-// One set inside the lift table: a "Set N" header row, one row per exercise,
-// and a row to add another exercise (a superset).
+// One set inside the lift table: one row per exercise (the set number appears in
+// the Set column of the first one), then a row to add another exercise (a superset)
+// that also holds the Copy set and Delete set buttons.
 // It returns a <tbody> because a table may hold many, and each one is a visual group.
 
 import { useState } from "react";
@@ -83,22 +84,16 @@ function LiftSetGroup({
     }
   }
 
+  // Normally the first exercise row shows the set number; with none, this row does.
+  const emptySetNumber = set.subsets.length === 0 ? <strong>{set.position}</strong> : null;
+
   return (
     <tbody>
-      <tr className="set-header">
-        <td colSpan={4}>Set {set.position}</td>
-        {!readOnly && (
-          <td className="actions">
-            <button type="button" onClick={handleCopySet}>Copy set</button>
-            <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
-          </td>
-        )}
-      </tr>
-
-      {set.subsets.map((subset) => (
+      {set.subsets.map((subset, index) => (
         <LiftSubsetRow
           key={subset.id}
           subset={subset}
+          setNumber={index === 0 ? set.position : null}
           readOnly={readOnly}
           exercises={exercises}
           muscleGroups={muscleGroups}
@@ -107,18 +102,32 @@ function LiftSetGroup({
         />
       ))}
 
+      {/* A set with no exercises left still needs a row to show its number. */}
+      {readOnly && set.subsets.length === 0 && (
+        <tr>
+          <td className="set-cell"><strong>{set.position}</strong></td>
+          <td colSpan={4}>No exercises</td>
+        </tr>
+      )}
+
       {!readOnly && !isAddingExercise && (
         <tr>
-          <td colSpan={5}>
+          <td className="set-cell">{emptySetNumber}</td>
+          <td colSpan={4}>
             <button type="button" onClick={() => setIsAddingExercise(true)}>
               + Add exercise to this set
             </button>
+          </td>
+          <td className="actions">
+            <button type="button" onClick={handleCopySet}>Copy set</button>
+            <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
           </td>
         </tr>
       )}
 
       {!readOnly && isAddingExercise && (
         <tr className="new-row">
+          <td className="set-cell">{emptySetNumber}</td>
           <td>
             <ExerciseSelect
               exercises={exercises}

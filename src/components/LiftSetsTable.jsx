@@ -19,6 +19,7 @@ function LiftSetsTable({ lift, readOnly = false, exercises, muscleGroups, onChan
         <table className={readOnly ? "data-table data-table--read-only" : "data-table"}>
           <thead>
             <tr>
+              <th className="set-cell">Set</th>
               <th>Exercise</th>
               <th>Reps</th>
               <th>RIR</th>
