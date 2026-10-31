@@ -49,6 +49,7 @@ src/
   App.jsx             Login wall, navigation bar, and the list of routes.
   api.js              Every backend call, built on one shared request() helper.
   formHelpers.js      Small form helpers: numberOrNull, todayAsDateString, nextPosition.
+  setSelection.js     useSetSelection: which sets are ticked in a sets table.
   chartSetup.js       Registers the Chart.js pieces our line charts use.
   index.css           The only stylesheet.
   pages/
@@ -63,9 +64,10 @@ src/
     NavBar.jsx            Top navigation and Sign out button.
     ExerciseSelect.jsx    Exercise dropdown grouped by muscle group (used by lifts and programs).
     AddLiftSetFooter.jsx  Bottom row of the lift table: inputs that add a new set.
-    LiftSetGroup.jsx      One set in the lift table: header row, exercise rows, add-exercise row.
+    LiftSetGroup.jsx      One set in the lift table: checkbox + number, exercise rows, add-exercise row.
     LiftSubsetRow.jsx     One exercise row in a lift set; Edit turns its cells into inputs.
     LiftSetsTable.jsx     A lift's sets table; readOnly mode drops every button and input.
+    SetActionsToolbar.jsx Bar above a sets table: add exercise / copy / delete the ticked sets.
     CompareLiftPicker.jsx Card for choosing a past lift to compare against.
     LiftDatePicker.jsx    Month calendar where only dates with a lift can be picked.
     HistoricalLiftPanel.jsx Green, read-only column showing the past lift being compared.
@@ -73,7 +75,7 @@ src/
     BodyWeightChart.jsx   Body weight line chart.
     StrengthChart.jsx     Strength line chart with exercise/metric/date pickers.
     ProgramDayCard.jsx    One program day: name bar plus a table of its sets.
-    ProgramSetGroup.jsx   One set in a program day's table: header row, exercise rows, add row.
+    ProgramSetGroup.jsx   One set in a program day's table: checkbox + number, exercise rows, add row.
     ProgramSubsetRow.jsx  One exercise row in a program set; Edit turns its cells into inputs.
 ```
 

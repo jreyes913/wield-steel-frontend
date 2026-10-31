@@ -46,6 +46,7 @@ function AddLiftSetFooter({ liftId, position, exercises, muscleGroups, onChanged
   return (
     <tfoot>
       <tr className="new-row">
+        <td className="select-cell"></td>
         <td className="set-cell"><strong>New</strong></td>
         <td>
           <ExerciseSelect

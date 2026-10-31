@@ -1,18 +1,25 @@
-// One set inside a program day's table: one row per exercise (the set number appears
-// in the Set column of the first one), then a row to add another exercise (a
-// superset) that also holds the Copy set and Delete set buttons.
-// It returns a <tbody> because a table may hold many, and each one is a visual group.
+// One set inside a program day's table: one row per exercise. The first row holds
+// the set's checkbox (which picks it for the toolbar above the table) and its
+// number. When the toolbar's "Add exercise" is used on this set, an input row
+// appears at the end of it. It returns a <tbody> because each set is its own group.
 
 import { useState } from "react";
-import { createProgramSet, createProgramSubset, deleteProgramSet } from "../api.js";
+import { createProgramSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import ProgramSubsetRow from "./ProgramSubsetRow.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
-// dayId and nextSetPosition are only needed to copy the set onto the end of the day.
-function ProgramSetGroup({ set, dayId, nextSetPosition, exercises, muscleGroups, onChanged, onError }) {
-  // The "add exercise" row stays hidden until asked for, so a normal set stays compact.
-  const [isAddingExercise, setIsAddingExercise] = useState(false);
+function ProgramSetGroup({
+  set,
+  isSelected,
+  onToggleSelected,
+  isAddingExercise,
+  onDoneAddingExercise,
+  exercises,
+  muscleGroups,
+  onChanged,
+  onError,
+}) {
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [reps, setReps] = useState("");
 
@@ -29,45 +36,37 @@ function ProgramSetGroup({ set, dayId, nextSetPosition, exercises, muscleGroups,
       });
       setSelectedExerciseId("");
       setReps("");
-      setIsAddingExercise(false);
+      onDoneAddingExercise();
       onChanged();
     } catch (err) {
       onError(err.message);
     }
   }
 
-  // Creates a new set at the end of the day with the same exercises and reps.
-  // One request creates the set and all of its subsets together.
-  async function handleCopySet() {
-    try {
-      await createProgramSet(dayId, {
-        position: nextSetPosition,
-        subsets: set.subsets.map((subset) => ({
-          exercise_id: subset.exercise.id,
-          position: subset.position,
-          reps: subset.reps,
-        })),
-      });
-      onChanged();
-    } catch (err) {
-      onError(err.message);
-    }
+  function handleCancelAdd() {
+    setSelectedExerciseId("");
+    setReps("");
+    onDoneAddingExercise();
   }
 
-  async function handleDeleteSet() {
-    if (!window.confirm("Delete this whole set?")) {
-      return;
-    }
-    try {
-      await deleteProgramSet(set.id);
-      onChanged();
-    } catch (err) {
-      onError(err.message);
-    }
+  // The checkbox and Set columns. Only the set's first row fills them in.
+  function leadingCells(isFirstRow) {
+    return (
+      <>
+        <td className="select-cell">
+          {isFirstRow && (
+            <input
+              type="checkbox"
+              aria-label={`Select set ${set.position}`}
+              checked={isSelected}
+              onChange={onToggleSelected}
+            />
+          )}
+        </td>
+        <td className="set-cell">{isFirstRow && <strong>{set.position}</strong>}</td>
+      </>
+    );
   }
-
-  // Normally the first exercise row shows the set number; with none, this row does.
-  const emptySetNumber = set.subsets.length === 0 ? <strong>{set.position}</strong> : null;
 
   return (
     <tbody>
@@ -75,7 +74,7 @@ function ProgramSetGroup({ set, dayId, nextSetPosition, exercises, muscleGroups,
         <ProgramSubsetRow
           key={subset.id}
           subset={subset}
-          setNumber={index === 0 ? set.position : null}
+          leadingCells={leadingCells(index === 0)}
           exercises={exercises}
           muscleGroups={muscleGroups}
           onChanged={onChanged}
@@ -83,24 +82,18 @@ function ProgramSetGroup({ set, dayId, nextSetPosition, exercises, muscleGroups,
         />
       ))}
 
-      {!isAddingExercise && (
-        <tr className="set-actions-row">
-          <td className="set-cell">{emptySetNumber}</td>
-          <td colSpan={2}>
-            <button type="button" onClick={() => setIsAddingExercise(true)}>
-              + Add exercise to this set
-            </button>
-          </td>
-          <td className="actions">
-            <button type="button" onClick={handleCopySet}>Copy set</button>
-            <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
-          </td>
+      {/* A set with no exercises left still needs a row for its checkbox and number. */}
+      {set.subsets.length === 0 && (
+        <tr>
+          {leadingCells(true)}
+          <td colSpan={3}>No exercises</td>
         </tr>
       )}
 
       {isAddingExercise && (
         <tr className="new-row">
-          <td className="set-cell">{emptySetNumber}</td>
+          <td className="select-cell"></td>
+          <td className="set-cell"></td>
           <td>
             <ExerciseSelect
               exercises={exercises}
@@ -120,7 +113,7 @@ function ProgramSetGroup({ set, dayId, nextSetPosition, exercises, muscleGroups,
           </td>
           <td className="actions">
             <button type="button" className="primary" onClick={handleAddExercise}>Add</button>
-            <button type="button" onClick={() => setIsAddingExercise(false)}>Cancel</button>
+            <button type="button" onClick={handleCancelAdd}>Cancel</button>
           </td>
         </tr>
       )}

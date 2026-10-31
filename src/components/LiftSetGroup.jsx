@@ -1,32 +1,38 @@
-// One set inside the lift table: one row per exercise (the set number appears in
-// the Set column of the first one), then a row to add another exercise (a superset)
-// that also holds the Copy set and Delete set buttons.
-// It returns a <tbody> because a table may hold many, and each one is a visual group.
+// One set inside the lift table: one row per exercise. The first row holds the
+// set's checkbox (which picks it for the toolbar above the table) and its number.
+// When the toolbar's "Add exercise" is used on this set, an input row appears at
+// the end of it. It returns a <tbody> because each set is its own visual group.
 
 import { useState } from "react";
-import { createLiftSet, createLiftSubset, deleteLiftSet } from "../api.js";
+import { createLiftSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import LiftSubsetRow from "./LiftSubsetRow.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
-// liftId and nextSetPosition are only needed to copy the set onto the end of the lift.
-// readOnly (the historical comparison) shows the set without any buttons or inputs.
+// readOnly (the historical comparison) shows the set without checkboxes, buttons or inputs.
 function LiftSetGroup({
   set,
   readOnly = false,
-  liftId,
-  nextSetPosition,
+  isSelected,
+  onToggleSelected,
+  isAddingExercise,
+  onDoneAddingExercise,
   exercises,
   muscleGroups,
   onChanged,
   onError,
 }) {
-  // The "add exercise" row stays hidden until asked for, so a normal set stays compact.
-  const [isAddingExercise, setIsAddingExercise] = useState(false);
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [reps, setReps] = useState("");
   const [rir, setRir] = useState("");
   const [weight, setWeight] = useState("");
+
+  function resetNewExercise() {
+    setSelectedExerciseId("");
+    setReps("");
+    setRir("");
+    setWeight("");
+  }
 
   async function handleAddExercise() {
     if (selectedExerciseId === "") {
@@ -41,51 +47,39 @@ function LiftSetGroup({
         rir: numberOrNull(rir),
         weight: numberOrNull(weight),
       });
-      setSelectedExerciseId("");
-      setReps("");
-      setRir("");
-      setWeight("");
-      setIsAddingExercise(false);
+      resetNewExercise();
+      onDoneAddingExercise();
       onChanged();
     } catch (err) {
       onError(err.message);
     }
   }
 
-  // Creates a new set at the end of the lift with the same exercises, reps, RIR and weight.
-  // One request creates the set and all of its subsets together.
-  async function handleCopySet() {
-    try {
-      await createLiftSet(liftId, {
-        position: nextSetPosition,
-        subsets: set.subsets.map((subset) => ({
-          exercise_id: subset.exercise.id,
-          position: subset.position,
-          reps: subset.reps,
-          rir: subset.rir,
-          weight: subset.weight,
-        })),
-      });
-      onChanged();
-    } catch (err) {
-      onError(err.message);
-    }
+  function handleCancelAdd() {
+    resetNewExercise();
+    onDoneAddingExercise();
   }
 
-  async function handleDeleteSet() {
-    if (!window.confirm("Delete this whole set?")) {
-      return;
-    }
-    try {
-      await deleteLiftSet(set.id);
-      onChanged();
-    } catch (err) {
-      onError(err.message);
-    }
+  // The checkbox and Set columns. Only the set's first row fills them in.
+  function leadingCells(isFirstRow) {
+    return (
+      <>
+        {!readOnly && (
+          <td className="select-cell">
+            {isFirstRow && (
+              <input
+                type="checkbox"
+                aria-label={`Select set ${set.position}`}
+                checked={isSelected}
+                onChange={onToggleSelected}
+              />
+            )}
+          </td>
+        )}
+        <td className="set-cell">{isFirstRow && <strong>{set.position}</strong>}</td>
+      </>
+    );
   }
-
-  // Normally the first exercise row shows the set number; with none, this row does.
-  const emptySetNumber = set.subsets.length === 0 ? <strong>{set.position}</strong> : null;
 
   return (
     <tbody>
@@ -93,7 +87,7 @@ function LiftSetGroup({
         <LiftSubsetRow
           key={subset.id}
           subset={subset}
-          setNumber={index === 0 ? set.position : null}
+          leadingCells={leadingCells(index === 0)}
           readOnly={readOnly}
           exercises={exercises}
           muscleGroups={muscleGroups}
@@ -102,32 +96,18 @@ function LiftSetGroup({
         />
       ))}
 
-      {/* A set with no exercises left still needs a row to show its number. */}
-      {readOnly && set.subsets.length === 0 && (
+      {/* A set with no exercises left still needs a row for its checkbox and number. */}
+      {set.subsets.length === 0 && (
         <tr>
-          <td className="set-cell"><strong>{set.position}</strong></td>
-          <td colSpan={4}>No exercises</td>
-        </tr>
-      )}
-
-      {!readOnly && !isAddingExercise && (
-        <tr className="set-actions-row">
-          <td className="set-cell">{emptySetNumber}</td>
-          <td colSpan={4}>
-            <button type="button" onClick={() => setIsAddingExercise(true)}>
-              + Add exercise to this set
-            </button>
-          </td>
-          <td className="actions">
-            <button type="button" onClick={handleCopySet}>Copy set</button>
-            <button type="button" className="danger" onClick={handleDeleteSet}>Delete set</button>
-          </td>
+          {leadingCells(true)}
+          <td colSpan={readOnly ? 4 : 5}>No exercises</td>
         </tr>
       )}
 
       {!readOnly && isAddingExercise && (
         <tr className="new-row">
-          <td className="set-cell">{emptySetNumber}</td>
+          <td className="select-cell"></td>
+          <td className="set-cell"></td>
           <td>
             <ExerciseSelect
               exercises={exercises}
@@ -165,7 +145,7 @@ function LiftSetGroup({
           </td>
           <td className="actions">
             <button type="button" className="primary" onClick={handleAddExercise}>Add</button>
-            <button type="button" onClick={() => setIsAddingExercise(false)}>Cancel</button>
+            <button type="button" onClick={handleCancelAdd}>Cancel</button>
           </td>
         </tr>
       )}

@@ -7,10 +7,10 @@ import ExerciseSelect from "./ExerciseSelect.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
 // readOnly (the historical comparison) shows the values only: no Edit or Delete.
-// setNumber is shown (bold) in the Set column on the set's first exercise only.
+// leadingCells: the set's checkbox and number cells, filled on its first exercise only.
 function LiftSubsetRow({
   subset,
-  setNumber,
+  leadingCells,
   readOnly = false,
   exercises,
   muscleGroups,
@@ -52,12 +52,10 @@ function LiftSubsetRow({
     }
   }
 
-  const setCell = <td className="set-cell">{setNumber && <strong>{setNumber}</strong>}</td>;
-
   if (readOnly || !isEditing) {
     return (
       <tr>
-        {setCell}
+        {leadingCells}
         <td>{subset.exercise.name}</td>
         <td>{subset.reps ?? "–"}</td>
         <td>{subset.rir ?? "–"}</td>
@@ -74,7 +72,7 @@ function LiftSubsetRow({
 
   return (
     <tr>
-      {setCell}
+      {leadingCells}
       <td>
         <ExerciseSelect
           exercises={exercises}

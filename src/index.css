@@ -337,6 +337,11 @@ p {
   border-color: var(--color-brand);
 }
 
+.app button:disabled:not(.calendar-day) {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
 .app button.primary,
 .app button[type="submit"] {
   color: #fff;
@@ -448,17 +453,50 @@ p {
   white-space: nowrap;
 }
 
-/* The row under each set (add exercise, copy set, delete set) is kept short so
-   it reads as a footer to the set, not as another exercise row. */
-.data-table .set-actions-row td {
-  padding-top: 4px;
-  padding-bottom: 4px;
+/* Checkbox column: picks sets for the toolbar above the table. */
+.data-table .select-cell {
+  width: 1%;
+  padding-right: 0;
 }
 
-.app .data-table .set-actions-row button {
+.app .data-table .select-cell input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+
+  vertical-align: middle;
+
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}
+
+/* Bar above a sets table with the actions for the ticked sets. */
+.set-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  align-items: center;
+
+  padding: 10px 14px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.set-toolbar-count {
+  margin-right: auto;
+
+  color: var(--color-muted);
+
+  font-size: 13px;
+}
+
+.app .set-toolbar button {
   min-height: auto;
   font-size: 11px;
-  padding: 4px 10px;
+  padding: 6px 12px;
 }
 
 /* A heavier line where one set ends and the next begins. */

@@ -1,11 +1,14 @@
 // One day of a program: a name bar (rename or delete the day) above a table of
-// its sets, with a row at the bottom to add a new set.
+// its sets. A toolbar on top acts on the ticked sets (add an exercise, copy,
+// delete), and a row at the bottom adds a new set.
 
 import { useState } from "react";
-import { updateProgramDay, deleteProgramDay, createProgramSet } from "../api.js";
+import { updateProgramDay, deleteProgramDay, createProgramSet, deleteProgramSet } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import ProgramSetGroup from "./ProgramSetGroup.jsx";
+import SetActionsToolbar from "./SetActionsToolbar.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
+import { useSetSelection } from "../setSelection.js";
 
 function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
   const [dayName, setDayName] = useState(day.name);
@@ -13,6 +16,8 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
   // Fields for the "new set" row at the bottom of the table.
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [reps, setReps] = useState("");
+
+  const selection = useSetSelection(day.sets);
 
   async function handleRename(event) {
     event.preventDefault();
@@ -60,6 +65,46 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
     }
   }
 
+  // Copies each ticked set onto the end of the day, in order, with the same
+  // exercises and reps. One request per set creates it with its subsets.
+  async function handleCopySets() {
+    try {
+      let position = nextPosition(day.sets);
+      for (const set of selection.selectedSets) {
+        await createProgramSet(day.id, {
+          position: position,
+          subsets: set.subsets.map((subset) => ({
+            exercise_id: subset.exercise.id,
+            position: subset.position,
+            reps: subset.reps,
+          })),
+        });
+        position++;
+      }
+      selection.clear();
+    } catch (err) {
+      onError(err.message);
+    }
+    // Reload even after an error, so any sets that were copied still show.
+    onChanged();
+  }
+
+  async function handleDeleteSets() {
+    const count = selection.selectedSets.length;
+    if (!window.confirm(count === 1 ? "Delete this whole set?" : `Delete these ${count} sets?`)) {
+      return;
+    }
+    try {
+      for (const set of selection.selectedSets) {
+        await deleteProgramSet(set.id);
+      }
+      selection.clear();
+    } catch (err) {
+      onError(err.message);
+    }
+    onChanged();
+  }
+
   return (
     <div className="card">
       <form onSubmit={handleRename} className="inline-form">
@@ -74,9 +119,23 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
       </form>
 
       <div className="table-wrap">
+        <SetActionsToolbar
+          selection={selection}
+          onCopy={handleCopySets}
+          onDelete={handleDeleteSets}
+        />
         <table className="data-table">
           <thead>
             <tr>
+              <th className="select-cell">
+                <input
+                  type="checkbox"
+                  aria-label="Select all sets"
+                  checked={selection.allSelected}
+                  onChange={selection.toggleAll}
+                  disabled={day.sets.length === 0}
+                />
+              </th>
               <th className="set-cell">Set</th>
               <th>Exercise</th>
               <th>Reps</th>
@@ -88,8 +147,10 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
             <ProgramSetGroup
               key={set.id}
               set={set}
-              dayId={day.id}
-              nextSetPosition={nextPosition(day.sets)}
+              isSelected={selection.isSelected(set.id)}
+              onToggleSelected={() => selection.toggle(set.id)}
+              isAddingExercise={selection.addingToSetId === set.id}
+              onDoneAddingExercise={() => selection.setAddingToSetId(null)}
               exercises={exercises}
               muscleGroups={muscleGroups}
               onChanged={onChanged}
@@ -98,6 +159,7 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
           ))}
           <tfoot>
             <tr className="new-row">
+              <td className="select-cell"></td>
               <td className="set-cell"><strong>New</strong></td>
               <td>
                 <ExerciseSelect
