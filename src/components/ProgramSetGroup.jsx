@@ -11,19 +11,22 @@ import SetLeadingCells from "./SetLeadingCells.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
 /**
+ * exercises, muscleGroups, onChanged and onError are only needed when it is editable.
  * @param {object} props
  * @param {import("../types.js").ProgramSet} props.set
- * @param {boolean} props.isSelected  Whether the set is ticked.
- * @param {() => void} props.onToggleSelected
- * @param {boolean} props.isAddingExercise  Show the "add exercise" row at the end of the set.
- * @param {() => void} props.onDoneAddingExercise  Called when that row is added or cancelled.
- * @param {import("../types.js").Exercise[]} props.exercises
- * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
- * @param {import("../types.js").OnChanged} props.onChanged  Reloads the program.
- * @param {import("../types.js").OnError} props.onError
+ * @param {boolean} [props.readOnly]  A friend's program: no checkboxes, buttons or inputs.
+ * @param {boolean} [props.isSelected]  Whether the set is ticked.
+ * @param {() => void} [props.onToggleSelected]
+ * @param {boolean} [props.isAddingExercise]  Show the "add exercise" row at the end of the set.
+ * @param {() => void} [props.onDoneAddingExercise]  Called when that row is added or cancelled.
+ * @param {import("../types.js").Exercise[]} [props.exercises]
+ * @param {import("../types.js").MuscleGroup[]} [props.muscleGroups]
+ * @param {import("../types.js").OnChanged} [props.onChanged]  Reloads the program.
+ * @param {import("../types.js").OnError} [props.onError]
  */
 function ProgramSetGroup({
   set,
+  readOnly = false,
   isSelected,
   onToggleSelected,
   isAddingExercise,
@@ -68,6 +71,7 @@ function ProgramSetGroup({
       <SetLeadingCells
         set={set}
         isFirstRow={isFirstRow}
+        readOnly={readOnly}
         isSelected={isSelected}
         onToggleSelected={onToggleSelected}
       />
@@ -81,6 +85,7 @@ function ProgramSetGroup({
           key={subset.id}
           subset={subset}
           leadingCells={leadingCells(index === 0)}
+          readOnly={readOnly}
           exercises={exercises}
           muscleGroups={muscleGroups}
           onChanged={onChanged}
@@ -92,11 +97,11 @@ function ProgramSetGroup({
       {set.subsets.length === 0 && (
         <tr>
           {leadingCells(true)}
-          <td colSpan={3}>No exercises</td>
+          <td colSpan={readOnly ? 2 : 3}>No exercises</td>
         </tr>
       )}
 
-      {isAddingExercise && (
+      {!readOnly && isAddingExercise && (
         <tr className="new-row">
           <td className="select-cell"></td>
           <td className="set-cell"></td>

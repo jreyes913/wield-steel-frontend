@@ -4,8 +4,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getLift, updateLift, deleteLift, getExercises, getMuscleGroups } from "../api.js";
+import {
+  getLift,
+  getFriendLift,
+  updateLift,
+  deleteLift,
+  getExercises,
+  getMuscleGroups,
+} from "../api.js";
 import ApplyProgramForm from "../components/ApplyProgramForm.jsx";
+import CompareFriendLiftPicker from "../components/CompareFriendLiftPicker.jsx";
 import CompareLiftPicker from "../components/CompareLiftPicker.jsx";
 import HistoricalLiftPanel from "../components/HistoricalLiftPanel.jsx";
 import LiftSetsTable from "../components/LiftSetsTable.jsx";
@@ -13,6 +21,8 @@ import SetsSummary from "../components/SetsSummary.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
 /** @typedef {import("../types.js").Lift} Lift */
+/** @typedef {import("../types.js").FriendLift} FriendLift */
+/** @typedef {import("../types.js").PublicProfile} PublicProfile */
 /** @typedef {import("../types.js").Exercise} Exercise */
 /** @typedef {import("../types.js").MuscleGroup} MuscleGroup */
 
@@ -33,10 +43,13 @@ function LiftDetail() {
 
   // Comparison with a past lift. Both are tagged with the lift they were opened
   // on, so going to a different lift's page starts with no comparison.
-  // comparison: { forLiftId, liftId, lift } where lift is null while it loads.
+  // comparison: { forLiftId, liftId, lift, friend } where lift is null while it loads,
+  // and friend is the friend whose lift it is (null for one of my own past lifts).
   const [pickingForLiftId, setPickingForLiftId] = useState(/** @type {string | null} */ (null));
+  // Whether the picker open is for a friend's lift or for one of my own.
+  const [pickingFriendLift, setPickingFriendLift] = useState(false);
   const [comparison, setComparison] = useState(
-    /** @type {{ forLiftId: string, liftId: number, lift: Lift | null } | null} */ (null)
+    /** @type {{ forLiftId: string, liftId: number, lift: Lift | FriendLift | null, friend: PublicProfile | null } | null} */ (null)
   );
   // Counts comparison requests, so a slow response for an older pick is ignored.
   const latestComparisonRequest = useRef(0);
@@ -97,16 +110,27 @@ function LiftDetail() {
     }
   }
 
-  // Loads the chosen past lift into the comparison column. Read-only: this only
-  // fetches the lift, it never changes it.
-  async function handlePickComparison(pastLiftId) {
+  // Opens the picker for one of my own past lifts, or for a friend's lift.
+  /** @param {boolean} forFriend */
+  function openPicker(forFriend) {
+    setPickingFriendLift(forFriend);
+    setPickingForLiftId(id);
+  }
+
+  // Loads the chosen past lift (mine, or a friend's) into the comparison column.
+  // Read-only: this only fetches the lift, it never changes it.
+  /**
+   * @param {PublicProfile | null} friend  Null for one of my own lifts.
+   * @param {number} pastLiftId
+   */
+  async function loadComparison(friend, pastLiftId) {
     const requestNumber = ++latestComparisonRequest.current;
     setPickingForLiftId(null);
-    setComparison({ forLiftId: id, liftId: pastLiftId, lift: null });
+    setComparison({ forLiftId: id, liftId: pastLiftId, lift: null, friend });
     try {
-      const pastLift = await getLift(pastLiftId);
+      const pastLift = friend ? await getFriendLift(friend.id, pastLiftId) : await getLift(pastLiftId);
       if (requestNumber === latestComparisonRequest.current) {
-        setComparison({ forLiftId: id, liftId: pastLiftId, lift: pastLift });
+        setComparison({ forLiftId: id, liftId: pastLiftId, lift: pastLift, friend });
       }
     } catch (err) {
       if (requestNumber === latestComparisonRequest.current) {
@@ -114,6 +138,11 @@ function LiftDetail() {
         setError(err.message);
       }
     }
+  }
+
+  /** @param {number} pastLiftId */
+  function handlePickComparison(pastLiftId) {
+    return loadComparison(null, pastLiftId);
   }
 
   // Back to the single-column page. Only the comparison state is cleared, so any
@@ -142,14 +171,25 @@ function LiftDetail() {
       <div className="lift-toolbar">
         <Link to="/">← All lifts</Link>
         {!isPicking && !activeComparison && (
-          <button type="button" onClick={() => setPickingForLiftId(id)}>
-            Compare with a past lift
-          </button>
+          <div className="lift-toolbar-actions">
+            <button type="button" onClick={() => openPicker(false)}>
+              Compare with a past lift
+            </button>
+            <button type="button" onClick={() => openPicker(true)}>
+              Compare with a friend&apos;s lift
+            </button>
+          </div>
         )}
       </div>
       {error && <p className="error">{error}</p>}
 
-      {isPicking && (
+      {isPicking && pickingFriendLift && (
+        <CompareFriendLiftPicker
+          onPick={loadComparison}
+          onCancel={() => setPickingForLiftId(null)}
+        />
+      )}
+      {isPicking && !pickingFriendLift && (
         <CompareLiftPicker
           currentLift={lift}
           selectedLiftId={activeComparison?.liftId}
@@ -165,7 +205,8 @@ function LiftDetail() {
         {activeComparison && (
           <HistoricalLiftPanel
             lift={activeComparison.lift}
-            onChangeDate={() => setPickingForLiftId(id)}
+            friend={activeComparison.friend}
+            onChangeDate={() => openPicker(activeComparison.friend !== null)}
             onRemove={handleRemoveComparison}
           />
         )}

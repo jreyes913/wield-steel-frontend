@@ -8,6 +8,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Authenticator } from "@aws-amplify/ui-react";
+import FriendRequestsProvider from "./components/FriendRequestsProvider.jsx";
 import NavBar from "./components/NavBar.jsx";
 import Lifts from "./pages/Lifts.jsx";
 
@@ -17,6 +18,10 @@ const Exercises = lazy(() => import("./pages/Exercises.jsx"));
 const Programs = lazy(() => import("./pages/Programs.jsx"));
 const ProgramDetail = lazy(() => import("./pages/ProgramDetail.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
+const Friends = lazy(() => import("./pages/Friends.jsx"));
+const FriendDetail = lazy(() => import("./pages/FriendDetail.jsx"));
+const FriendLift = lazy(() => import("./pages/FriendLift.jsx"));
+const FriendProgram = lazy(() => import("./pages/FriendProgram.jsx"));
 const GetStarted = lazy(() => import("./pages/GetStarted.jsx"));
 
 function App() {
@@ -25,24 +30,30 @@ function App() {
     // Nothing inside renders until the user has signed in.
     <Authenticator hideSignUp>
       {({ signOut }) => (
-        <div className="app">
-          <NavBar signOut={signOut} />
-          <main className="page">
-            <Suspense fallback={<p>Loading…</p>}>
-              <Routes>
-                {/* Other pages get added here as they are built. */}
-                <Route path="/" element={<Lifts />} />
-                <Route path="/lifts/:id" element={<LiftDetail />} />
-                <Route path="/progress" element={<Progress />} />
-                <Route path="/exercises" element={<Exercises />} />
-                <Route path="/programs" element={<Programs />} />
-                <Route path="/programs/:id" element={<ProgramDetail />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/get-started" element={<GetStarted />} />
-              </Routes>
-            </Suspense>
-          </main>
-        </div>
+        <FriendRequestsProvider>
+          <div className="app">
+            <NavBar signOut={signOut} />
+            <main className="page">
+              <Suspense fallback={<p>Loading…</p>}>
+                <Routes>
+                  {/* Other pages get added here as they are built. */}
+                  <Route path="/" element={<Lifts />} />
+                  <Route path="/lifts/:id" element={<LiftDetail />} />
+                  <Route path="/progress" element={<Progress />} />
+                  <Route path="/exercises" element={<Exercises />} />
+                  <Route path="/programs" element={<Programs />} />
+                  <Route path="/programs/:id" element={<ProgramDetail />} />
+                  <Route path="/friends" element={<Friends />} />
+                  <Route path="/friends/:athleteId" element={<FriendDetail />} />
+                  <Route path="/friends/:athleteId/lifts/:liftId" element={<FriendLift />} />
+                  <Route path="/friends/:athleteId/programs/:programId" element={<FriendProgram />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/get-started" element={<GetStarted />} />
+                </Routes>
+              </Suspense>
+            </main>
+          </div>
+        </FriendRequestsProvider>
       )}
     </Authenticator>
   );

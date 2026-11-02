@@ -52,6 +52,8 @@ src/
   api.js              Every backend call, built on one shared request() helper.
   types.js            JSDoc types for the backend's data (Lift, LiftSet, LiftSubset, Program...).
                       Hover a value in VS Code to see its fields.
+  friendRequests.js   The shared count of incoming friend requests (context + useFriendRequests hook).
+  friendHelpers.js    Friends pages: displayName, shortDate, and the "no longer friends" message.
   formHelpers.js      Small form helpers: numberOrNull, todayAsDateString, nextPosition.
   setSelection.js     useSetSelection: which sets are ticked in a sets table.
   setActions.js       useSetActions: what Copy and Delete do to the ticked sets.
@@ -78,6 +80,7 @@ src/
     calendar.css      The comparison date picker.
     guide.css         The Get Started page.
     exercises.css     The exercise-ratings summary line.
+    friends.css       The Friends page and the "Viewing … read-only" banner.
   pages/
     Lifts.jsx         List of lifts + form to log one.
     LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day,
@@ -87,6 +90,10 @@ src/
     ProgramDetail.jsx One program: edit it and manage its days.
     Exercises.jsx     Every exercise with its Difficulty and Complexity, by muscle group (read-only).
     Profile.jsx       View and edit my profile.
+    Friends.jsx       My username, add a friend, requests in and out, and my friends.
+    FriendDetail.jsx  One friend: their programs and lifts (read-only).
+    FriendLift.jsx    A friend's lift, read-only, without body weight.
+    FriendProgram.jsx A friend's program, read-only.
     GetStarted.jsx    How to use the app, then lifting terms and chart metrics explained.
   components/
     NavBar.jsx            Top navigation and Sign out button.
@@ -102,11 +109,17 @@ src/
     NewSetBlock.jsx       The "New set" box under a sets table (shared by lifts and programs).
     CompareLiftPicker.jsx Card for choosing a past lift to compare against.
     LiftDatePicker.jsx    Month calendar where only dates with a lift can be picked.
-    HistoricalLiftPanel.jsx Green, read-only column showing the past lift being compared.
+    HistoricalLiftPanel.jsx Green, read-only column showing the past lift being compared (mine or a
+                          friend's; a friend's has no body weight line).
     ApplyProgramForm.jsx  Pick a program and day to apply to a lift.
     BodyWeightChart.jsx   Body weight line chart.
     StrengthChart.jsx     Strength line chart with exercise/metric/date pickers.
-    ProgramDayCard.jsx    One program day: name bar plus a table of its sets.
+    FriendRequestsProvider.jsx Loads the incoming-request count for the nav badge (on load and on every
+                          route change); pages call refresh() after answering a request.
+    CompareFriendLiftPicker.jsx Card for choosing a friend, then one of their lift dates, to compare with.
+    FriendBanner.jsx      "Viewing Alex's lift · read-only" bar on every friend view.
+    ProgramDayCard.jsx    One program day: name bar plus a table of its sets; readOnly mode
+                          (a friend's program) drops every button, checkbox and input.
     AddProgramSetFooter.jsx Bottom row of a program day's table: inputs that add a new set.
     ProgramSetGroup.jsx   One set in a program day's table: checkbox + number, exercise rows, add row.
     ProgramSubsetRow.jsx  One exercise row in a program set; Edit turns its cells into inputs.
@@ -222,6 +235,20 @@ Send empty optional fields as `null`, not `""` (see `numberOrNull` in `formHelpe
 ## Backend behavior worth knowing
 
 - Anything that isn't the signed-in user's comes back as 404.
+- Friends can read your programs and logged lifts, never change them, and see only your name
+  and username. Their lifts never include `body_weight`, and nothing from the friend endpoints
+  includes DOB, gender, height or `cognito_sub`. Someone who isn't an accepted friend (no
+  request, pending, declined or blocked) gets 404 from every `/athletes/{id}/…` call.
+- "Hide my lifts" is one-way and per friend. A friend who hid their lifts from you looks like
+  a friend with none: `/athletes/{id}/lifts` is `[]` and a single lift is 404. Programs stay visible.
+- Blocking removes any friendship or request. The blocked athlete is never told: sending them
+  a request gets "No athlete with that username". Unblocking restores nothing.
+- A program too big to copy in one transaction (over 1,000 days, sets and exercises together) is
+  refused with a 422 and a message saying so.
+- Copying a friend's program makes an independent program of your own, named
+  `"<name> (from <friend>)"`, with no dates.
+- A request you sent that was declined still shows as pending in Sent requests, so declining
+  is never revealed. Cancelling it removes the row.
 - `PUT` changes only the fields you send.
 - Deletes remove everything underneath (deleting a lift removes its sets and subsets).
 - `reps` and `rir` are whole numbers; `weight` can be a decimal; dates are `YYYY-MM-DD`.

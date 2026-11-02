@@ -1,0 +1,52 @@
+/* The Friends page and the read-only views of a friend's data. */
+
+/* Marks every page that shows someone else's data. */
+.friend-banner {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-brand) 18%, var(--color-background));
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  border: 1px solid var(--color-brand);
+}
+
+.friend-username {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  align-items: center;
+
+  margin-bottom: 8px;
+}
+
+.friend-username strong {
+  font-size: 1.333rem;
+  color: var(--color-text);
+}
+
+.friend-username button {
+  margin-left: auto;
+}
+
+/* The two cards on a friend's page: programs and lifts, side by side when there is room. */
+.friend-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.friend-cards .table-wrap {
+  margin-bottom: 0;
+}
+
+.friend-cards .data-table {
+  min-width: 0;
+}

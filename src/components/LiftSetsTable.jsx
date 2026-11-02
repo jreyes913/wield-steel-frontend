@@ -36,7 +36,7 @@ function LiftColumns({ readOnly }) {
 /**
  * exercises, muscleGroups, onChanged and onError are only needed when it is editable.
  * @param {object} props
- * @param {import("../types.js").Lift} props.lift
+ * @param {import("../types.js").FriendLift} props.lift  Any lift works; only id and sets are used.
  * @param {boolean} [props.readOnly]  The historical comparison: no checkboxes, buttons or inputs.
  * @param {import("../types.js").Exercise[]} [props.exercises]
  * @param {import("../types.js").MuscleGroup[]} [props.muscleGroups]

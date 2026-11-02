@@ -28,6 +28,13 @@
 
 /* The past lift: a brand-tinted panel with a brand border, so it reads as
    "not the lift you are editing". */
+/* The buttons that open a comparison picker. */
+.lift-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .lift-history {
   background: color-mix(in srgb, var(--color-brand) 18%, var(--color-background));
   border: 1px solid var(--color-brand);

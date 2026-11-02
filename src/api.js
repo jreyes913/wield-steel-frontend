@@ -24,6 +24,12 @@ import { fetchAuthSession } from "aws-amplify/auth";
  * @typedef {import("./types.js").Profile} Profile
  * @typedef {import("./types.js").BodyWeightPoint} BodyWeightPoint
  * @typedef {import("./types.js").StrengthProgress} StrengthProgress
+ * @typedef {import("./types.js").PublicProfile} PublicProfile
+ * @typedef {import("./types.js").Friend} Friend
+ * @typedef {import("./types.js").FriendRequests} FriendRequests
+ * @typedef {import("./types.js").FriendLift} FriendLift
+ * @typedef {import("./types.js").FriendLiftSummary} FriendLiftSummary
+ * @typedef {import("./types.js").BlockedAthlete} BlockedAthlete
  */
 
 // Remove a trailing slash so we can always write paths like "/lifts".
@@ -64,7 +70,8 @@ async function request(method, path, body) {
   if (!response.ok) {
     // Our backend sends {"error": "..."}; API Gateway's own 401 sends {"message": "..."}.
     const message = data?.error ?? data?.message ?? `Request failed (${response.status})`;
-    throw new Error(message);
+    // Keep the status, so a page can tell "not found" from other failures.
+    throw Object.assign(new Error(message), { status: response.status });
   }
   return data;
 }
@@ -284,3 +291,111 @@ export const updateProgramSubset = (subsetId, fields) =>
 /** @param {Id} subsetId */
 export const deleteProgramSubset = (subsetId) =>
   request("DELETE", `/program-subsets/${subsetId}`);
+
+// ---------- Friends ----------
+// A friend's data is read-only. Anyone who isn't an accepted friend comes back as 404.
+
+/** @returns {Promise<Friend[]>} My accepted friends, by name. */
+export const getFriends = () => request("GET", "/friends");
+
+/** @param {Id} athleteId  The friend's athlete id. */
+export const removeFriend = (athleteId) => request("DELETE", `/friends/${athleteId}`);
+
+/** @returns {Promise<FriendRequests>} Pending requests to me and from me, newest first. */
+export const getFriendRequests = () => request("GET", "/friend-requests");
+
+/**
+ * Sends a request by exact username. If they already asked me, we become friends at once.
+ * @param {string} username
+ * @returns {Promise<{ status: "pending" | "accepted", athlete: PublicProfile }>}
+ */
+export const sendFriendRequest = (username) => request("POST", "/friend-requests", { username });
+
+/**
+ * @param {Id} requesterId  The athlete id of whoever sent the request.
+ * @param {"accepted" | "declined"} status
+ * @returns {Promise<{ status: string, athlete: PublicProfile }>}
+ */
+export const answerFriendRequest = (requesterId, status) =>
+  request("PUT", `/friend-requests/${requesterId}`, { status });
+
+/**
+ * Cancels a request I sent.
+ * @param {Id} athleteId  The athlete id I sent it to.
+ */
+export const cancelFriendRequest = (athleteId) =>
+  request("DELETE", `/friend-requests/${athleteId}`);
+
+/**
+ * @param {Id} athleteId
+ * @returns {Promise<PublicProfile>}
+ */
+export const getFriend = (athleteId) => request("GET", `/athletes/${athleteId}`);
+
+/**
+ * @param {Id} athleteId
+ * @returns {Promise<FriendLiftSummary[]>} Newest first, without their sets.
+ */
+export const getFriendLifts = (athleteId) => request("GET", `/athletes/${athleteId}/lifts`);
+
+/**
+ * @param {Id} athleteId
+ * @param {Id} liftId
+ * @returns {Promise<FriendLift>} The lift with its sets and subsets, without body weight.
+ */
+export const getFriendLift = (athleteId, liftId) =>
+  request("GET", `/athletes/${athleteId}/lifts/${liftId}`);
+
+/**
+ * @param {Id} athleteId
+ * @returns {Promise<ProgramSummary[]>} Without their days.
+ */
+export const getFriendPrograms = (athleteId) => request("GET", `/athletes/${athleteId}/programs`);
+
+/**
+ * @param {Id} athleteId
+ * @param {Id} programId
+ * @returns {Promise<Program>} The program with all its days, sets and subsets.
+ */
+export const getFriendProgram = (athleteId, programId) =>
+  request("GET", `/athletes/${athleteId}/programs/${programId}`);
+
+/**
+ * Hides my lifts from one friend, or shows them again. Programs stay visible.
+ * @param {Id} athleteId  The friend's athlete id.
+ * @param {boolean} hide
+ * @returns {Promise<{ athlete: PublicProfile, hide_my_lifts: boolean }>}
+ */
+export const setHideMyLifts = (athleteId, hide) =>
+  request("PUT", `/friends/${athleteId}`, { hide_my_lifts: hide });
+
+/**
+ * Copies a friend's program into my own programs.
+ * @param {Id} athleteId
+ * @param {Id} programId
+ * @returns {Promise<Program>} The new program, owned by me.
+ */
+export const copyFriendProgram = (athleteId, programId) =>
+  request("POST", `/athletes/${athleteId}/programs/${programId}/copy`);
+
+// ---------- Blocks ----------
+
+/** @returns {Promise<BlockedAthlete[]>} The athletes I've blocked, newest first. */
+export const getBlocks = () => request("GET", "/blocks");
+
+/**
+ * Blocks an athlete: removes any friendship or request, and they can't send another.
+ * @param {Id} athleteId
+ * @returns {Promise<{ athlete: PublicProfile }>}
+ */
+export const blockAthlete = (athleteId) => request("PUT", `/blocks/${athleteId}`);
+
+/**
+ * Blocks an athlete by exact username.
+ * @param {string} username
+ * @returns {Promise<{ athlete: PublicProfile }>}
+ */
+export const blockByUsername = (username) => request("POST", "/blocks", { username });
+
+/** @param {Id} athleteId */
+export const unblockAthlete = (athleteId) => request("DELETE", `/blocks/${athleteId}`);

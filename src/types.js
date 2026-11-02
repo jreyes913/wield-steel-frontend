@@ -111,6 +111,51 @@
  * @property {number | null} height  Whole number.
  */
 
+// ---------- Friends ----------
+// A friend sees only these fields. The backend never sends them a friend's body
+// weight, date of birth, gender or height.
+
+/**
+ * What anyone else can see of an athlete.
+ * @typedef {object} PublicProfile
+ * @property {number} id
+ * @property {string} username
+ * @property {string | null} first_name
+ * @property {string | null} last_name
+ */
+
+/**
+ * An accepted friend. GET /friends returns a list of these.
+ * @typedef {object} Friend
+ * @property {PublicProfile} athlete
+ * @property {string} since  When the request was accepted (ISO timestamp).
+ * @property {boolean} hide_my_lifts  Whether I hide my lifts from this friend. Only my own setting.
+ */
+
+/**
+ * An athlete I've blocked. GET /blocks returns a list of these.
+ * @typedef {object} BlockedAthlete
+ * @property {PublicProfile} athlete
+ * @property {string} since  When I blocked them (ISO timestamp).
+ */
+
+/**
+ * A pending request, as listed by GET /friend-requests.
+ * @typedef {object} FriendRequest
+ * @property {PublicProfile} athlete  The other person: the sender if incoming, the receiver if outgoing.
+ * @property {string} sent_at  When the request was sent (ISO timestamp).
+ */
+
+/**
+ * @typedef {object} FriendRequests
+ * @property {FriendRequest[]} incoming  Waiting for me to accept or decline.
+ * @property {FriendRequest[]} outgoing  Sent by me. A declined one still shows here.
+ */
+
+/** A friend's lift: a Lift without body_weight. @typedef {Omit<Lift, "body_weight">} FriendLift */
+
+/** A friend's lift as listed by GET /athletes/{id}/lifts: just id and date. @typedef {Pick<Lift, "id" | "date">} FriendLiftSummary */
+
 // ---------- Progress ----------
 
 /** @typedef {{ date: string, body_weight: number }} BodyWeightPoint */

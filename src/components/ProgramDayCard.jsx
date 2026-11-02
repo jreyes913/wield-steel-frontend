@@ -2,6 +2,8 @@
 // collapsible table per block (sets with the same exercises; see blocks.js). A
 // toolbar on top acts on the ticked sets (add an exercise, copy, delete), and a
 // last table adds a new set. Blocks start at A on every day.
+// readOnly (a friend's program): just the day's name and its blocks, with no buttons,
+// checkboxes or inputs, and the blocks can't be collapsed.
 
 import { useState } from "react";
 import { updateProgramDay, deleteProgramDay, createProgramSet, deleteProgramSet } from "../api.js";
@@ -17,27 +19,31 @@ import { useSetActions } from "../setActions.js";
 import { useSetSelection } from "../setSelection.js";
 
 // Every table in a day shares these column widths, so stacked tables line up.
-function ProgramColumns() {
+/** @param {{ readOnly: boolean }} props */
+function ProgramColumns({ readOnly }) {
   return (
     <colgroup>
-      <col className="col-select" />
+      {!readOnly && <col className="col-select" />}
       <col className="col-set" />
       <col />
       <col className="col-num" />
-      <col className="col-actions" />
+      {!readOnly && <col className="col-actions" />}
     </colgroup>
   );
 }
 
 /**
+ * muscleGroups, onChanged and onError are only needed when it is editable.
  * @param {object} props
  * @param {import("../types.js").ProgramDay} props.day
+ * @param {boolean} [props.readOnly]  A friend's program: no rename or delete, no toolbar,
+ *   checkboxes, per-row buttons or new-set table.
  * @param {import("../types.js").Exercise[]} props.exercises
- * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
- * @param {import("../types.js").OnChanged} props.onChanged  Reloads the program.
- * @param {import("../types.js").OnError} props.onError
+ * @param {import("../types.js").MuscleGroup[]} [props.muscleGroups]
+ * @param {import("../types.js").OnChanged} [props.onChanged]  Reloads the program.
+ * @param {import("../types.js").OnError} [props.onError]
  */
-function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
+function ProgramDayCard({ day, readOnly = false, exercises, muscleGroups, onChanged, onError }) {
   const [dayName, setDayName] = useState(day.name);
 
   const selection = useSetSelection(day.sets);
@@ -83,20 +89,24 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
 
   return (
     <div className="card">
-      <form onSubmit={handleRename} className="inline-form">
-        <input
-          aria-label="Day name"
-          value={dayName}
-          onChange={(e) => setDayName(e.target.value)}
-          required
-        />
-        <button type="submit">Rename</button>
-        <button type="button" className="danger" onClick={handleDeleteDay}>Delete day</button>
-      </form>
+      {readOnly ? (
+        <h4>{day.name}</h4>
+      ) : (
+        <form onSubmit={handleRename} className="inline-form">
+          <input
+            aria-label="Day name"
+            value={dayName}
+            onChange={(e) => setDayName(e.target.value)}
+            required
+          />
+          <button type="submit">Rename</button>
+          <button type="button" className="danger" onClick={handleDeleteDay}>Delete day</button>
+        </form>
+      )}
 
       <SetsSummary sets={day.sets} exercises={exercises} />
 
-      {day.sets.length > 0 && (
+      {!readOnly && day.sets.length > 0 && (
         <SetActionsToolbar
           selection={selection}
           onCopy={handleCopySets}
@@ -110,25 +120,27 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
         <SetBlock
           key={block.key}
           block={block}
-          collapsible
+          collapsible={!readOnly}
           forceOpen={block.sets.some((set) => set.id === selection.addingToSetId)}
         >
-          <table className="data-table blocks-table">
-            <ProgramColumns />
+          <table className={readOnly ? "data-table blocks-table data-table--read-only" : "data-table blocks-table"}>
+            <ProgramColumns readOnly={readOnly} />
             <thead>
               <tr>
-                <th className="select-cell">
-                  <input
-                    type="checkbox"
-                    aria-label={`Select all sets in block ${block.label}`}
-                    checked={selection.areAllSelected(block.sets)}
-                    onChange={() => selection.toggleGroup(block.sets)}
-                  />
-                </th>
+                {!readOnly && (
+                  <th className="select-cell">
+                    <input
+                      type="checkbox"
+                      aria-label={`Select all sets in block ${block.label}`}
+                      checked={selection.areAllSelected(block.sets)}
+                      onChange={() => selection.toggleGroup(block.sets)}
+                    />
+                  </th>
+                )}
                 <th className="set-cell">Set</th>
                 <th>Exercise</th>
                 <th>Reps</th>
-                <th></th>
+                {!readOnly && <th></th>}
               </tr>
             </thead>
             {/* Each set is its own <tbody>, so its rows stay visually grouped. */}
@@ -136,6 +148,7 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
               <ProgramSetGroup
                 key={set.id}
                 set={set}
+                readOnly={readOnly}
                 isSelected={selection.isSelected(set.id)}
                 onToggleSelected={() => selection.toggle(set.id)}
                 isAddingExercise={selection.addingToSetId === set.id}
@@ -150,19 +163,21 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
         </SetBlock>
       ))}
 
-      <NewSetBlock>
-        <table className="data-table blocks-table">
-          <ProgramColumns />
-          <AddProgramSetFooter
-            dayId={day.id}
-            position={nextPosition(day.sets)}
-            exercises={exercises}
-            muscleGroups={muscleGroups}
-            onChanged={onChanged}
-            onError={onError}
-          />
-        </table>
-      </NewSetBlock>
+      {!readOnly && (
+        <NewSetBlock>
+          <table className="data-table blocks-table">
+            <ProgramColumns readOnly={false} />
+            <AddProgramSetFooter
+              dayId={day.id}
+              position={nextPosition(day.sets)}
+              exercises={exercises}
+              muscleGroups={muscleGroups}
+              onChanged={onChanged}
+              onError={onError}
+            />
+          </table>
+        </NewSetBlock>
+      )}
     </div>
   );
 }
