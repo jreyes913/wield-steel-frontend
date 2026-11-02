@@ -101,6 +101,26 @@ export const getMe = () => request("GET", "/me");
  */
 export const updateMe = (fields) => request("PUT", "/me", fields);
 
+/**
+ * Everything the signed-in user owns, as the backend's JSON (never includes other people's data).
+ * @returns {Promise<object>}
+ */
+export const exportMyData = () => request("GET", "/me/export");
+
+/**
+ * Deletes the signed-in user's data and sign-in. The backend does big accounts in several
+ * rounds (it answers 202 until it is finished), so this repeats the request until it is done.
+ * After it resolves the sign-in no longer exists: make no more API calls.
+ * @param {string} username  The user's own username, typed to confirm.
+ * @returns {Promise<void>}
+ */
+export async function deleteMyAccount(username) {
+  for (;;) {
+    const result = await request("DELETE", "/me", { confirm: username });
+    if (result?.done) return;
+  }
+}
+
 // ---------- Reference data ----------
 
 /** @returns {Promise<MuscleGroup[]>} */

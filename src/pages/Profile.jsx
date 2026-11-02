@@ -1,7 +1,8 @@
 // Profile page: shows the signed-in user's profile and lets them edit it.
 
 import { useEffect, useState } from "react";
-import { getMe, updateMe } from "../api.js";
+import { signOut } from "aws-amplify/auth";
+import { deleteMyAccount, exportMyData, getMe, updateMe } from "../api.js";
 
 // The choices in the Gender dropdown. These exact words are what gets saved.
 const GENDERS = ["Male", "Female"];
@@ -15,6 +16,9 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  // The delete-account section: what was typed to confirm, and whether it is running.
+  const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const [username, setUsername] = useState("");
   // The username as saved, so only a changed one is sent.
@@ -50,6 +54,44 @@ function Profile() {
   useEffect(() => {
     loadProfile();
   }, []);
+
+  // Saves everything the backend holds about me as a JSON file.
+  async function handleDownload() {
+    setError("");
+    try {
+      const data = await exportMyData();
+      const url = URL.createObjectURL(
+        new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "my-workout-data.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  // Deletes the account, then signs out here. The sign-in is already gone on the server,
+  // so a sign-out error doesn't matter. Nothing calls the API after this.
+  async function handleDelete(event) {
+    event.preventDefault();
+    setError("");
+    setDeleting(true);
+    try {
+      await deleteMyAccount(confirmText.trim());
+    } catch (err) {
+      setError(err.message);
+      setDeleting(false);
+      return;
+    }
+    try {
+      await signOut();
+    } catch {
+      // Ignored on purpose; see above.
+    }
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -132,6 +174,33 @@ function Profile() {
           />
         </label>
         <button type="submit">Save</button>
+      </form>
+
+      <h2>Your data</h2>
+      <p>Download everything stored about you: profile, lifts, programs, friends and blocked names.</p>
+      <button type="button" onClick={handleDownload}>Download my data</button>
+
+      <h2>Delete my account</h2>
+      <p>
+        This permanently deletes your profile, lifts, programs and friendships, and your sign-in.
+        Friends simply stop seeing you. It cannot be undone, so download your data first.
+      </p>
+      <form onSubmit={handleDelete}>
+        <label>
+          Type your username ({savedUsername}) to confirm
+          <input
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            autoComplete="off"
+          />
+        </label>
+        <button
+          type="submit"
+          className="danger"
+          disabled={deleting || confirmText.trim().toLowerCase() !== savedUsername.toLowerCase()}
+        >
+          {deleting ? "Deleting…" : "Delete my account"}
+        </button>
       </form>
     </div>
   );

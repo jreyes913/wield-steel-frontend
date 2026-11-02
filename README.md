@@ -64,6 +64,8 @@ src/
                       exercise ratings.
   exerciseInfo.js     Difficulty and Complexity helpers: dropdown labels, and summarizeSets
                       (average difficulty, fatigue score, complexity counts).
+  components/
+    LegalPage.jsx, SiteFooter.jsx   Layout of the public legal pages, and the footer linking to them.
   styles/
     index.css         Imports the files below, in the order they apply. Keep that order.
     amplify.css       The part of Amplify UI's stylesheet the sign-in page needs.
@@ -82,6 +84,7 @@ src/
     guide.css         The Get Started page.
     exercises.css     The exercise-ratings summary line.
     friends.css       The Friends page and the "Viewing … read-only" banner.
+    legal.css         Legal pages and the site footer.
   pages/
     Lifts.jsx         List of lifts + form to log one.
     LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day,
@@ -90,7 +93,8 @@ src/
     Programs.jsx      List of programs + form to create one.
     ProgramDetail.jsx One program: edit it and manage its days.
     Exercises.jsx     Every exercise with its Difficulty and Complexity, by muscle group (read-only).
-    Profile.jsx       View and edit my profile.
+    Profile.jsx       View and edit my profile; download my data; delete my account.
+    Privacy.jsx       Privacy Policy (public, draft). Terms.jsx is the Terms of Service.
     Friends.jsx       My username, add a friend, requests in and out, and my friends.
     FriendDetail.jsx  One friend: their programs and lifts (read-only).
     FriendLift.jsx    A friend's lift, read-only, without body weight.
@@ -260,3 +264,17 @@ Send empty optional fields as `null`, not `""` (see `numberOrNull` in `formHelpe
 - Browsers send an `OPTIONS` "preflight" before each API call. The Lambda answers
   those with `204` before checking sign-in, and API Gateway needs an unauthorized
   `OPTIONS /{proxy+}` route. Without both, every call fails with "Failed to fetch".
+
+## Legal pages
+
+`/privacy` and `/terms` are routed outside the sign-in wall in `App.jsx`, so they open without an
+account. They are linked under the sign-in form and from a footer on every page. Both are marked
+"Draft: have a lawyer review before launch." and contain placeholders for the support email,
+backup retention and governing law. Sign-up stays hidden (`hideSignUp`) until the owner decides
+otherwise.
+
+## Staging
+
+Give the Amplify staging branch its own branch environment variables: `VITE_API_URL`,
+`VITE_USER_POOL_ID` and `VITE_USER_POOL_CLIENT_ID`, pointing at the staging API and Cognito pool.
+Locally, put the same three in `.env.local`. Don't put real user data in staging.

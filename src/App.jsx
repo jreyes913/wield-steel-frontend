@@ -6,12 +6,15 @@
 // out of the first download.
 
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { Authenticator } from "@aws-amplify/ui-react";
 import DefaultUsername from "./components/DefaultUsername.jsx";
 import FriendRequestsProvider from "./components/FriendRequestsProvider.jsx";
 import NavBar from "./components/NavBar.jsx";
+import SiteFooter from "./components/SiteFooter.jsx";
 import Lifts from "./pages/Lifts.jsx";
+import Privacy from "./pages/Privacy.jsx";
+import Terms from "./pages/Terms.jsx";
 
 const LiftDetail = lazy(() => import("./pages/LiftDetail.jsx"));
 const Progress = lazy(() => import("./pages/Progress.jsx"));
@@ -25,11 +28,24 @@ const FriendLift = lazy(() => import("./pages/FriendLift.jsx"));
 const FriendProgram = lazy(() => import("./pages/FriendProgram.jsx"));
 const GetStarted = lazy(() => import("./pages/GetStarted.jsx"));
 
-function App() {
+/** Links under the sign-in form, so the legal pages can be read before signing in. */
+const signInComponents = {
+  Footer() {
+    return (
+      <p className="site-footer">
+        <Link to="/privacy">Privacy Policy</Link>
+        <Link to="/terms">Terms of Service</Link>
+      </p>
+    );
+  },
+};
+
+/** Everything that needs a signed-in user: the sign-in form, then the navigation bar and pages. */
+function SignedInApp() {
   return (
     // The app is invite-only (users are created in Cognito), so sign-up is hidden.
     // Nothing inside renders until the user has signed in.
-    <Authenticator hideSignUp>
+    <Authenticator hideSignUp components={signInComponents}>
       {({ signOut }) => (
         <FriendRequestsProvider>
           <div className="app">
@@ -54,10 +70,22 @@ function App() {
                 </Routes>
               </Suspense>
             </main>
+            <SiteFooter />
           </div>
         </FriendRequestsProvider>
       )}
     </Authenticator>
+  );
+}
+
+/** The routes: the legal pages are public, everything else sits behind sign-in. */
+function App() {
+  return (
+    <Routes>
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="*" element={<SignedInApp />} />
+    </Routes>
   );
 }
 
