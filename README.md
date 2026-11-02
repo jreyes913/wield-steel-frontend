@@ -52,6 +52,7 @@ src/
   api.js              Every backend call, built on one shared request() helper.
   types.js            JSDoc types for the backend's data (Lift, LiftSet, LiftSubset, Program...).
                       Hover a value in VS Code to see its fields.
+  usernameDefault.js  Swaps the auto-generated username for the email handle (before the @) after sign-in.
   friendRequests.js   The shared count of incoming friend requests (context + useFriendRequests hook).
   friendHelpers.js    Friends pages: displayName, shortDate, and the "no longer friends" message.
   formHelpers.js      Small form helpers: numberOrNull, todayAsDateString, nextPosition.
@@ -114,6 +115,7 @@ src/
     ApplyProgramForm.jsx  Pick a program and day to apply to a lift.
     BodyWeightChart.jsx   Body weight line chart.
     StrengthChart.jsx     Strength line chart with exercise/metric/date pickers.
+    DefaultUsername.jsx   Renders nothing; runs usernameDefault.js once after sign-in.
     FriendRequestsProvider.jsx Loads the incoming-request count for the nav badge (on load and on every
                           route change); pages call refresh() after answering a request.
     CompareFriendLiftPicker.jsx Card for choosing a friend, then one of their lift dates, to compare with.
@@ -239,6 +241,9 @@ Send empty optional fields as `null`, not `""` (see `numberOrNull` in `formHelpe
   and username. Their lifts never include `body_weight`, and nothing from the friend endpoints
   includes DOB, gender, height or `cognito_sub`. Someone who isn't an accepted friend (no
   request, pending, declined or blocked) gets 404 from every `/athletes/{id}/…` call.
+- Usernames are 3 to 30 of a-z 0-9 . _ -, stored lowercase and unique (409 "That username is
+  taken"). The default is the email handle; a taken one gets a number (alex, alex2…). Friend
+  and block lookups by username ignore case.
 - "Hide my lifts" is one-way and per friend. A friend who hid their lifts from you looks like
   a friend with none: `/athletes/{id}/lifts` is `[]` and a single lift is 404. Programs stay visible.
 - Blocking removes any friendship or request. The blocked athlete is never told: sending them

@@ -51,7 +51,7 @@ function GetStarted() {
       <section className="card">
         <h4>Friends</h4>
         <ol className="steps">
-          <li>On <strong>Friends</strong>, copy your username and share it. To add someone, type their username and press Send.</li>
+          <li>On <strong>Friends</strong>, copy your username and share it. It starts as your email name, and you can change it on <strong>Profile</strong> as long as nobody else has it. To add someone, type their username and press Send.</li>
           <li>Once a request is accepted, each of you can open the other's programs and lifts, read-only.</li>
           <li>A friend never sees your body weight or any profile detail except your name and username. You can remove a friend at any time.</li>
           <li>On a friend's program, press <strong>Copy to my programs</strong> to get your own copy. On a lift, press <strong>Compare with a friend's lift</strong> to put theirs beside yours.</li>

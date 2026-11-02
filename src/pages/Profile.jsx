@@ -17,6 +17,8 @@ function Profile() {
   const [saved, setSaved] = useState(false);
 
   const [username, setUsername] = useState("");
+  // The username as saved, so only a changed one is sent.
+  const [savedUsername, setSavedUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -32,6 +34,7 @@ function Profile() {
     try {
       const profile = await getMe();
       setUsername(profile.username ?? "");
+      setSavedUsername(profile.username ?? "");
       setFirstName(profile.first_name ?? "");
       setLastName(profile.last_name ?? "");
       setDateOfBirth(profile.dob ?? "");
@@ -54,6 +57,8 @@ function Profile() {
     setSaved(false);
     try {
       await updateMe({
+        // Only sent when changed. The backend lowercases it and says if it is taken.
+        ...(username.trim() !== savedUsername ? { username: username.trim() } : {}),
         first_name: emptyToNull(firstName),
         last_name: emptyToNull(lastName),
         dob: emptyToNull(dateOfBirth),
@@ -78,9 +83,20 @@ function Profile() {
       {error && <p className="error">{error}</p>}
       {saved && <p className="success">Saved.</p>}
 
-      <p>Username: {username}</p>
-
       <form onSubmit={handleSubmit}>
+        <label>
+          Username
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            minLength={3}
+            maxLength={30}
+            pattern="[A-Za-z0-9._\-]+"
+            title="3 to 30 letters, numbers, dots, underscores or hyphens"
+            required
+          />
+        </label>
+        <p>Friends add you by this. It starts as your email name and must be unique.</p>
         <label>
           First name
           <input value={firstName} onChange={(e) => setFirstName(e.target.value)} />

@@ -95,7 +95,7 @@ function buildQueryString(params) {
 export const getMe = () => request("GET", "/me");
 
 /**
- * @param {{ first_name?: string | null, last_name?: string | null, dob?: string | null, gender?: string | null, height?: number | null }} fields
+ * @param {{ username?: string, first_name?: string | null, last_name?: string | null, dob?: string | null, gender?: string | null, height?: number | null }} fields
  *   Send only the fields that changed.
  * @returns {Promise<Profile>}
  */

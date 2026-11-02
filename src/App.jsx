@@ -8,6 +8,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Authenticator } from "@aws-amplify/ui-react";
+import DefaultUsername from "./components/DefaultUsername.jsx";
 import FriendRequestsProvider from "./components/FriendRequestsProvider.jsx";
 import NavBar from "./components/NavBar.jsx";
 import Lifts from "./pages/Lifts.jsx";
@@ -32,6 +33,7 @@ function App() {
       {({ signOut }) => (
         <FriendRequestsProvider>
           <div className="app">
+            <DefaultUsername />
             <NavBar signOut={signOut} />
             <main className="page">
               <Suspense fallback={<p>Loading…</p>}>
