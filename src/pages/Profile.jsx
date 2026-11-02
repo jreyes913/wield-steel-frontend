@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { getMe, updateMe } from "../api.js";
 
+// The choices in the Gender dropdown. These exact words are what gets saved.
+const GENDERS = ["Male", "Female"];
+
 // The backend wants whole numbers or null, never empty strings.
 function emptyToNull(text) {
   return text === "" ? null : text;
@@ -32,7 +35,8 @@ function Profile() {
       setFirstName(profile.first_name ?? "");
       setLastName(profile.last_name ?? "");
       setDateOfBirth(profile.dob ?? "");
-      setGender(profile.gender ?? "");
+      // Match ignoring case, so an older "male" shows as "Male". Anything else shows as blank.
+      setGender(GENDERS.find((g) => g.toLowerCase() === profile.gender?.toLowerCase()) ?? "");
       setHeight(profile.height ?? "");
     } catch (err) {
       setError(err.message);
@@ -95,7 +99,12 @@ function Profile() {
         </label>
         <label>
           Gender
-          <input value={gender} onChange={(e) => setGender(e.target.value)} />
+          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="">Choose…</option>
+            {GENDERS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
         </label>
         <label>
           Height (whole number)
