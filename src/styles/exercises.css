@@ -1,0 +1,23 @@
+/* Exercise ratings: the summary line on lifts and program days. */
+
+.sets-summary {
+  margin-bottom: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+
+  background: var(--color-surface-raised);
+
+  border: 1px solid var(--color-border);
+}
+
+.sets-summary p {
+  margin: 0;
+
+  color: var(--color-text);
+}
+
+.sets-summary .sets-summary-note {
+  margin-top: var(--space-1);
+
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}

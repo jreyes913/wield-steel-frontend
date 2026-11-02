@@ -10,6 +10,7 @@ import NewSetBlock from "./NewSetBlock.jsx";
 import ProgramSetGroup from "./ProgramSetGroup.jsx";
 import SetActionsToolbar from "./SetActionsToolbar.jsx";
 import SetBlock from "./SetBlock.jsx";
+import SetsSummary from "./SetsSummary.jsx";
 import { groupSetsIntoBlocks } from "../blocks.js";
 import { nextPosition } from "../formHelpers.js";
 import { useSetActions } from "../setActions.js";
@@ -92,6 +93,8 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
         <button type="submit">Rename</button>
         <button type="button" className="danger" onClick={handleDeleteDay}>Delete day</button>
       </form>
+
+      <SetsSummary sets={day.sets} exercises={exercises} />
 
       {day.sets.length > 0 && (
         <SetActionsToolbar

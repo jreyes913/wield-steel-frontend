@@ -60,3 +60,27 @@ export const METRIC_HELP = {
   load: "Intensity × weight × reps ÷ (1 + 0.5 × RIR). Rises with heavier weight, more reps, and fewer reps left in reserve.",
   volume: "Running total of load through the day. The last set's value is the day's total.",
 };
+
+// ---------- Exercise ratings ----------
+
+/** @type {Entry} */
+export const DIFFICULTY = {
+  term: "Difficulty (1–5)",
+  meaning: "How taxing the exercise is to train hard. Higher means more fatiguing.",
+};
+
+/** @type {Entry} */
+export const COMPLEXITY = {
+  term: "Complexity",
+  meaning: "How much technique and coordination the exercise needs: Low, Moderate or High.",
+};
+
+/** @type {Entry} */
+export const FATIGUE_SCORE = {
+  term: "Fatigue score",
+  meaning:
+    "Total Difficulty of every set in the day. A rough measure of how taxing the day is. Ignores weight and reps.",
+};
+
+/** @type {Entry[]} */
+export const EXERCISE_TERMS = [DIFFICULTY, COMPLEXITY, FATIGUE_SCORE];

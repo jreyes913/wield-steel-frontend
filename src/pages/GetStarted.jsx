@@ -2,7 +2,8 @@
 // metrics mean. It is plain text with no data to load, so it has no loading or
 // error state. The wording lives in glossary.js.
 
-import { METRIC_HELP, TERMS } from "../glossary.js";
+import { Link } from "react-router-dom";
+import { EXERCISE_TERMS, METRIC_HELP, TERMS } from "../glossary.js";
 
 // Metric name (as in the Strength chart's dropdown) -> its glossary key.
 const METRICS = [
@@ -51,6 +52,23 @@ function GetStarted() {
         <h4>Lifting terms</h4>
         <dl className="glossary">
           {TERMS.map(({ term, meaning }) => (
+            <div key={term}>
+              <dt>{term}</dt>
+              <dd>{meaning}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className="card">
+        <h4>Exercise ratings</h4>
+        <p>
+          Each exercise can have a Difficulty and a Complexity, shown in every exercise
+          dropdown and listed on the <Link to="/exercises">Exercises</Link> page. Lifts and
+          program days summarise them.
+        </p>
+        <dl className="glossary">
+          {EXERCISE_TERMS.map(({ term, meaning }) => (
             <div key={term}>
               <dt>{term}</dt>
               <dd>{meaning}</dd>

@@ -18,6 +18,8 @@
  * @property {number} id
  * @property {string} name
  * @property {number} muscle_group_id
+ * @property {number | null} difficulty  Effort or fatigue cost, 1 (light) to 5 (very taxing).
+ * @property {string | null} complexity  "Low", "Moderate" or "High": how much technique it needs.
  */
 
 /** An exercise as nested inside a subset: just its id and name. @typedef {{ id: number, name: string }} ExerciseRef */

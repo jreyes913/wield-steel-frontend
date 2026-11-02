@@ -1,5 +1,8 @@
 // Dropdown of exercises grouped by muscle group.
 // Used on the lift pages and the program pages, so it lives here.
+// Each option also shows the exercise's Difficulty and Complexity (see exerciseInfo.js).
+
+import { exerciseLabel } from "../exerciseInfo.js";
 
 /**
  * @param {object} props
@@ -18,7 +21,7 @@ function ExerciseSelect({ exercises, muscleGroups, value, onChange }) {
             .filter((exercise) => exercise.muscle_group_id === muscleGroup.id)
             .map((exercise) => (
               <option key={exercise.id} value={exercise.id}>
-                {exercise.name}
+                {exerciseLabel(exercise)}
               </option>
             ))}
         </optgroup>

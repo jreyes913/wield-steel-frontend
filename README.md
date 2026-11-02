@@ -57,7 +57,10 @@ src/
   setActions.js       useSetActions: what Copy and Delete do to the ticked sets.
   blocks.js           Groups a day's sets into Blocks A, B, C… by their exercises (display only).
   chartSetup.js       Registers the Chart.js pieces our line charts use, and gives them the dark theme colours.
-  glossary.js         The plain-language explanations of lifting terms and chart metrics.
+  glossary.js         The plain-language explanations of lifting terms, chart metrics and
+                      exercise ratings.
+  exerciseInfo.js     Difficulty and Complexity helpers: dropdown labels, and summarizeSets
+                      (average difficulty, fatigue score, complexity counts).
   styles/
     index.css         Imports the files below, in the order they apply. Keep that order.
     amplify.css       The part of Amplify UI's stylesheet the sign-in page needs.
@@ -74,6 +77,7 @@ src/
     comparison.css    Lift detail page and the side-by-side comparison.
     calendar.css      The comparison date picker.
     guide.css         The Get Started page.
+    exercises.css     The exercise-ratings summary line.
   pages/
     Lifts.jsx         List of lifts + form to log one.
     LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day,
@@ -81,6 +85,7 @@ src/
     Progress.jsx      Page holding the two charts.
     Programs.jsx      List of programs + form to create one.
     ProgramDetail.jsx One program: edit it and manage its days.
+    Exercises.jsx     Every exercise with its Difficulty and Complexity, by muscle group (read-only).
     Profile.jsx       View and edit my profile.
     GetStarted.jsx    How to use the app, then lifting terms and chart metrics explained.
   components/
@@ -92,6 +97,7 @@ src/
     LiftSetsTable.jsx     A lift's sets table; readOnly mode drops every button and input.
     SetActionsToolbar.jsx Bar above a sets table: add exercise / copy / delete the ticked sets.
     SetBlock.jsx          One Block: header bar (letter, exercises, set count) above its table.
+    SetsSummary.jsx       One-line summary of a day's exercise ratings (lift page and program days).
     SetLeadingCells.jsx   A set's checkbox and number cells (shared by lift and program set rows).
     NewSetBlock.jsx       The "New set" box under a sets table (shared by lifts and programs).
     CompareLiftPicker.jsx Card for choosing a past lift to compare against.
@@ -120,6 +126,16 @@ scale in `base.css`. Fonts (Poppins, Parkinsans, Noto Serif Kannada) load from G
 `index.html`. The guide has one background colour, so panels and borders are derived from it in
 `tokens.css`. Page titles are `h1`; card and section titles use `h4`, because the guide's `h2` and
 `h3` sizes are too large beside form controls. To keep the boxed look, don't add `border-radius`.
+
+## Exercise ratings
+
+Exercises can have a **Difficulty** (1–5, how taxing to train hard) and a **Complexity**
+(Low, Moderate or High, how much technique). Both come from the backend's `GET /exercises`
+and are entered directly in the database; the app only displays them. Many exercises have
+neither yet, so everything treats them as optional. Dropdowns show them (`Name · 4/5 · High`),
+`/exercises` lists them, and each lift and program day summarises them. The summary says how
+many exercises it could not rate. The wording lives in `glossary.js`, the maths in
+`exerciseInfo.js`.
 
 ## Types and editor hints
 

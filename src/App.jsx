@@ -13,6 +13,7 @@ import Lifts from "./pages/Lifts.jsx";
 
 const LiftDetail = lazy(() => import("./pages/LiftDetail.jsx"));
 const Progress = lazy(() => import("./pages/Progress.jsx"));
+const Exercises = lazy(() => import("./pages/Exercises.jsx"));
 const Programs = lazy(() => import("./pages/Programs.jsx"));
 const ProgramDetail = lazy(() => import("./pages/ProgramDetail.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/" element={<Lifts />} />
                 <Route path="/lifts/:id" element={<LiftDetail />} />
                 <Route path="/progress" element={<Progress />} />
+                <Route path="/exercises" element={<Exercises />} />
                 <Route path="/programs" element={<Programs />} />
                 <Route path="/programs/:id" element={<ProgramDetail />} />
                 <Route path="/profile" element={<Profile />} />

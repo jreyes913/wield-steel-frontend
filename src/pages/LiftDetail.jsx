@@ -9,6 +9,7 @@ import ApplyProgramForm from "../components/ApplyProgramForm.jsx";
 import CompareLiftPicker from "../components/CompareLiftPicker.jsx";
 import HistoricalLiftPanel from "../components/HistoricalLiftPanel.jsx";
 import LiftSetsTable from "../components/LiftSetsTable.jsx";
+import SetsSummary from "../components/SetsSummary.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
 /** @typedef {import("../types.js").Lift} Lift */
@@ -192,6 +193,7 @@ function LiftDetail() {
           </form>
 
           <h4>Sets</h4>
+          <SetsSummary sets={lift.sets} exercises={exercises} />
           <LiftSetsTable
             lift={lift}
             exercises={exercises}
