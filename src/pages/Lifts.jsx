@@ -53,7 +53,7 @@ function Lifts() {
       {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSubmit} className="card">
-        <h2>Log a lift</h2>
+        <h4>Log a lift</h4>
         <label>
           Date
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />

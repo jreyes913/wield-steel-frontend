@@ -13,7 +13,6 @@
   background: var(--color-surface);
 
   border: 1px solid var(--color-border);
-  border-radius: 12px;
 
   box-shadow: var(--shadow);
 }
@@ -25,8 +24,6 @@
   font-weight: 500;
 
   padding: 6px 10px;
-
-  border-radius: 6px;
 
   transition:
     color 0.15s ease,

@@ -5,7 +5,7 @@
 }
 
 /* The bar on top of each block's table. Solid colours, so it reads the same on
-   a white card and on the green comparison panel. */
+   a card and on the tinted comparison panel. */
 .block-header,
 .app .block-header {
   display: flex;
@@ -22,11 +22,10 @@
   text-align: left;
 
   color: var(--color-text);
-  background: #e9f7f0;
+  background: var(--color-surface-raised);
 
   border: 1px solid var(--color-border);
   border-bottom: none;
-  border-radius: 12px 12px 0 0;
 
   box-shadow: none;
 }
@@ -40,12 +39,11 @@
 .block--collapsed .block-header,
 .app .block--collapsed .block-header {
   border-bottom: 1px solid var(--color-border);
-  border-radius: 12px;
 }
 
 .block-toggle {
   width: 1em;
-  color: var(--color-brand-dark);
+  color: var(--color-brand-hover);
 }
 
 .block-label {
@@ -64,7 +62,6 @@
 
 .block .table-wrap {
   margin-bottom: 0;
-  border-radius: 0 0 12px 12px;
 }
 
 /* Fixed column widths (set on each table's <colgroup>), so a day's stacked block
@@ -115,5 +112,5 @@
 }
 
 .data-table .new-row td {
-  background: #fafafa;
+  background: var(--color-surface-raised);
 }

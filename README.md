@@ -56,11 +56,13 @@ src/
   setSelection.js     useSetSelection: which sets are ticked in a sets table.
   setActions.js       useSetActions: what Copy and Delete do to the ticked sets.
   blocks.js           Groups a day's sets into Blocks A, B, C… by their exercises (display only).
-  chartSetup.js       Registers the Chart.js pieces our line charts use.
+  chartSetup.js       Registers the Chart.js pieces our line charts use, and gives them the dark theme colours.
+  glossary.js         The plain-language explanations of lifting terms and chart metrics.
   styles/
     index.css         Imports the files below, in the order they apply. Keep that order.
     amplify.css       The part of Amplify UI's stylesheet the sign-in page needs.
-    tokens.css        Colours and shadows (the only place the brand colour is set).
+    tokens.css        The brand guide's dark palette, spacing and fonts, plus the colours the app uses
+                      (the only place the brand is set). The site is dark only, with no rounded corners.
     signin.css        Sign-in page overrides.
     base.css          Reset, layout, headings, error/success messages.
     navigation.css    Top navigation bar.
@@ -71,6 +73,7 @@ src/
     responsive.css    Tablet and phone adjustments.
     comparison.css    Lift detail page and the side-by-side comparison.
     calendar.css      The comparison date picker.
+    guide.css         The Get Started page.
   pages/
     Lifts.jsx         List of lifts + form to log one.
     LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day,
@@ -79,6 +82,7 @@ src/
     Programs.jsx      List of programs + form to create one.
     ProgramDetail.jsx One program: edit it and manage its days.
     Profile.jsx       View and edit my profile.
+    GetStarted.jsx    How to use the app, then lifting terms and chart metrics explained.
   components/
     NavBar.jsx            Top navigation and Sign out button.
     ExerciseSelect.jsx    Exercise dropdown grouped by muscle group (used by lifts and programs).
@@ -108,6 +112,14 @@ alike but differ in their columns (a plan has reps only, no RIR or weight) and A
 so they are deliberately two simple components rather than one with many options. The
 parts that really are identical live in the shared files above (`SetLeadingCells`,
 `NewSetBlock`, `setActions.js`, `setSelection.js`).
+
+## Look and feel
+
+The brand guide is implemented in `src/styles/tokens.css` (palette, spacing, fonts) and the type
+scale in `base.css`. Fonts (Poppins, Parkinsans, Noto Serif Kannada) load from Google Fonts in
+`index.html`. The guide has one background colour, so panels and borders are derived from it in
+`tokens.css`. Page titles are `h1`; card and section titles use `h4`, because the guide's `h2` and
+`h3` sizes are too large beside form controls. To keep the boxed look, don't add `border-radius`.
 
 ## Types and editor hints
 

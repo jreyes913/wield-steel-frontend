@@ -4,6 +4,8 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  /* Boxed look: nothing is rounded. */
+  border-radius: 0;
 }
 
 html {
@@ -14,14 +16,9 @@ body {
   margin: 0;
   min-height: 100vh;
 
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: var(--font-body);
 
-  line-height: 1.5;
+  line-height: 1.35;
   color: var(--color-text);
   background: var(--color-background);
 }
@@ -41,30 +38,88 @@ body {
    Typography
    ========================================================= */
 
-h1 {
+/* The brand guide's type scale. The two or three largest sizes shrink on narrow
+   screens (the first value in each clamp()), so they fit a phone.
+   Page titles are h1. Card and section titles use h4: the guide's h2 and h3 are too
+   large to sit beside form controls. */
+
+h1,
+h2,
+h3 {
   margin-top: 0;
 
-  font-size: clamp(1.8rem, 4vw, 2.2rem);
+  font-family: var(--font-heading);
   font-weight: 700;
+  color: var(--color-text);
+}
 
-  color: var(--color-brand);
+h4,
+h5,
+h6 {
+  margin-top: 0;
 
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-family: var(--font-subheading);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: clamp(2.369rem, 7vw, 4.209rem);
+  line-height: 1.1;
 }
 
 h2 {
-  margin-top: 0;
+  font-size: clamp(1.777rem, 5vw, 3.157rem);
+  line-height: 1.14;
+}
 
-  font-size: clamp(0.95rem, 2vw, 1.05rem);
-  font-weight: 700;
+h3 {
+  font-size: clamp(1.333rem, 4vw, 2.369rem);
+  line-height: 1.18;
+}
 
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+h4 {
+  font-size: 1.777rem;
+  line-height: 1.22;
+}
+
+h5 {
+  font-size: 1.333rem;
+  line-height: 1.26;
+}
+
+h6 {
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--color-muted);
 }
 
 p {
   margin-top: 0;
+
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--color-medium);
+}
+
+span {
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+label {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--color-muted);
+}
+
+a {
+  color: var(--color-brand);
+}
+
+a:hover {
+  color: var(--color-brand-hover);
 }
 
 /* =========================================================

@@ -16,6 +16,7 @@ const Progress = lazy(() => import("./pages/Progress.jsx"));
 const Programs = lazy(() => import("./pages/Programs.jsx"));
 const ProgramDetail = lazy(() => import("./pages/ProgramDetail.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
+const GetStarted = lazy(() => import("./pages/GetStarted.jsx"));
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/programs" element={<Programs />} />
                 <Route path="/programs/:id" element={<ProgramDetail />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/get-started" element={<GetStarted />} />
               </Routes>
             </Suspense>
           </main>

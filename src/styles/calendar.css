@@ -72,12 +72,11 @@
 
   font-size: 14px;
 
-  border-radius: 8px;
 }
 
 /* Days with a lift: the same green tint and border the app uses for focus. */
 .app .calendar-day--available {
-  color: var(--color-brand-dark);
+  color: var(--color-brand-hover);
   background: var(--color-brand-tint);
   border-color: var(--color-brand);
   font-weight: 700;
@@ -85,14 +84,14 @@
 
 .app .calendar-day--selected,
 .app .calendar-day--selected:hover {
-  color: #fff;
+  color: var(--color-on-brand);
   background: var(--color-brand);
   border-color: var(--color-brand);
 }
 
 .app .calendar-day:disabled,
 .app .calendar-nav:disabled {
-  color: #c4c4c4;
+  color: var(--dark-disabled);
   background: transparent;
   border-color: transparent;
   box-shadow: none;

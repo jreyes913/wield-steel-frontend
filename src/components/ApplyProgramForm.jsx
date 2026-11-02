@@ -64,7 +64,7 @@ function ApplyProgramForm({ liftId, onChanged, onError }) {
 
   return (
     <form onSubmit={handleSubmit} className="card">
-      <h2>Apply a program day</h2>
+      <h4>Apply a program day</h4>
       <label>
         Program
         <select

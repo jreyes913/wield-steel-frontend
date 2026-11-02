@@ -1,11 +1,10 @@
-/* Cards and chart boxes: the white panels most pages are built from. */
+/* Cards and chart boxes: the bordered panels most pages are built from. */
 
 .card,
 .chart {
   background: var(--color-surface);
 
   border: 1px solid var(--color-border);
-  border-radius: 12px;
 
   box-shadow: var(--shadow);
 

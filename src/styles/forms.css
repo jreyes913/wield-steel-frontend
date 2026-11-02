@@ -13,8 +13,6 @@
 
   margin-bottom: 14px;
 
-  color: var(--color-muted);
-  font-size: 14px;
   font-weight: 500;
 }
 
@@ -27,10 +25,9 @@
   font-size: 16px;
 
   color: var(--color-text);
-  background: var(--color-surface);
+  background: var(--color-background);
 
   border: 1.5px solid var(--color-border);
-  border-radius: 8px;
 
   padding: 10px 12px;
 
@@ -82,7 +79,6 @@
   background: var(--color-button);
 
   border: 1.5px solid var(--color-button-border);
-  border-radius: 999px;
 
   box-shadow: var(--shadow-button);
 
@@ -97,7 +93,7 @@
 }
 
 .app button:hover {
-  color: var(--color-brand-dark);
+  color: var(--color-brand-hover);
 
   background: var(--color-button-hover);
   border-color: var(--color-brand);
@@ -110,7 +106,7 @@
 
 .app button.primary,
 .app button[type="submit"] {
-  color: #fff;
+  color: var(--color-on-brand);
 
   background: var(--color-brand);
   border-color: var(--color-brand);
@@ -118,10 +114,10 @@
 
 .app button.primary:hover,
 .app button[type="submit"]:hover {
-  color: #fff;
+  color: var(--color-on-brand);
 
-  background: var(--color-brand-dark);
-  border-color: var(--color-brand-dark);
+  background: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
 }
 
 .app button.danger {
@@ -130,7 +126,7 @@
 }
 
 .app button.danger:hover {
-  color: white;
+  color: var(--color-on-brand);
 
   background: var(--color-danger);
   border-color: var(--color-danger);

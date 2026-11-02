@@ -11,6 +11,7 @@ function NavBar({ signOut }) {
       <NavLink to="/progress">Progress</NavLink>
       <NavLink to="/programs">Programs</NavLink>
       <NavLink to="/profile">Profile</NavLink>
+      <NavLink to="/get-started">Get Started</NavLink>
       <button type="button" onClick={signOut}>Sign out</button>
     </nav>
   );

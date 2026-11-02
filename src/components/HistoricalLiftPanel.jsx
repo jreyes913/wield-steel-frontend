@@ -16,7 +16,7 @@ function HistoricalLiftPanel({ lift, onChangeDate, onRemove }) {
       <div className="lift-history-header">
         <div>
           <p className="lift-history-label">Comparing with · read-only</p>
-          <h2 className="lift-history-date">{lift ? `Lift on ${lift.date}` : "Loading…"}</h2>
+          <h4 className="lift-history-date">{lift ? `Lift on ${lift.date}` : "Loading…"}</h4>
         </div>
         <div className="lift-history-actions">
           <button type="button" onClick={onChangeDate}>Change date</button>
@@ -27,7 +27,7 @@ function HistoricalLiftPanel({ lift, onChangeDate, onRemove }) {
       {lift && (
         <>
           <p className="lift-history-detail">Body weight: {lift.body_weight ?? "–"}</p>
-          <h2>Sets</h2>
+          <h4>Sets</h4>
           <LiftSetsTable lift={lift} readOnly />
         </>
       )}

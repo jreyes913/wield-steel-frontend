@@ -72,7 +72,7 @@ function Programs() {
       {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSubmit} className="card">
-        <h2>New program</h2>
+        <h4>New program</h4>
         <label>
           Name
           <input value={name} onChange={(e) => setName(e.target.value)} required />

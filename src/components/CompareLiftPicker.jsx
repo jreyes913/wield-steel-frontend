@@ -64,7 +64,7 @@ function CompareLiftPicker({ currentLift, selectedLiftId, onPick, onCancel, onEr
 
   return (
     <div className="card compare-picker">
-      <h2>Compare with a past lift</h2>
+      <h4>Compare with a past lift</h4>
       {pastLifts.length === 0 ? (
         <p>There are no earlier lifts to compare with yet.</p>
       ) : (

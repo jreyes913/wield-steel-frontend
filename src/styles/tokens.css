@@ -1,43 +1,117 @@
-/* Design tokens: the app's colours and shadows, and the Amplify sign-in theme
-   mapped onto the brand colour. Change the brand colour here and nowhere else. */
+/* Design tokens, from the brand guide (Palette Forge, source colour #007A73).
+   The site is dark only, so only the guide's dark colours are here. Change the brand
+   in this file and nowhere else. The sign-in page's Amplify theme is mapped below. */
 
 :root {
-  --color-brand: #0cbd73;        /* emerald green */
-  --color-brand-dark: #1fa76e;   /* hover / pressed */
-  --color-brand-tint: rgba(12, 189, 115, 0.1);
+  /* Makes the browser draw its own controls (date pickers, scrollbars) dark. */
+  color-scheme: dark;
 
-  --color-text: #333333;
-  --color-muted: #707070;
+  /* ---- Brand palette (dark) ---- */
+  --dark-background: #0b0b0b;
+  --dark-neutral: #dadada;
+  --dark-medium: #b3b3b3;
+  --dark-muted: #959595;
+  --dark-primary: #49a9a1;
+  --dark-secondary-1: #a791c6;
+  --dark-secondary-2: #bd9267;
+  --dark-secondary-3: #d38775;
+  --dark-accent-1: #d6e1ff;
+  --dark-accent-2: #ffd7dd;
+  --dark-accent-3: #efe29f;
+  --dark-success: #60ab6b;
+  --dark-warning: #c3914c;
+  --dark-error: #e57c76;
+  --dark-info: #38a4d9;
+  --dark-primary-hover: #60bfb7;
+  --dark-primary-active: #71d0c7;
+  --dark-secondary-1-hover: #bda6dc;
+  --dark-secondary-1-active: #ceb6ee;
+  --dark-secondary-2-hover: #d4a77b;
+  --dark-secondary-2-active: #e5b78b;
+  --dark-secondary-3-hover: #eb9c89;
+  --dark-secondary-3-active: #fcac99;
+  --dark-focus: #60bfb7;
+  --dark-disabled: #435150;
 
-  --color-background: #f4f4f4;
-  --color-surface: #ffffff;
-  --color-border: #e2e2e2;
+  /* ---- Spacing ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
 
-  /* Buttons are shaded so they stand out from white cards and the grey page. */
-  --color-button: #e6ebe8;
-  --color-button-border: #c9d2cd;
-  --color-button-hover: #d2efe1;
-  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.12);
+  /* ---- Fonts ---- (loaded in index.html) */
+  --font-heading: "Poppins", sans-serif;
+  --font-subheading: "Parkinsans", sans-serif;
+  --font-body: "Noto Serif Kannada", serif;
 
-  --color-danger: #c0392b;
-  --color-success: #1b6e2d;
+  /* ---- What the app's CSS uses ---- */
+  --color-brand: var(--dark-primary);
+  --color-brand-hover: var(--dark-primary-hover);
+  --color-brand-tint: color-mix(in srgb, var(--dark-primary) 16%, transparent);
+  --color-on-brand: var(--dark-background); /* text on a brand-coloured button */
 
-  --shadow:
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 4px 12px rgba(0, 0, 0, 0.04);
+  --color-text: var(--dark-neutral);
+  --color-medium: var(--dark-medium);
+  --color-muted: var(--dark-muted);
+
+  --color-background: var(--dark-background);
+  /* The guide has one background, so panels are that background lifted a little
+     towards the text colour. Raised is for header bars and the "new" rows. */
+  --color-surface: color-mix(in srgb, var(--dark-neutral) 5%, var(--dark-background));
+  --color-surface-raised: color-mix(in srgb, var(--dark-neutral) 10%, var(--dark-background));
+  --color-border: var(--dark-disabled);
+
+  --color-button: var(--color-surface-raised);
+  --color-button-border: var(--dark-disabled);
+  --color-button-hover: var(--color-brand-tint);
+
+  --color-danger: var(--dark-error);
+  --color-success: var(--dark-success);
+
+  /* Boxed look: edges come from borders, not shadows. */
+  --shadow: none;
+  --shadow-button: none;
 }
 
+/* Amplify's sign-in page, mapped onto the colours above. */
 :root {
-  --amplify-colors-brand-primary-10: #d5ffee;
-  --amplify-colors-brand-primary-20: #91fbcf;
-  --amplify-colors-brand-primary-40: #0dde87;
-  --amplify-colors-brand-primary-60: var(--color-brand);
-  --amplify-colors-brand-primary-80: #15b170;
-  --amplify-colors-brand-primary-90: var(--color-brand-dark);
-  --amplify-colors-brand-primary-100: #1c9663;
+  --amplify-colors-background-primary: var(--color-surface);
+  --amplify-colors-background-secondary: var(--color-surface-raised);
+  --amplify-colors-background-tertiary: var(--color-surface-raised);
+  --amplify-colors-font-primary: var(--color-text);
+  --amplify-colors-font-secondary: var(--color-medium);
+  --amplify-colors-font-tertiary: var(--color-muted);
+  --amplify-colors-font-interactive: var(--color-brand);
+  --amplify-colors-font-inverse: var(--dark-background);
+  --amplify-colors-border-primary: var(--color-border);
+  --amplify-colors-border-secondary: var(--color-border);
+  --amplify-colors-border-tertiary: var(--color-border);
+  --amplify-colors-border-focus: var(--dark-focus);
+  --amplify-colors-font-error: var(--dark-error);
+  --amplify-colors-background-error: color-mix(in srgb, var(--dark-error) 16%, var(--dark-background));
+  --amplify-colors-border-error: var(--dark-error);
 
-  --amplify-radii-small: 8px;
-  --amplify-radii-medium: 10px;
-  --amplify-radii-large: 16px;
-  --amplify-radii-xl: 20px;
+  --amplify-colors-brand-primary-10: color-mix(in srgb, var(--dark-primary) 10%, var(--dark-background));
+  --amplify-colors-brand-primary-20: color-mix(in srgb, var(--dark-primary) 20%, var(--dark-background));
+  --amplify-colors-brand-primary-40: color-mix(in srgb, var(--dark-primary) 40%, var(--dark-background));
+  --amplify-colors-brand-primary-60: var(--dark-primary);
+  --amplify-colors-brand-primary-80: var(--dark-primary-hover);
+  --amplify-colors-brand-primary-90: var(--dark-primary-active);
+  --amplify-colors-brand-primary-100: var(--dark-primary-active);
+
+  --amplify-fonts-default-variable: var(--font-body);
+  --amplify-fonts-default-static: var(--font-body);
+
+  /* No rounded corners anywhere. */
+  --amplify-radii-xs: 0;
+  --amplify-radii-small: 0;
+  --amplify-radii-medium: 0;
+  --amplify-radii-large: 0;
+  --amplify-radii-xl: 0;
+  --amplify-radii-xxl: 0;
+  --amplify-radii-xxxl: 0;
 }

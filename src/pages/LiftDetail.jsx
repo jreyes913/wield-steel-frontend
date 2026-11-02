@@ -173,7 +173,7 @@ function LiftDetail() {
           <h1>Lift on {lift.date}</h1>
 
           <form onSubmit={handleSaveLift} className="card">
-            <h2>Edit lift</h2>
+            <h4>Edit lift</h4>
             <label>
               Date
               <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
@@ -191,7 +191,7 @@ function LiftDetail() {
             <button type="button" onClick={handleDeleteLift}>Delete lift</button>
           </form>
 
-          <h2>Sets</h2>
+          <h4>Sets</h4>
           <LiftSetsTable
             lift={lift}
             exercises={exercises}

@@ -26,12 +26,12 @@
   align-items: start;
 }
 
-/* The past lift: brand green background, white text. Its table stays white. */
+/* The past lift: a brand-tinted panel with a brand border, so it reads as
+   "not the lift you are editing". */
 .lift-history {
-  color: #fff;
-  background: var(--color-brand);
+  background: color-mix(in srgb, var(--color-brand) 18%, var(--color-background));
+  border: 1px solid var(--color-brand);
 
-  border-radius: 12px;
   box-shadow: var(--shadow);
 
   padding: 20px;
@@ -77,13 +77,12 @@
 }
 
 .app .lift-history-actions button:hover {
-  color: #fff;
-  background: var(--color-brand-dark);
-  border-color: #fff;
+  color: var(--color-on-brand);
+  background: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
 }
 
 .lift-history .table-wrap {
-  color: var(--color-text);
   margin-bottom: 0;
 }
 

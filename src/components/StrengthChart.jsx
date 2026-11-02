@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { getStrengthProgress } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
+import { METRIC_HELP } from "../glossary.js";
 import "../chartSetup.js";
 
 /** @typedef {import("../types.js").StrengthProgress} StrengthProgress */
@@ -92,7 +93,7 @@ function StrengthChart({ exercises, muscleGroups }) {
 
   return (
     <div className="chart">
-      <h2>Strength</h2>
+      <h4>Strength</h4>
       {error && <p className="error">{error}</p>}
 
       <form onSubmit={(event) => event.preventDefault()}>
@@ -113,6 +114,7 @@ function StrengthChart({ exercises, muscleGroups }) {
             ))}
           </select>
         </label>
+        <p className="metric-help">{METRIC_HELP[selectedMetric]}</p>
         <label>
           Start date (optional)
           <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />

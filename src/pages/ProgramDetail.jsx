@@ -110,7 +110,7 @@ function ProgramDetail() {
       {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSaveProgram} className="card">
-        <h2>Edit program</h2>
+        <h4>Edit program</h4>
         <label>
           Name
           <input value={name} onChange={(e) => setName(e.target.value)} required />
@@ -126,7 +126,7 @@ function ProgramDetail() {
         <button type="submit">Save</button>
       </form>
 
-      <h2>Days</h2>
+      <h4>Days</h4>
       {program.days.length === 0 && <p>No days yet.</p>}
       {program.days.map((day) => (
         <ProgramDayCard
@@ -140,7 +140,7 @@ function ProgramDetail() {
       ))}
 
       <form onSubmit={handleAddDay} className="card">
-        <h2>Add a day</h2>
+        <h4>Add a day</h4>
         <label>
           Day name
           <input value={newDayName} onChange={(e) => setNewDayName(e.target.value)} required />
