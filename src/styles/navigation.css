@@ -1,0 +1,44 @@
+/* The navigation bar shown once signed in. */
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  align-items: center;
+
+  margin-bottom: 20px;
+  padding: 14px 18px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+}
+
+.navbar a {
+  color: var(--color-muted);
+
+  text-decoration: none;
+  font-weight: 500;
+
+  padding: 6px 10px;
+
+  border-radius: 6px;
+
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.navbar a:hover {
+  color: var(--color-brand);
+  background: var(--color-brand-tint);
+}
+
+.navbar a.active {
+  color: var(--color-text);
+  font-weight: 700;
+}

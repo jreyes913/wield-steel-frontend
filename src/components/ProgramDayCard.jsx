@@ -5,12 +5,14 @@
 
 import { useState } from "react";
 import { updateProgramDay, deleteProgramDay, createProgramSet, deleteProgramSet } from "../api.js";
-import ExerciseSelect from "./ExerciseSelect.jsx";
+import AddProgramSetFooter from "./AddProgramSetFooter.jsx";
+import NewSetBlock from "./NewSetBlock.jsx";
 import ProgramSetGroup from "./ProgramSetGroup.jsx";
 import SetActionsToolbar from "./SetActionsToolbar.jsx";
 import SetBlock from "./SetBlock.jsx";
 import { groupSetsIntoBlocks } from "../blocks.js";
-import { numberOrNull, nextPosition } from "../formHelpers.js";
+import { nextPosition } from "../formHelpers.js";
+import { useSetActions } from "../setActions.js";
 import { useSetSelection } from "../setSelection.js";
 
 // Every table in a day shares these column widths, so stacked tables line up.
@@ -26,14 +28,35 @@ function ProgramColumns() {
   );
 }
 
+/**
+ * @param {object} props
+ * @param {import("../types.js").ProgramDay} props.day
+ * @param {import("../types.js").Exercise[]} props.exercises
+ * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
+ * @param {import("../types.js").OnChanged} props.onChanged  Reloads the program.
+ * @param {import("../types.js").OnError} props.onError
+ */
 function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
   const [dayName, setDayName] = useState(day.name);
 
-  // Fields for the "new set" row at the bottom of the table.
-  const [selectedExerciseId, setSelectedExerciseId] = useState("");
-  const [reps, setReps] = useState("");
-
   const selection = useSetSelection(day.sets);
+  const { handleCopySets, handleDeleteSets } = useSetActions({
+    sets: day.sets,
+    selection,
+    // A copy has the same exercises and reps.
+    copySet: (set, position) =>
+      createProgramSet(day.id, {
+        position: position,
+        subsets: set.subsets.map((subset) => ({
+          exercise_id: subset.exercise.id,
+          position: subset.position,
+          reps: subset.reps,
+        })),
+      }),
+    deleteSet: (set) => deleteProgramSet(set.id),
+    onChanged,
+    onError,
+  });
 
   async function handleRename(event) {
     event.preventDefault();
@@ -55,70 +78,6 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
     } catch (err) {
       onError(err.message);
     }
-  }
-
-  async function handleAddSet() {
-    if (selectedExerciseId === "") {
-      onError("Choose an exercise first.");
-      return;
-    }
-    try {
-      await createProgramSet(day.id, {
-        position: nextPosition(day.sets),
-        subsets: [
-          {
-            exercise_id: Number(selectedExerciseId),
-            position: 1,
-            reps: numberOrNull(reps),
-          },
-        ],
-      });
-      setSelectedExerciseId("");
-      setReps("");
-      onChanged();
-    } catch (err) {
-      onError(err.message);
-    }
-  }
-
-  // Copies each ticked set onto the end of the day, in order, with the same
-  // exercises and reps. One request per set creates it with its subsets.
-  async function handleCopySets() {
-    try {
-      let position = nextPosition(day.sets);
-      for (const set of selection.selectedSets) {
-        await createProgramSet(day.id, {
-          position: position,
-          subsets: set.subsets.map((subset) => ({
-            exercise_id: subset.exercise.id,
-            position: subset.position,
-            reps: subset.reps,
-          })),
-        });
-        position++;
-      }
-      selection.clear();
-    } catch (err) {
-      onError(err.message);
-    }
-    // Reload even after an error, so any sets that were copied still show.
-    onChanged();
-  }
-
-  async function handleDeleteSets() {
-    const count = selection.selectedSets.length;
-    if (!window.confirm(count === 1 ? "Delete this whole set?" : `Delete these ${count} sets?`)) {
-      return;
-    }
-    try {
-      for (const set of selection.selectedSets) {
-        await deleteProgramSet(set.id);
-      }
-      selection.clear();
-    } catch (err) {
-      onError(err.message);
-    }
-    onChanged();
   }
 
   return (
@@ -188,42 +147,19 @@ function ProgramDayCard({ day, exercises, muscleGroups, onChanged, onError }) {
         </SetBlock>
       ))}
 
-      <section className="block">
-        <div className="block-header">
-          <span className="block-label">New set</span>
-        </div>
-        <div className="table-wrap">
-          <table className="data-table blocks-table">
-            <ProgramColumns />
-            <tfoot>
-              <tr className="new-row">
-                <td className="select-cell"></td>
-                <td className="set-cell"><strong>New</strong></td>
-                <td>
-                  <ExerciseSelect
-                    exercises={exercises}
-                    muscleGroups={muscleGroups}
-                    value={selectedExerciseId}
-                    onChange={setSelectedExerciseId}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    step="1"
-                    aria-label="Reps"
-                    value={reps}
-                    onChange={(e) => setReps(e.target.value)}
-                  />
-                </td>
-                <td className="actions">
-                  <button type="button" className="primary" onClick={handleAddSet}>Add set</button>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </section>
+      <NewSetBlock>
+        <table className="data-table blocks-table">
+          <ProgramColumns />
+          <AddProgramSetFooter
+            dayId={day.id}
+            position={nextPosition(day.sets)}
+            exercises={exercises}
+            muscleGroups={muscleGroups}
+            onChanged={onChanged}
+            onError={onError}
+          />
+        </table>
+      </NewSetBlock>
     </div>
   );
 }

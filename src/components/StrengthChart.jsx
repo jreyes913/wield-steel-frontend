@@ -6,6 +6,8 @@ import { getStrengthProgress } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import "../chartSetup.js";
 
+/** @typedef {import("../types.js").StrengthProgress} StrengthProgress */
+
 // Metric name (what the backend calls it) -> text shown in the dropdown.
 const METRIC_LABELS = {
   weight: "Weight",
@@ -16,13 +18,18 @@ const METRIC_LABELS = {
   daily_1rm: "Daily 1RM",
 };
 
+/**
+ * @param {object} props
+ * @param {import("../types.js").Exercise[]} props.exercises
+ * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
+ */
 function StrengthChart({ exercises, muscleGroups }) {
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [selectedMetric, setSelectedMetric] = useState("daily_1rm");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const [strength, setStrength] = useState(null);
+  const [strength, setStrength] = useState(/** @type {StrengthProgress | null} */ (null));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPrograms, createProgram, deleteProgram } from "../api.js";
 
+/** @typedef {import("../types.js").ProgramSummary} ProgramSummary */
+
 function Programs() {
-  const [programs, setPrograms] = useState([]);
+  const [programs, setPrograms] = useState(/** @type {ProgramSummary[]} */ ([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

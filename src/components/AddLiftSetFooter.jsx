@@ -7,8 +7,15 @@ import { createLiftSet } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
-// position is computed by the page, so the user never types it.
-// onChanged reloads the lift; onError shows a message on the page.
+/**
+ * @param {object} props
+ * @param {number} props.liftId  The lift the set is added to.
+ * @param {number} props.position  Computed by the page, so the user never types it.
+ * @param {import("../types.js").Exercise[]} props.exercises
+ * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
+ * @param {import("../types.js").OnChanged} props.onChanged  Reloads the lift.
+ * @param {import("../types.js").OnError} props.onError  Shows a message on the page.
+ */
 function AddLiftSetFooter({ liftId, position, exercises, muscleGroups, onChanged, onError }) {
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [reps, setReps] = useState("");

@@ -2,7 +2,7 @@
 
 import { NavLink } from "react-router-dom";
 
-// signOut comes from the Authenticator in App.jsx.
+/** @param {{ signOut?: () => void }} props  signOut comes from the Authenticator in App.jsx. */
 function NavBar({ signOut }) {
   return (
     <nav className="navbar">

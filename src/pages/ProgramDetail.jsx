@@ -12,12 +12,16 @@ import {
 } from "../api.js";
 import ProgramDayCard from "../components/ProgramDayCard.jsx";
 
+/** @typedef {import("../types.js").Program} Program */
+/** @typedef {import("../types.js").Exercise} Exercise */
+/** @typedef {import("../types.js").MuscleGroup} MuscleGroup */
+
 function ProgramDetail() {
   const { id } = useParams();
 
-  const [program, setProgram] = useState(null);
-  const [exercises, setExercises] = useState([]);
-  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [program, setProgram] = useState(/** @type {Program | null} */ (null));
+  const [exercises, setExercises] = useState(/** @type {Exercise[]} */ ([]));
+  const [muscleGroups, setMuscleGroups] = useState(/** @type {MuscleGroup[]} */ ([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

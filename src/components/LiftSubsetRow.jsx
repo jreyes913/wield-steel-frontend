@@ -6,8 +6,18 @@ import { updateLiftSubset, deleteLiftSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
-// readOnly (the historical comparison) shows the values only: no Edit or Delete.
-// leadingCells: the set's checkbox and number cells, filled on its first exercise only.
+/**
+ * exercises, muscleGroups, onChanged and onError are only needed when it is editable.
+ * @param {object} props
+ * @param {import("../types.js").LiftSubset} props.subset
+ * @param {import("react").ReactNode} props.leadingCells  The set's checkbox and number
+ *   cells (see SetLeadingCells), filled on its first exercise only.
+ * @param {boolean} [props.readOnly]  The historical comparison: values only, no Edit or Delete.
+ * @param {import("../types.js").Exercise[]} [props.exercises]
+ * @param {import("../types.js").MuscleGroup[]} [props.muscleGroups]
+ * @param {import("../types.js").OnChanged} [props.onChanged]  Reloads the lift.
+ * @param {import("../types.js").OnError} [props.onError]
+ */
 function LiftSubsetRow({
   subset,
   leadingCells,

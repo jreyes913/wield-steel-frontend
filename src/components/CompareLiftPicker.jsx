@@ -6,10 +6,18 @@ import { useEffect, useState } from "react";
 import { getLifts } from "../api.js";
 import LiftDatePicker from "./LiftDatePicker.jsx";
 
-// currentLift: the lift being viewed. selectedLiftId: the lift already being
-// compared, if any. onPick(liftId) loads the chosen lift into the comparison column.
+/** @typedef {import("../types.js").LiftSummary} LiftSummary */
+
+/**
+ * @param {object} props
+ * @param {import("../types.js").Lift} props.currentLift  The lift being viewed.
+ * @param {number} [props.selectedLiftId]  The lift already being compared, if any.
+ * @param {(liftId: number) => void} props.onPick  Loads the chosen lift into the comparison column.
+ * @param {() => void} props.onCancel
+ * @param {import("../types.js").OnError} props.onError
+ */
 function CompareLiftPicker({ currentLift, selectedLiftId, onPick, onCancel, onError }) {
-  const [lifts, setLifts] = useState(null);
+  const [lifts, setLifts] = useState(/** @type {LiftSummary[] | null} */ (null));
   // Set when the picked date has more than one lift, so the user chooses which.
   const [dateWithSeveralLifts, setDateWithSeveralLifts] = useState("");
 

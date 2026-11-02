@@ -5,8 +5,10 @@ import { Line } from "react-chartjs-2";
 import { getBodyWeightProgress } from "../api.js";
 import "../chartSetup.js";
 
+/** @typedef {import("../types.js").BodyWeightPoint} BodyWeightPoint */
+
 function BodyWeightChart() {
-  const [points, setPoints] = useState([]);
+  const [points, setPoints] = useState(/** @type {BodyWeightPoint[]} */ ([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

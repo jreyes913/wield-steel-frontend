@@ -1,0 +1,136 @@
+/* The lift detail page, including the side-by-side comparison with a past lift. */
+
+.lift-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+/* Two columns need more room than the normal 960px page. */
+.page:has(.lift-layout--comparing) {
+  max-width: 1440px;
+}
+
+.lift-layout--comparing {
+  display: grid;
+  /* The past lift's table has no buttons or inputs, so it needs less room than
+     the editable current lift. */
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 24px;
+
+  align-items: start;
+}
+
+/* The past lift: brand green background, white text. Its table stays white. */
+.lift-history {
+  color: #fff;
+  background: var(--color-brand);
+
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+
+  padding: 20px;
+}
+
+.lift-history-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.lift-history-label {
+  margin-bottom: 4px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  opacity: 0.9;
+}
+
+.lift-history .lift-history-date {
+  margin-bottom: 0;
+
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.lift-history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.app .lift-history-actions button {
+  border-color: var(--color-button-border);
+}
+
+.app .lift-history-actions button:hover {
+  color: #fff;
+  background: var(--color-brand-dark);
+  border-color: #fff;
+}
+
+.lift-history .table-wrap {
+  color: var(--color-text);
+  margin-bottom: 0;
+}
+
+/* The read-only table has no buttons or inputs, so it can shrink to fit. */
+.data-table--read-only {
+  min-width: 0;
+}
+
+/* Tighter cells while comparing, so the editable table fits its column without
+   scrolling on a normal monitor. */
+.lift-layout--comparing .data-table th,
+.lift-layout--comparing .data-table td {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.lift-layout--comparing .data-table input[type="number"] {
+  min-width: 56px;
+}
+
+.lift-layout--comparing .data-table select {
+  min-width: 140px;
+}
+
+.lift-layout--comparing .blocks-table .col-num {
+  width: 80px;
+}
+
+.lift-layout--comparing .blocks-table .col-actions {
+  width: 150px;
+}
+
+.lift-layout--comparing .blocks-table.lift-sets-table {
+  min-width: 640px;
+}
+
+/* The past lift's numbers are plain text, so their columns can be narrower. */
+.lift-layout--comparing .blocks-table.data-table--read-only .col-num {
+  width: 64px;
+}
+
+.lift-layout--comparing .blocks-table.data-table--read-only .col-set {
+  width: 48px;
+}
+
+.app .lift-layout--comparing .data-table .actions button {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 4px;
+}

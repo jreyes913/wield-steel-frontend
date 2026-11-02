@@ -11,25 +11,32 @@ import HistoricalLiftPanel from "../components/HistoricalLiftPanel.jsx";
 import LiftSetsTable from "../components/LiftSetsTable.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
+/** @typedef {import("../types.js").Lift} Lift */
+/** @typedef {import("../types.js").Exercise} Exercise */
+/** @typedef {import("../types.js").MuscleGroup} MuscleGroup */
+
 function LiftDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [lift, setLift] = useState(null);
-  const [exercises, setExercises] = useState([]);
-  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [lift, setLift] = useState(/** @type {Lift | null} */ (null));
+  const [exercises, setExercises] = useState(/** @type {Exercise[]} */ ([]));
+  const [muscleGroups, setMuscleGroups] = useState(/** @type {MuscleGroup[]} */ ([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Fields for the "edit lift" form.
   const [date, setDate] = useState("");
-  const [bodyWeight, setBodyWeight] = useState("");
+  // "" while blank, otherwise a whole number.
+  const [bodyWeight, setBodyWeight] = useState(/** @type {string | number} */ (""));
 
   // Comparison with a past lift. Both are tagged with the lift they were opened
   // on, so going to a different lift's page starts with no comparison.
-  // comparison: { forLiftId, lift } where lift is null while it loads.
-  const [pickingForLiftId, setPickingForLiftId] = useState(null);
-  const [comparison, setComparison] = useState(null);
+  // comparison: { forLiftId, liftId, lift } where lift is null while it loads.
+  const [pickingForLiftId, setPickingForLiftId] = useState(/** @type {string | null} */ (null));
+  const [comparison, setComparison] = useState(
+    /** @type {{ forLiftId: string, liftId: number, lift: Lift | null } | null} */ (null)
+  );
   // Counts comparison requests, so a slow response for an older pick is ignored.
   const latestComparisonRequest = useRef(0);
   const isPicking = pickingForLiftId === id;

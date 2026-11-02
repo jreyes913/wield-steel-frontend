@@ -1,0 +1,41 @@
+/* The part of Amplify UI's stylesheet that the sign-in page (Authenticator) needs.
+   The full "@aws-amplify/ui-react/styles.css" is about 100 kB larger because it also
+   styles components this app never shows (tables, modals, file uploaders, ...).
+
+   These are the same files that make up styles.css, in the same order, so the result
+   looks identical. If a future Amplify upgrade leaves part of the sign-in page
+   unstyled, replace everything below with:
+     @import "@aws-amplify/ui-react/styles.css";
+*/
+
+@import "@aws-amplify/ui-react/styles/base.css";
+@import "@aws-amplify/ui-react/styles/flex.css";
+@import "@aws-amplify/ui-react/styles/grid.css";
+@import "@aws-amplify/ui-react/styles/text.css";
+@import "@aws-amplify/ui-react/styles/button.css";
+@import "@aws-amplify/ui-react/styles/fieldMessages.css";
+@import "@aws-amplify/ui-react/styles/heading.css";
+@import "@aws-amplify/ui-react/styles/icon.css";
+@import "@aws-amplify/ui-react/styles/input.css";
+@import "@aws-amplify/ui-react/styles/image.css";
+@import "@aws-amplify/ui-react/styles/link.css";
+@import "@aws-amplify/ui-react/styles/loader.css";
+@import "@aws-amplify/ui-react/styles/copy.css";
+@import "@aws-amplify/ui-react/styles/alert.css";
+@import "@aws-amplify/ui-react/styles/authenticator.css";
+@import "@aws-amplify/ui-react/styles/dialCodeSelect.css";
+@import "@aws-amplify/ui-react/styles/divider.css";
+@import "@aws-amplify/ui-react/styles/field.css";
+@import "@aws-amplify/ui-react/styles/fieldGroup.css";
+@import "@aws-amplify/ui-react/styles/fieldset.css";
+@import "@aws-amplify/ui-react/styles/passwordField.css";
+@import "@aws-amplify/ui-react/styles/phoneNumberField.css";
+@import "@aws-amplify/ui-react/styles/radio.css";
+@import "@aws-amplify/ui-react/styles/radiogroup.css";
+@import "@aws-amplify/ui-react/styles/radioGroupField.css";
+@import "@aws-amplify/ui-react/styles/select.css";
+@import "@aws-amplify/ui-react/styles/selectField.css";
+@import "@aws-amplify/ui-react/styles/tabs.css";
+@import "@aws-amplify/ui-react/styles/textField.css";
+@import "@aws-amplify/ui-react/styles/fieldModifiers.css";
+@import "@aws-amplify/ui-react/styles/visuallyHidden.css";

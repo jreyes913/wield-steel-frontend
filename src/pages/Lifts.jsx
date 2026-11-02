@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import { getLifts, createLift } from "../api.js";
 import { numberOrNull, todayAsDateString } from "../formHelpers.js";
 
+/** @typedef {import("../types.js").LiftSummary} LiftSummary */
+
 function Lifts() {
-  const [lifts, setLifts] = useState([]);
+  const [lifts, setLifts] = useState(/** @type {LiftSummary[]} */ ([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

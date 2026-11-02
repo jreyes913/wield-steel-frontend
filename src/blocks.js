@@ -5,6 +5,10 @@
 // blocks always start at A.
 
 // 0 -> "A", 25 -> "Z", 26 -> "AA", 701 -> "ZZ", 702 -> "AAA", and so on.
+/**
+ * @param {number} index  Position of the block in the day, starting at 0.
+ * @returns {string}
+ */
 export function blockLabel(index) {
   let label = "";
   let n = index + 1;
@@ -18,6 +22,7 @@ export function blockLabel(index) {
 
 // The exercises in a set, ignoring order and every value (reps, weight, RIR).
 // [Squat, Lunge] and [Lunge, Squat] match; [Squat, Squat] and [Squat] don't.
+/** @param {import("./types.js").AnySet} set */
 function compositionKey(set) {
   return set.subsets
     .map((subset) => subset.exercise.id)
@@ -27,8 +32,15 @@ function compositionKey(set) {
 
 // sets (in position order) -> [{ key, label, sets }]. Blocks come in the order their
 // exercises first appear, and each block keeps its sets in their original order.
+/**
+ * @template {import("./types.js").AnySet} S  LiftSet or ProgramSet.
+ * @param {S[]} sets  One day's sets, in position order.
+ * @returns {import("./types.js").Block<S>[]}
+ */
 export function groupSetsIntoBlocks(sets) {
+  /** @type {import("./types.js").Block<S>[]} */
   const blocks = [];
+  /** @type {Map<string, import("./types.js").Block<S>>} */
   const blocksByKey = new Map();
   for (const set of sets) {
     const key = compositionKey(set);

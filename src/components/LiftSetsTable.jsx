@@ -9,13 +9,16 @@
 import { createLiftSet, deleteLiftSet } from "../api.js";
 import AddLiftSetFooter from "./AddLiftSetFooter.jsx";
 import LiftSetGroup from "./LiftSetGroup.jsx";
+import NewSetBlock from "./NewSetBlock.jsx";
 import SetActionsToolbar from "./SetActionsToolbar.jsx";
 import SetBlock from "./SetBlock.jsx";
 import { groupSetsIntoBlocks } from "../blocks.js";
 import { nextPosition } from "../formHelpers.js";
+import { useSetActions } from "../setActions.js";
 import { useSetSelection } from "../setSelection.js";
 
 // Every table on the page shares these column widths, so stacked tables line up.
+/** @param {{ readOnly: boolean }} props */
 function LiftColumns({ readOnly }) {
   return (
     <colgroup>
@@ -30,6 +33,16 @@ function LiftColumns({ readOnly }) {
   );
 }
 
+/**
+ * exercises, muscleGroups, onChanged and onError are only needed when it is editable.
+ * @param {object} props
+ * @param {import("../types.js").Lift} props.lift
+ * @param {boolean} [props.readOnly]  The historical comparison: no checkboxes, buttons or inputs.
+ * @param {import("../types.js").Exercise[]} [props.exercises]
+ * @param {import("../types.js").MuscleGroup[]} [props.muscleGroups]
+ * @param {import("../types.js").OnChanged} [props.onChanged]  Reloads the lift.
+ * @param {import("../types.js").OnError} [props.onError]
+ */
 function LiftSetsTable({ lift, readOnly = false, exercises, muscleGroups, onChanged, onError }) {
   const selection = useSetSelection(lift.sets);
   const newSetPosition = nextPosition(lift.sets);
@@ -38,47 +51,25 @@ function LiftSetsTable({ lift, readOnly = false, exercises, muscleGroups, onChan
     ? "data-table blocks-table data-table--read-only"
     : "data-table blocks-table lift-sets-table";
 
-  // Copies each ticked set onto the end of the lift, in order, with the same
-  // exercises, reps, RIR and weight. One request per set creates it with its subsets.
-  async function handleCopySets() {
-    try {
-      let position = newSetPosition;
-      for (const set of selection.selectedSets) {
-        await createLiftSet(lift.id, {
-          position: position,
-          subsets: set.subsets.map((subset) => ({
-            exercise_id: subset.exercise.id,
-            position: subset.position,
-            reps: subset.reps,
-            rir: subset.rir,
-            weight: subset.weight,
-          })),
-        });
-        position++;
-      }
-      selection.clear();
-    } catch (err) {
-      onError(err.message);
-    }
-    // Reload even after an error, so any sets that were copied still show.
-    onChanged();
-  }
-
-  async function handleDeleteSets() {
-    const count = selection.selectedSets.length;
-    if (!window.confirm(count === 1 ? "Delete this whole set?" : `Delete these ${count} sets?`)) {
-      return;
-    }
-    try {
-      for (const set of selection.selectedSets) {
-        await deleteLiftSet(set.id);
-      }
-      selection.clear();
-    } catch (err) {
-      onError(err.message);
-    }
-    onChanged();
-  }
+  const { handleCopySets, handleDeleteSets } = useSetActions({
+    sets: lift.sets,
+    selection,
+    // A copy has the same exercises, reps, RIR and weight.
+    copySet: (set, position) =>
+      createLiftSet(lift.id, {
+        position: position,
+        subsets: set.subsets.map((subset) => ({
+          exercise_id: subset.exercise.id,
+          position: subset.position,
+          reps: subset.reps,
+          rir: subset.rir,
+          weight: subset.weight,
+        })),
+      }),
+    deleteSet: (set) => deleteLiftSet(set.id),
+    onChanged,
+    onError,
+  });
 
   return (
     <>
@@ -145,24 +136,19 @@ function LiftSetsTable({ lift, readOnly = false, exercises, muscleGroups, onChan
       ))}
 
       {!readOnly && (
-        <section className="block">
-          <div className="block-header">
-            <span className="block-label">New set</span>
-          </div>
-          <div className="table-wrap">
-            <table className={tableClass}>
-              <LiftColumns readOnly={false} />
-              <AddLiftSetFooter
-                liftId={lift.id}
-                position={newSetPosition}
-                exercises={exercises}
-                muscleGroups={muscleGroups}
-                onChanged={onChanged}
-                onError={onError}
-              />
-            </table>
-          </div>
-        </section>
+        <NewSetBlock>
+          <table className={tableClass}>
+            <LiftColumns readOnly={false} />
+            <AddLiftSetFooter
+              liftId={lift.id}
+              position={newSetPosition}
+              exercises={exercises}
+              muscleGroups={muscleGroups}
+              onChanged={onChanged}
+              onError={onError}
+            />
+          </table>
+        </NewSetBlock>
       )}
     </>
   );

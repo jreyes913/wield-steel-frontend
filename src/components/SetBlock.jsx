@@ -4,8 +4,14 @@
 
 import { useState } from "react";
 
-// forceOpen keeps the table showing while something inside it needs to be seen,
-// such as the "add exercise" row the toolbar just opened.
+/**
+ * @param {object} props
+ * @param {import("../types.js").Block} props.block
+ * @param {boolean} props.collapsible  Whether the header can hide the table.
+ * @param {boolean} [props.forceOpen]  Keeps the table showing while something inside it needs
+ *   to be seen, such as the "add exercise" row the toolbar just opened.
+ * @param {import("react").ReactNode} props.children  The block's table.
+ */
 function SetBlock({ block, collapsible, forceOpen = false, children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isOpen = !collapsible || !isCollapsed || forceOpen;

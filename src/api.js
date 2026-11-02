@@ -6,11 +6,38 @@
 
 import { fetchAuthSession } from "aws-amplify/auth";
 
+/**
+ * @typedef {import("./types.js").Id} Id
+ * @typedef {import("./types.js").Exercise} Exercise
+ * @typedef {import("./types.js").MuscleGroup} MuscleGroup
+ * @typedef {import("./types.js").Lift} Lift
+ * @typedef {import("./types.js").LiftSummary} LiftSummary
+ * @typedef {import("./types.js").LiftSet} LiftSet
+ * @typedef {import("./types.js").LiftSubset} LiftSubset
+ * @typedef {import("./types.js").NewLiftSubset} NewLiftSubset
+ * @typedef {import("./types.js").Program} Program
+ * @typedef {import("./types.js").ProgramSummary} ProgramSummary
+ * @typedef {import("./types.js").ProgramDay} ProgramDay
+ * @typedef {import("./types.js").ProgramSet} ProgramSet
+ * @typedef {import("./types.js").ProgramSubset} ProgramSubset
+ * @typedef {import("./types.js").NewProgramSubset} NewProgramSubset
+ * @typedef {import("./types.js").Profile} Profile
+ * @typedef {import("./types.js").BodyWeightPoint} BodyWeightPoint
+ * @typedef {import("./types.js").StrengthProgress} StrengthProgress
+ */
+
 // Remove a trailing slash so we can always write paths like "/lifts".
 const API_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
 
 // The one place that talks to the network. Returns the parsed JSON on success
 // and throws an Error (with the backend's message) on failure.
+// The endpoint functions below say what the JSON holds.
+/**
+ * @param {"GET" | "POST" | "PUT" | "DELETE"} method
+ * @param {string} path  Starting with "/", for example "/lifts".
+ * @param {object} [body]  Sent as JSON when given.
+ * @returns {Promise<any>}
+ */
 async function request(method, path, body) {
   // fetchAuthSession() refreshes the token for us if it has expired.
   const session = await fetchAuthSession();
@@ -43,11 +70,12 @@ async function request(method, path, body) {
 }
 
 // Builds "?a=1&b=2" from an object, skipping empty values (null, undefined, "").
+/** @param {Record<string, string | number | null | undefined>} params */
 function buildQueryString(params) {
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value !== null && value !== undefined && value !== "") {
-      query.append(key, value);
+      query.append(key, String(value));
     }
   }
   const text = query.toString();
@@ -55,41 +83,114 @@ function buildQueryString(params) {
 }
 
 // ---------- Profile ----------
+
+/** @returns {Promise<Profile>} */
 export const getMe = () => request("GET", "/me");
-// fields: any of first_name, last_name, dob, gender, height
+
+/**
+ * @param {{ first_name?: string | null, last_name?: string | null, dob?: string | null, gender?: string | null, height?: number | null }} fields
+ *   Send only the fields that changed.
+ * @returns {Promise<Profile>}
+ */
 export const updateMe = (fields) => request("PUT", "/me", fields);
 
 // ---------- Reference data ----------
+
+/** @returns {Promise<MuscleGroup[]>} */
 export const getMuscleGroups = () => request("GET", "/muscle-groups");
+
+/** @returns {Promise<Exercise[]>} */
 export const getExercises = () => request("GET", "/exercises");
 
 // ---------- Lifts ----------
+
+/** @returns {Promise<LiftSummary[]>} Newest first, without their sets. */
 export const getLifts = () => request("GET", "/lifts");
+
+/**
+ * @param {Id} liftId
+ * @returns {Promise<Lift>} The lift with all its sets and subsets.
+ */
 export const getLift = (liftId) => request("GET", `/lifts/${liftId}`);
-// fields: { date, body_weight }
+
+/**
+ * @param {{ date: string, body_weight: number | null }} fields
+ * @returns {Promise<LiftSummary>}
+ */
 export const createLift = (fields) => request("POST", "/lifts", fields);
-// fields: any of date, body_weight
+
+/**
+ * @param {Id} liftId
+ * @param {{ date?: string, body_weight?: number | null }} fields  Send only what changed.
+ * @returns {Promise<LiftSummary>}
+ */
 export const updateLift = (liftId, fields) => request("PUT", `/lifts/${liftId}`, fields);
+
+/** @param {Id} liftId */
 export const deleteLift = (liftId) => request("DELETE", `/lifts/${liftId}`);
-// fields: { position, subsets: [{ exercise_id, position, reps, rir, weight }] }
+
+/**
+ * Creates a set together with its subsets in one request.
+ * @param {Id} liftId
+ * @param {{ position: number, subsets: NewLiftSubset[] }} fields
+ * @returns {Promise<LiftSet>}
+ */
 export const createLiftSet = (liftId, fields) => request("POST", `/lifts/${liftId}/sets`, fields);
-// Copies a program day's sets into the lift. Returns the updated lift.
+
+/**
+ * Copies a program day's sets into the lift.
+ * @param {Id} liftId
+ * @param {Id} programDayId
+ * @returns {Promise<Lift>} The updated lift.
+ */
 export const applyProgramDay = (liftId, programDayId) =>
   request("POST", `/lifts/${liftId}/apply`, { program_day_id: programDayId });
 
+/**
+ * @param {Id} setId
+ * @param {{ position: number }} fields
+ * @returns {Promise<LiftSet>}
+ */
 export const updateLiftSet = (setId, fields) => request("PUT", `/sets/${setId}`, fields);
+
+/** @param {Id} setId */
 export const deleteLiftSet = (setId) => request("DELETE", `/sets/${setId}`);
-// fields: { exercise_id, position, reps, rir, weight }
+
+/**
+ * @param {Id} setId
+ * @param {NewLiftSubset} fields
+ * @returns {Promise<LiftSubset>}
+ */
 export const createLiftSubset = (setId, fields) =>
   request("POST", `/sets/${setId}/subsets`, fields);
+
+/**
+ * @param {Id} subsetId
+ * @param {Partial<NewLiftSubset>} fields  Send only what changed.
+ * @returns {Promise<LiftSubset>}
+ */
 export const updateLiftSubset = (subsetId, fields) =>
   request("PUT", `/subsets/${subsetId}`, fields);
+
+/** @param {Id} subsetId */
 export const deleteLiftSubset = (subsetId) => request("DELETE", `/subsets/${subsetId}`);
 
 // ---------- Progress ----------
-// start and end are optional YYYY-MM-DD strings.
+
+/**
+ * @param {string} [start]  YYYY-MM-DD, optional.
+ * @param {string} [end]  YYYY-MM-DD, optional.
+ * @returns {Promise<BodyWeightPoint[]>} Only lifts that have a body weight.
+ */
 export const getBodyWeightProgress = (start, end) =>
   request("GET", `/progress/body-weight${buildQueryString({ start, end })}`);
+
+/**
+ * @param {Id} exerciseId
+ * @param {string} [start]  YYYY-MM-DD, optional.
+ * @param {string} [end]  YYYY-MM-DD, optional.
+ * @returns {Promise<StrengthProgress>}
+ */
 export const getStrengthProgress = (exerciseId, start, end) =>
   request(
     "GET",
@@ -97,31 +198,89 @@ export const getStrengthProgress = (exerciseId, start, end) =>
   );
 
 // ---------- Programs ----------
+
+/** @returns {Promise<ProgramSummary[]>} Without their days. */
 export const getPrograms = () => request("GET", "/programs");
+
+/**
+ * @param {Id} programId
+ * @returns {Promise<Program>} The program with all its days, sets and subsets.
+ */
 export const getProgram = (programId) => request("GET", `/programs/${programId}`);
-// fields: { name, start_date, end_date }
+
+/**
+ * @param {{ name: string, start_date: string | null, end_date: string | null }} fields
+ * @returns {Promise<ProgramSummary>}
+ */
 export const createProgram = (fields) => request("POST", "/programs", fields);
+
+/**
+ * @param {Id} programId
+ * @param {{ name?: string, start_date?: string | null, end_date?: string | null }} fields
+ *   Send only what changed.
+ * @returns {Promise<ProgramSummary>}
+ */
 export const updateProgram = (programId, fields) =>
   request("PUT", `/programs/${programId}`, fields);
+
+/** @param {Id} programId */
 export const deleteProgram = (programId) => request("DELETE", `/programs/${programId}`);
 
+/**
+ * @param {Id} programId
+ * @param {string} name
+ * @returns {Promise<ProgramDay>}
+ */
 export const createProgramDay = (programId, name) =>
   request("POST", `/programs/${programId}/days`, { name });
+
+/**
+ * @param {Id} dayId
+ * @param {string} name
+ * @returns {Promise<ProgramDay>}
+ */
 export const updateProgramDay = (dayId, name) =>
   request("PUT", `/program-days/${dayId}`, { name });
+
+/** @param {Id} dayId */
 export const deleteProgramDay = (dayId) => request("DELETE", `/program-days/${dayId}`);
 
-// fields: { position, subsets: [{ exercise_id, position, reps }] }
+/**
+ * Creates a set together with its subsets in one request.
+ * @param {Id} dayId
+ * @param {{ position: number, subsets: NewProgramSubset[] }} fields
+ * @returns {Promise<ProgramSet>}
+ */
 export const createProgramSet = (dayId, fields) =>
   request("POST", `/program-days/${dayId}/sets`, fields);
+
+/**
+ * @param {Id} setId
+ * @param {{ position: number }} fields
+ * @returns {Promise<ProgramSet>}
+ */
 export const updateProgramSet = (setId, fields) =>
   request("PUT", `/program-sets/${setId}`, fields);
+
+/** @param {Id} setId */
 export const deleteProgramSet = (setId) => request("DELETE", `/program-sets/${setId}`);
 
-// fields: { exercise_id, position, reps }
+/**
+ * @param {Id} setId
+ * @param {NewProgramSubset} fields
+ * @returns {Promise<ProgramSubset>}
+ */
 export const createProgramSubset = (setId, fields) =>
   request("POST", `/program-sets/${setId}/subsets`, fields);
+
+/**
+ * @param {Id} subsetId
+ * @param {Partial<NewProgramSubset>} fields  Send only what changed.
+ * @returns {Promise<ProgramSubset>}
+ */
 export const updateProgramSubset = (subsetId, fields) =>
   request("PUT", `/program-subsets/${subsetId}`, fields);
+
+/** @param {Id} subsetId */
 export const deleteProgramSubset = (subsetId) =>
   request("DELETE", `/program-subsets/${subsetId}`);

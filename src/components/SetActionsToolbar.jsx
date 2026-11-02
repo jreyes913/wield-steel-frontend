@@ -1,7 +1,13 @@
 // Bar at the top of a sets table with the actions for the ticked sets.
 // Adding an exercise needs exactly one set; copy and delete work on any number.
 
-// selection comes from useSetSelection. onCopy and onDelete act on selection.selectedSets.
+/**
+ * @param {object} props
+ * @param {import("../setSelection.js").SetSelection<import("../types.js").AnySet>} props.selection
+ *   From useSetSelection.
+ * @param {() => void} props.onCopy  Acts on selection.selectedSets.
+ * @param {() => void} props.onDelete  Acts on selection.selectedSets.
+ */
 function SetActionsToolbar({ selection, onCopy, onDelete }) {
   const count = selection.selectedSets.length;
 

@@ -1,15 +1,21 @@
 // Top-level layout: login wall, navigation bar, and the route table.
 // Add new pages by importing them here and adding a <Route> line.
+//
+// Every page except the first one (Lifts) is loaded the first time it is visited,
+// not up front. That keeps big libraries, such as Chart.js on the Progress page,
+// out of the first download.
 
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Authenticator } from "@aws-amplify/ui-react";
 import NavBar from "./components/NavBar.jsx";
 import Lifts from "./pages/Lifts.jsx";
-import LiftDetail from "./pages/LiftDetail.jsx";
-import Progress from "./pages/Progress.jsx";
-import Programs from "./pages/Programs.jsx";
-import ProgramDetail from "./pages/ProgramDetail.jsx";
-import Profile from "./pages/Profile.jsx";
+
+const LiftDetail = lazy(() => import("./pages/LiftDetail.jsx"));
+const Progress = lazy(() => import("./pages/Progress.jsx"));
+const Programs = lazy(() => import("./pages/Programs.jsx"));
+const ProgramDetail = lazy(() => import("./pages/ProgramDetail.jsx"));
+const Profile = lazy(() => import("./pages/Profile.jsx"));
 
 function App() {
   return (
@@ -20,15 +26,17 @@ function App() {
         <div className="app">
           <NavBar signOut={signOut} />
           <main className="page">
-            <Routes>
-              {/* Other pages get added here as they are built. */}
-              <Route path="/" element={<Lifts />} />
-              <Route path="/lifts/:id" element={<LiftDetail />} />
-              <Route path="/progress" element={<Progress />} />
-              <Route path="/programs" element={<Programs />} />
-              <Route path="/programs/:id" element={<ProgramDetail />} />
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
+            <Suspense fallback={<p>Loading…</p>}>
+              <Routes>
+                {/* Other pages get added here as they are built. */}
+                <Route path="/" element={<Lifts />} />
+                <Route path="/lifts/:id" element={<LiftDetail />} />
+                <Route path="/progress" element={<Progress />} />
+                <Route path="/programs" element={<Programs />} />
+                <Route path="/programs/:id" element={<ProgramDetail />} />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
+            </Suspense>
           </main>
         </div>
       )}

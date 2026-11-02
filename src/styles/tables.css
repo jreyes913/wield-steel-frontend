@@ -1,0 +1,117 @@
+/* Data tables, and the toolbar above a sets table. */
+
+.table-wrap {
+  overflow-x: auto;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+
+  margin-bottom: 20px;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  padding: 12px 14px;
+
+  text-align: left;
+
+  background: var(--color-background);
+
+  color: var(--color-muted);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  border-bottom: 2px solid var(--color-border);
+}
+
+.data-table td {
+  padding: 10px 14px;
+
+  border-bottom: 1px solid var(--color-border);
+
+  font-size: 14px;
+}
+
+.data-table .actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.data-table .actions button {
+  min-height: auto;
+
+  font-size: 11px;
+
+  padding: 6px 12px;
+
+  margin-left: 6px;
+}
+
+.data-table input,
+.data-table select {
+  font-size: 14px;
+  padding: 6px 8px;
+}
+
+.data-table input[type="number"] {
+  min-width: 70px;
+}
+
+.data-table select {
+  min-width: 170px;
+}
+
+.data-table .set-cell {
+  white-space: nowrap;
+}
+
+/* Checkbox column: picks sets for the toolbar above the table. */
+.data-table .select-cell {
+  padding-right: 0;
+}
+
+.app .data-table .select-cell input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+
+  vertical-align: middle;
+
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}
+
+/* Bar above a lifting day's block tables with the actions for the ticked sets. */
+.set-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  align-items: center;
+
+  margin-bottom: 12px;
+  padding: 10px 14px;
+
+  color: var(--color-text);
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow);
+}

@@ -4,12 +4,21 @@
 import { useEffect, useState } from "react";
 import { getPrograms, getProgram, applyProgramDay } from "../api.js";
 
+/** @typedef {import("../types.js").ProgramSummary} ProgramSummary */
+/** @typedef {import("../types.js").ProgramDay} ProgramDay */
+
+/**
+ * @param {object} props
+ * @param {number} props.liftId  The lift the program day is applied to.
+ * @param {import("../types.js").OnChanged} props.onChanged  Reloads the lift.
+ * @param {import("../types.js").OnError} props.onError
+ */
 function ApplyProgramForm({ liftId, onChanged, onError }) {
-  const [programs, setPrograms] = useState([]);
+  const [programs, setPrograms] = useState(/** @type {ProgramSummary[]} */ ([]));
   const [selectedProgramId, setSelectedProgramId] = useState("");
   // Days only come with the full program (GET /programs/{id}), so we fetch them
   // once a program is picked.
-  const [days, setDays] = useState([]);
+  const [days, setDays] = useState(/** @type {ProgramDay[]} */ ([]));
   const [selectedDayId, setSelectedDayId] = useState("");
 
   useEffect(() => {

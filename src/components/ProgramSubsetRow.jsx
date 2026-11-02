@@ -7,7 +7,16 @@ import { updateProgramSubset, deleteProgramSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import { numberOrNull } from "../formHelpers.js";
 
-// leadingCells: the set's checkbox and number cells, filled on its first exercise only.
+/**
+ * @param {object} props
+ * @param {import("../types.js").ProgramSubset} props.subset
+ * @param {import("react").ReactNode} props.leadingCells  The set's checkbox and number
+ *   cells (see SetLeadingCells), filled on its first exercise only.
+ * @param {import("../types.js").Exercise[]} props.exercises
+ * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
+ * @param {import("../types.js").OnChanged} props.onChanged  Reloads the program.
+ * @param {import("../types.js").OnError} props.onError
+ */
 function ProgramSubsetRow({ subset, leadingCells, exercises, muscleGroups, onChanged, onError }) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedExerciseId, setSelectedExerciseId] = useState(String(subset.exercise.id));

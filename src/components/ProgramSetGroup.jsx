@@ -7,8 +7,21 @@ import { useState } from "react";
 import { createProgramSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import ProgramSubsetRow from "./ProgramSubsetRow.jsx";
+import SetLeadingCells from "./SetLeadingCells.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
+/**
+ * @param {object} props
+ * @param {import("../types.js").ProgramSet} props.set
+ * @param {boolean} props.isSelected  Whether the set is ticked.
+ * @param {() => void} props.onToggleSelected
+ * @param {boolean} props.isAddingExercise  Show the "add exercise" row at the end of the set.
+ * @param {() => void} props.onDoneAddingExercise  Called when that row is added or cancelled.
+ * @param {import("../types.js").Exercise[]} props.exercises
+ * @param {import("../types.js").MuscleGroup[]} props.muscleGroups
+ * @param {import("../types.js").OnChanged} props.onChanged  Reloads the program.
+ * @param {import("../types.js").OnError} props.onError
+ */
 function ProgramSetGroup({
   set,
   isSelected,
@@ -52,19 +65,12 @@ function ProgramSetGroup({
   // The checkbox and Set columns. Only the set's first row fills them in.
   function leadingCells(isFirstRow) {
     return (
-      <>
-        <td className="select-cell">
-          {isFirstRow && (
-            <input
-              type="checkbox"
-              aria-label={`Select set ${set.position}`}
-              checked={isSelected}
-              onChange={onToggleSelected}
-            />
-          )}
-        </td>
-        <td className="set-cell">{isFirstRow && <strong>{set.position}</strong>}</td>
-      </>
+      <SetLeadingCells
+        set={set}
+        isFirstRow={isFirstRow}
+        isSelected={isSelected}
+        onToggleSelected={onToggleSelected}
+      />
     );
   }
 

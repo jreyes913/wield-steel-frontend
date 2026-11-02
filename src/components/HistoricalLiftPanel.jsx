@@ -4,7 +4,12 @@
 
 import LiftSetsTable from "./LiftSetsTable.jsx";
 
-// lift is null while it is still loading.
+/**
+ * @param {object} props
+ * @param {import("../types.js").Lift | null} props.lift  Null while it is still loading.
+ * @param {() => void} props.onChangeDate  Opens the date picker again.
+ * @param {() => void} props.onRemove  Closes the comparison.
+ */
 function HistoricalLiftPanel({ lift, onChangeDate, onRemove }) {
   return (
     <section className="lift-history" aria-label="Past lift for comparison">

@@ -8,19 +8,30 @@ import { todayAsDateString } from "../formHelpers.js";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+/**
+ * @param {number} year
+ * @param {number} monthIndex  0 for January.
+ * @param {number} day
+ */
 function toDateString(year, monthIndex, day) {
   const month = String(monthIndex + 1).padStart(2, "0");
   return `${year}-${month}-${String(day).padStart(2, "0")}`;
 }
 
 // "2026-10-31" -> a single number per month, so months can be compared and stepped.
+/** @param {string} dateString  YYYY-MM-DD. */
 function monthNumber(dateString) {
   const [year, month] = dateString.split("-").map(Number);
   return year * 12 + (month - 1);
 }
 
-// availableDates: the only dates that can be picked; every other day is greyed out.
-// onSelect(date) is called with the picked YYYY-MM-DD string.
+/**
+ * @param {object} props
+ * @param {string[]} props.availableDates  YYYY-MM-DD. The only dates that can be picked;
+ *   every other day is greyed out.
+ * @param {string} props.selectedDate  YYYY-MM-DD, or "" for none.
+ * @param {(date: string) => void} props.onSelect  Called with the picked date.
+ */
 function LiftDatePicker({ availableDates, selectedDate, onSelect }) {
   const available = new Set(availableDates);
   // Every month that has at least one pickable date, oldest first. The arrows jump

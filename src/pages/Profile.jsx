@@ -18,7 +18,8 @@ function Profile() {
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
-  const [height, setHeight] = useState("");
+  // "" while blank, otherwise a whole number.
+  const [height, setHeight] = useState(/** @type {string | number} */ (""));
 
   // Fetch the profile and copy it into the form fields.
   // Null values become "" because controlled inputs can't hold null.

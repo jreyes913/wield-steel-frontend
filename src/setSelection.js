@@ -3,11 +3,29 @@
 
 import { useState } from "react";
 
-// sets: the day's sets, in position order.
+/**
+ * What useSetSelection gives back. S is LiftSet or ProgramSet.
+ * @template {import("./types.js").AnySet} S
+ * @typedef {object} SetSelection
+ * @property {S[]} selectedSets  The ticked sets, in position order.
+ * @property {(setId: number) => boolean} isSelected
+ * @property {(setId: number) => void} toggle  Ticks or unticks one set.
+ * @property {(groupSets: S[]) => boolean} areAllSelected
+ * @property {(groupSets: S[]) => void} toggleGroup
+ * @property {() => void} clear  Unticks everything.
+ * @property {number | null} addingToSetId  The set showing its "add exercise" row, if any.
+ * @property {(setId: number | null) => void} setAddingToSetId
+ */
+
+/**
+ * @template {import("./types.js").AnySet} S  LiftSet or ProgramSet.
+ * @param {S[]} sets  The day's sets, in position order.
+ * @returns {SetSelection<S>}
+ */
 export function useSetSelection(sets) {
-  const [chosenIds, setChosenIds] = useState([]);
+  const [chosenIds, setChosenIds] = useState(/** @type {number[]} */ ([]));
   // The set showing the "add exercise" input row, if any.
-  const [addingToSetId, setAddingToSetId] = useState(null);
+  const [addingToSetId, setAddingToSetId] = useState(/** @type {number | null} */ (null));
 
   // Filtering the current sets drops any that were deleted and keeps position order.
   const selectedSets = sets.filter((set) => chosenIds.includes(set.id));

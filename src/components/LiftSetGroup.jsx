@@ -7,9 +7,23 @@ import { useState } from "react";
 import { createLiftSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
 import LiftSubsetRow from "./LiftSubsetRow.jsx";
+import SetLeadingCells from "./SetLeadingCells.jsx";
 import { numberOrNull, nextPosition } from "../formHelpers.js";
 
-// readOnly (the historical comparison) shows the set without checkboxes, buttons or inputs.
+/**
+ * exercises, muscleGroups, onChanged and onError are only needed when it is editable.
+ * @param {object} props
+ * @param {import("../types.js").LiftSet} props.set
+ * @param {boolean} [props.readOnly]  The historical comparison: no checkboxes, buttons or inputs.
+ * @param {boolean} [props.isSelected]  Whether the set is ticked.
+ * @param {() => void} [props.onToggleSelected]
+ * @param {boolean} [props.isAddingExercise]  Show the "add exercise" row at the end of the set.
+ * @param {() => void} [props.onDoneAddingExercise]  Called when that row is added or cancelled.
+ * @param {import("../types.js").Exercise[]} [props.exercises]
+ * @param {import("../types.js").MuscleGroup[]} [props.muscleGroups]
+ * @param {import("../types.js").OnChanged} [props.onChanged]  Reloads the lift.
+ * @param {import("../types.js").OnError} [props.onError]
+ */
 function LiftSetGroup({
   set,
   readOnly = false,
@@ -63,21 +77,13 @@ function LiftSetGroup({
   // The checkbox and Set columns. Only the set's first row fills them in.
   function leadingCells(isFirstRow) {
     return (
-      <>
-        {!readOnly && (
-          <td className="select-cell">
-            {isFirstRow && (
-              <input
-                type="checkbox"
-                aria-label={`Select set ${set.position}`}
-                checked={isSelected}
-                onChange={onToggleSelected}
-              />
-            )}
-          </td>
-        )}
-        <td className="set-cell">{isFirstRow && <strong>{set.position}</strong>}</td>
-      </>
+      <SetLeadingCells
+        set={set}
+        isFirstRow={isFirstRow}
+        readOnly={readOnly}
+        isSelected={isSelected}
+        onToggleSelected={onToggleSelected}
+      />
     );
   }
 

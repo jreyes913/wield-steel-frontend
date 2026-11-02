@@ -1,0 +1,43 @@
+/* Design tokens: the app's colours and shadows, and the Amplify sign-in theme
+   mapped onto the brand colour. Change the brand colour here and nowhere else. */
+
+:root {
+  --color-brand: #0cbd73;        /* emerald green */
+  --color-brand-dark: #1fa76e;   /* hover / pressed */
+  --color-brand-tint: rgba(12, 189, 115, 0.1);
+
+  --color-text: #333333;
+  --color-muted: #707070;
+
+  --color-background: #f4f4f4;
+  --color-surface: #ffffff;
+  --color-border: #e2e2e2;
+
+  /* Buttons are shaded so they stand out from white cards and the grey page. */
+  --color-button: #e6ebe8;
+  --color-button-border: #c9d2cd;
+  --color-button-hover: #d2efe1;
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.12);
+
+  --color-danger: #c0392b;
+  --color-success: #1b6e2d;
+
+  --shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+:root {
+  --amplify-colors-brand-primary-10: #d5ffee;
+  --amplify-colors-brand-primary-20: #91fbcf;
+  --amplify-colors-brand-primary-40: #0dde87;
+  --amplify-colors-brand-primary-60: var(--color-brand);
+  --amplify-colors-brand-primary-80: #15b170;
+  --amplify-colors-brand-primary-90: var(--color-brand-dark);
+  --amplify-colors-brand-primary-100: #1c9663;
+
+  --amplify-radii-small: 8px;
+  --amplify-radii-medium: 10px;
+  --amplify-radii-large: 16px;
+  --amplify-radii-xl: 20px;
+}

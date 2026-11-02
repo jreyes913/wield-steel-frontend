@@ -44,15 +44,33 @@ The old `execute-api` address still answers and bypasses the WAF; don't use it.
 ## Folder structure
 
 ```
+jsconfig.json         Editor settings: lets VS Code understand imports, JSX and the JSDoc types.
 src/
-  main.jsx            Starts the app: configures Amplify, adds the router.
-  App.jsx             Login wall, navigation bar, and the list of routes.
+  main.jsx            Starts the app: configures Amplify, loads the styles, adds the router.
+  App.jsx             Login wall, navigation bar, and the list of routes. Every page except
+                      Lifts is loaded the first time it is opened (see "Bundle size").
   api.js              Every backend call, built on one shared request() helper.
+  types.js            JSDoc types for the backend's data (Lift, LiftSet, LiftSubset, Program...).
+                      Hover a value in VS Code to see its fields.
   formHelpers.js      Small form helpers: numberOrNull, todayAsDateString, nextPosition.
   setSelection.js     useSetSelection: which sets are ticked in a sets table.
+  setActions.js       useSetActions: what Copy and Delete do to the ticked sets.
   blocks.js           Groups a day's sets into Blocks A, B, C… by their exercises (display only).
   chartSetup.js       Registers the Chart.js pieces our line charts use.
-  index.css           The only stylesheet.
+  styles/
+    index.css         Imports the files below, in the order they apply. Keep that order.
+    amplify.css       The part of Amplify UI's stylesheet the sign-in page needs.
+    tokens.css        Colours and shadows (the only place the brand colour is set).
+    signin.css        Sign-in page overrides.
+    base.css          Reset, layout, headings, error/success messages.
+    navigation.css    Top navigation bar.
+    cards.css         The white panels (.card, .chart).
+    forms.css         Forms, inline forms, buttons.
+    tables.css        Data tables and the toolbar above a sets table.
+    blocks.css        Blocks: one table per group of sets.
+    responsive.css    Tablet and phone adjustments.
+    comparison.css    Lift detail page and the side-by-side comparison.
+    calendar.css      The comparison date picker.
   pages/
     Lifts.jsx         List of lifts + form to log one.
     LiftDetail.jsx    One lift: edit/delete it, its sets, add sets, apply a program day,
@@ -70,6 +88,8 @@ src/
     LiftSetsTable.jsx     A lift's sets table; readOnly mode drops every button and input.
     SetActionsToolbar.jsx Bar above a sets table: add exercise / copy / delete the ticked sets.
     SetBlock.jsx          One Block: header bar (letter, exercises, set count) above its table.
+    SetLeadingCells.jsx   A set's checkbox and number cells (shared by lift and program set rows).
+    NewSetBlock.jsx       The "New set" box under a sets table (shared by lifts and programs).
     CompareLiftPicker.jsx Card for choosing a past lift to compare against.
     LiftDatePicker.jsx    Month calendar where only dates with a lift can be picked.
     HistoricalLiftPanel.jsx Green, read-only column showing the past lift being compared.
@@ -77,9 +97,42 @@ src/
     BodyWeightChart.jsx   Body weight line chart.
     StrengthChart.jsx     Strength line chart with exercise/metric/date pickers.
     ProgramDayCard.jsx    One program day: name bar plus a table of its sets.
+    AddProgramSetFooter.jsx Bottom row of a program day's table: inputs that add a new set.
     ProgramSetGroup.jsx   One set in a program day's table: checkbox + number, exercise rows, add row.
     ProgramSubsetRow.jsx  One exercise row in a program set; Edit turns its cells into inputs.
 ```
+
+Lift and program components come in pairs (`LiftSetGroup`/`ProgramSetGroup`,
+`LiftSubsetRow`/`ProgramSubsetRow`, `AddLiftSetFooter`/`AddProgramSetFooter`). They look
+alike but differ in their columns (a plan has reps only, no RIR or weight) and API calls,
+so they are deliberately two simple components rather than one with many options. The
+parts that really are identical live in the shared files above (`SetLeadingCells`,
+`NewSetBlock`, `setActions.js`, `setSelection.js`).
+
+## Types and editor hints
+
+The project is plain JavaScript, but `jsconfig.json` and the JSDoc comments give VS Code
+autocomplete, hover docs and error underlines. The backend's data shapes are defined once in
+`src/types.js`; `api.js` uses them for its return types and components use them for their
+props. When the backend adds a field, add it to `types.js`.
+
+To check the whole project for type errors from the terminal (this downloads TypeScript temporarily and adds nothing to the project):
+
+```
+npx -p typescript tsc -p jsconfig.json
+```
+
+## Bundle size
+
+- **Pages load on demand.** `App.jsx` uses `React.lazy`, so only the Lifts page ships in the
+  first download. Chart.js is only fetched when Progress is opened.
+- **The sign-in page is most of what's left.** Amplify's Authenticator (with its state
+  machine, QR-code and form libraries) is about 400 kB of the first download. It wraps the
+  whole app, so everyone needs it before anything else shows.
+- **Amplify styles are trimmed.** `src/styles/amplify.css` imports only the parts of
+  Amplify's stylesheet the Authenticator uses, instead of all of `styles.css`.
+- To see what is in the bundle, build with `npx vite build --sourcemap --outDir /tmp/bundle`
+  and open the result in a bundle analyzer run through `npx`. Don't add one as a dependency.
 
 ## How a request flows
 
@@ -107,11 +160,15 @@ function called from `useEffect`, and a reload after each create, edit or delete
 
 ## Add a new API call
 
-In `src/api.js`, add one exported function next to the related ones:
+In `src/api.js`, add one exported function next to the related ones, with a JSDoc comment
+naming the argument and result types (add the type to `src/types.js` if it is new):
 
 ```js
+/**
+ * @param {Id} somethingId
+ * @returns {Promise<Something>}
+ */
 export const getSomething = (somethingId) => request("GET", `/something/${somethingId}`);
-export const createSomething = (fields) => request("POST", "/something", fields);
 ```
 
 Send empty optional fields as `null`, not `""` (see `numberOrNull` in `formHelpers.js`).
@@ -121,8 +178,11 @@ Send empty optional fields as `null`, not `""` (see `numberOrNull` in `formHelpe
 1. Create `src/pages/MyPage.jsx`. Copy a simple page such as `Lifts.jsx` and keep
    the same pattern: `loading` and `error` state, a `load...()` function called
    from `useEffect`, and a reload after every change.
-2. In `src/App.jsx`, import it and add a route inside `<Routes>`:
+2. In `src/App.jsx`, load it with `lazy` (next to the other pages) and add a route
+   inside `<Routes>`:
    ```jsx
+   const MyPage = lazy(() => import("./pages/MyPage.jsx"));
+   ...
    <Route path="/my-page" element={<MyPage />} />
    ```
 3. To put it in the navigation, add a link in `src/components/NavBar.jsx`:

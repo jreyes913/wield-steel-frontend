@@ -4,8 +4,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Amplify } from "aws-amplify";
-import "@aws-amplify/ui-react/styles.css";
-import "./index.css";
+import "./styles/amplify.css";
+import "./styles/index.css";
 import App from "./App.jsx";
 
 // Configure Amplify once, before anything tries to sign in or fetch a token.

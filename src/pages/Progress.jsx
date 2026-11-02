@@ -6,9 +6,12 @@ import { getExercises, getMuscleGroups } from "../api.js";
 import BodyWeightChart from "../components/BodyWeightChart.jsx";
 import StrengthChart from "../components/StrengthChart.jsx";
 
+/** @typedef {import("../types.js").Exercise} Exercise */
+/** @typedef {import("../types.js").MuscleGroup} MuscleGroup */
+
 function Progress() {
-  const [exercises, setExercises] = useState([]);
-  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [exercises, setExercises] = useState(/** @type {Exercise[]} */ ([]));
+  const [muscleGroups, setMuscleGroups] = useState(/** @type {MuscleGroup[]} */ ([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

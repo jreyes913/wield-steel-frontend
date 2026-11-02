@@ -1,0 +1,55 @@
+/* The sign-in page (Amplify Authenticator), restyled to match the app. */
+
+[data-amplify-authenticator] {
+  min-height: 100vh;
+  background: #f4f4f4;
+  padding: 24px;
+}
+
+[data-amplify-authenticator] [data-amplify-container] {
+  max-width: 420px;
+  margin: auto;
+}
+
+[data-amplify-authenticator] [data-amplify-router] {
+  border: none;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 12px 32px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+[data-amplify-authenticator] [data-amplify-form] {
+  padding: 2rem;
+}
+
+[data-amplify-authenticator] h3 {
+  color: var(--color-brand);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+[data-amplify-authenticator] button {
+  min-height: 44px;
+  border-radius: 8px;
+  background-color: var(--color-brand);
+  color: #f4f4f4;
+}
+
+[data-amplify-authenticator] .amplify-button--small {
+  background-color: var(--color-button);
+  color: var(--color-brand);
+}
+
+[data-amplify-authenticator] input {
+  min-height: 44px;
+}
+
+[data-amplify-authenticator] a {
+  color: var(--color-brand);
+}
+
+[data-amplify-authenticator] a:hover {
+  color: var(--color-brand-dark);
+}
