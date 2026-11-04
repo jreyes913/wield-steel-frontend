@@ -31,6 +31,8 @@ function Coaching() {
   const [editingGroupId, setEditingGroupId] = useState(/** @type {import("../types.js").Id | null} */ (null));
   // The group the "Athletes I coach" list is filtered to ("" is everyone).
   const [groupFilter, setGroupFilter] = useState("");
+  // The athlete whose "Add to group" menu is open.
+  const [addingToGroupFor, setAddingToGroupFor] = useState(/** @type {import("../types.js").Id | null} */ (null));
   // Per incoming request: whether to also share body weight when accepting.
   const [shareWeight, setShareWeight] = useState(/** @type {Record<number, boolean>} */ ({}));
   const [loading, setLoading] = useState(true);
@@ -95,6 +97,19 @@ function Coaching() {
       ? [...group.athlete_ids, Number(athleteId)]
       : group.athlete_ids.filter((id) => id !== Number(athleteId));
     run(() => updateCoachGroup(group.id, { athlete_ids: ids }));
+  }
+
+  /**
+   * Adds an athlete to the group chosen in their "Add to group" menu.
+   * @param {import("../types.js").Id} athleteId
+   * @param {string} groupId
+   */
+  function handleAddToGroup(athleteId, groupId) {
+    const group = overview.groups.find((g) => String(g.id) === groupId);
+    setAddingToGroupFor(null);
+    if (group) {
+      handleToggleMember(group, athleteId, true);
+    }
   }
 
   /** @param {import("../types.js").CoachGroup} group */
@@ -273,22 +288,71 @@ function Coaching() {
                   <th>Name</th>
                   <th>Username</th>
                   <th>Since</th>
+                  <th>Groups</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {shownAthletes.map(({ athlete, since }) => (
-                  <tr key={athlete.id}>
-                    <td><Link to={`/coaching/${athlete.id}`}>{displayName(athlete)}</Link></td>
-                    <td>{athlete.username}</td>
-                    <td>{since ? shortDate(since) : ""}</td>
-                    <td className="actions">
-                      <button type="button" className="danger" onClick={() => handleStop(athlete)}>
-                        Stop coaching
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {shownAthletes.map(({ athlete, since }) => {
+                  const inGroups = overview.groups.filter((g) => g.athlete_ids.includes(Number(athlete.id)));
+                  const otherGroups = overview.groups.filter((g) => !g.athlete_ids.includes(Number(athlete.id)));
+                  return (
+                    <tr key={athlete.id}>
+                      <td><Link to={`/coaching/${athlete.id}`}>{displayName(athlete)}</Link></td>
+                      <td>{athlete.username}</td>
+                      <td>{since ? shortDate(since) : ""}</td>
+                      <td>
+                        {inGroups.length === 0 && "–"}
+                        {inGroups.map((group) => (
+                          <span key={group.id}>
+                            {group.name}{" "}
+                            <button
+                              type="button"
+                              aria-label={`Take ${displayName(athlete)} out of ${group.name}`}
+                              onClick={() => handleToggleMember(group, athlete.id, false)}
+                            >
+                              ×
+                            </button>{" "}
+                          </span>
+                        ))}
+                      </td>
+                      <td className="actions">
+                        {addingToGroupFor === athlete.id ? (
+                          <select
+                            aria-label={`Add ${displayName(athlete)} to a group`}
+                            value=""
+                            autoFocus
+                            onChange={(e) => handleAddToGroup(athlete.id, e.target.value)}
+                            onBlur={() => setAddingToGroupFor(null)}
+                          >
+                            <option value="">Choose a group…</option>
+                            {otherGroups.map((group) => (
+                              <option key={group.id} value={String(group.id)}>{group.name}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={otherGroups.length === 0}
+                            title={
+                              overview.groups.length === 0
+                                ? "Create a group first"
+                                : otherGroups.length === 0
+                                  ? "Already in every group"
+                                  : ""
+                            }
+                            onClick={() => setAddingToGroupFor(athlete.id)}
+                          >
+                            Add to group
+                          </button>
+                        )}
+                        <button type="button" className="danger" onClick={() => handleStop(athlete)}>
+                          Stop coaching
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -298,8 +362,8 @@ function Coaching() {
       <section className="card">
         <h4>Groups</h4>
         <p>
-          Sort the athletes you coach into groups, then pick a group when you stop coaching or send
-          a program. Only you can see your groups; athletes never do.
+          Create groups here, then use "Add to group" next to an athlete below. You can filter by group
+          when you stop coaching or send a program. Only you can see your groups; athletes never do.
         </p>
         <form onSubmit={handleCreateGroup} className="inline-form">
           <input
