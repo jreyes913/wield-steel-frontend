@@ -33,3 +33,16 @@ export function nextPosition(items) {
   }
   return highest + 1;
 }
+
+// A weight for display: whole numbers plain, otherwise at most two decimals.
+// 100 -> "100", 22.5 -> "22.5", 112.50000001 -> "112.5", null -> "–"
+/**
+ * @param {number | null | undefined} value
+ * @returns {string}
+ */
+export function formatWeight(value) {
+  if (value === null || value === undefined) {
+    return "–";
+  }
+  return String(Math.round(value * 100) / 100);
+}

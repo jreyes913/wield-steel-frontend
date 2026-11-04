@@ -31,13 +31,13 @@ function Progress() {
   }, []);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   return (
     <div>
       <h1>Progress</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
       <BodyWeightChart />
       <StrengthChart exercises={exercises} muscleGroups={muscleGroups} />
     </div>

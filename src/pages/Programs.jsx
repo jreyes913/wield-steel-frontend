@@ -63,13 +63,13 @@ function Programs() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   return (
     <div>
       <h1>Programs</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
       <form onSubmit={handleSubmit} className="card">
         <h4>New program</h4>
@@ -88,7 +88,7 @@ function Programs() {
         <button type="submit">Add program</button>
       </form>
 
-      {programs.length === 0 && <p>No programs yet.</p>}
+      {programs.length === 0 && <p className="state">No programs yet. Use New program above to start one.</p>}
       {programs.length > 0 && (
         <div className="table-wrap">
           <table className="data-table">

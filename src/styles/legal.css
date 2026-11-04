@@ -1,7 +1,12 @@
 /* Legal pages and the site footer. */
 
 .legal {
-  max-width: 720px;
+  max-width: var(--width-prose);
+}
+
+.legal p,
+.legal li {
+  line-height: var(--leading-prose);
 }
 
 .legal ul {
@@ -13,7 +18,8 @@
   justify-content: center;
   gap: var(--space-5);
   padding: var(--space-5);
-  border-top: 1px solid var(--color-border);
+  font-size: var(--text-small);
+  border-top: var(--border-width) solid var(--color-border);
   color: var(--color-muted);
 }
 

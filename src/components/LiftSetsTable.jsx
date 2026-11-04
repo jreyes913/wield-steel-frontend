@@ -109,9 +109,9 @@ function LiftSetsTable({ lift, readOnly = false, exercises, muscleGroups, onChan
                 )}
                 <th className="set-cell">Set</th>
                 <th>Exercise</th>
-                <th>Reps</th>
-                <th>RIR</th>
-                <th>Weight</th>
+                <th className="num">Reps</th>
+                <th className="num">RIR</th>
+                <th className="num">Weight</th>
                 {!readOnly && <th></th>}
               </tr>
             </thead>

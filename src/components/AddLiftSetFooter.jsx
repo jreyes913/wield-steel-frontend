@@ -63,7 +63,7 @@ function AddLiftSetFooter({ liftId, position, exercises, muscleGroups, onChanged
             onChange={setSelectedExerciseId}
           />
         </td>
-        <td>
+        <td className="num">
           <input
             type="number"
             step="1"
@@ -72,7 +72,7 @@ function AddLiftSetFooter({ liftId, position, exercises, muscleGroups, onChanged
             onChange={(e) => setReps(e.target.value)}
           />
         </td>
-        <td>
+        <td className="num">
           <input
             type="number"
             step="1"
@@ -81,7 +81,7 @@ function AddLiftSetFooter({ liftId, position, exercises, muscleGroups, onChanged
             onChange={(e) => setRir(e.target.value)}
           />
         </td>
-        <td>
+        <td className="num">
           <input
             type="number"
             step="any"

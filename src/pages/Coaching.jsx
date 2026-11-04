@@ -138,7 +138,7 @@ function Coaching() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   // "Athletes I coach", narrowed to the chosen group.
@@ -150,7 +150,7 @@ function Coaching() {
   return (
     <div>
       <h1>Coaching</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
       {notice && <p className="success">{notice}</p>}
       <p>
         A coach can read your programs and lifts, and nothing else. They can&apos;t change anything,
@@ -268,7 +268,7 @@ function Coaching() {
         <h4>Athletes I coach</h4>
         {overview.athletes.length === 0 && <p>You don&apos;t coach anyone yet.</p>}
         <GroupFilter groups={overview.groups} value={groupFilter} onChange={setGroupFilter} />
-        {overview.athletes.length > 0 && shownAthletes.length === 0 && <p>No athletes in this group.</p>}
+        {overview.athletes.length > 0 && shownAthletes.length === 0 && <p className="state">No athletes in this group.</p>}
         {shownAthletes.length > 0 && (
           <div className="table-wrap">
             <table className="data-table">
@@ -365,7 +365,7 @@ function Coaching() {
           />
           <button type="submit">Create group</button>
         </form>
-        {overview.groups.length === 0 && <p>No groups yet.</p>}
+        {overview.groups.length === 0 && <p className="state">No groups yet.</p>}
         {overview.groups.map((group) => (
           <div key={group.id} className="card">
             <div className="inline-form">

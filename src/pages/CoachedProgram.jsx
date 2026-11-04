@@ -54,20 +54,20 @@ function CoachedProgram() {
   }, [athleteId, programId]);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   if (!athlete || !program) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/coaching">Back to coaching</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/coaching">Back to coaching</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to={`/coaching/${athlete.id}`}>← {displayName(athlete)}</Link>
+      <Link className="back-link" to={`/coaching/${athlete.id}`}>← {displayName(athlete)}</Link>
       <FriendBanner athlete={athlete} what="program" />
       <h1>{program.name}</h1>
       <p>
@@ -75,7 +75,7 @@ function CoachedProgram() {
       </p>
 
       <h4>Days</h4>
-      {program.days.length === 0 && <p>No days yet.</p>}
+      {program.days.length === 0 && <p className="state">No days yet.</p>}
       {program.days.map((day) => (
         <ProgramDayCard key={day.id} day={day} exercises={exercises} readOnly />
       ))}

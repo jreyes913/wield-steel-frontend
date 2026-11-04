@@ -102,14 +102,14 @@ function ProgramDetail() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   // The program failed to load (for example a 404), so there is nothing else to show.
   if (!program) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/programs">Back to programs</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/programs">Back to programs</Link>
       </div>
     );
   }
@@ -118,9 +118,9 @@ function ProgramDetail() {
   if (program.synced) {
     return (
       <div>
-        <Link to="/programs">← All programs</Link>
+        <Link className="back-link" to="/programs">← All programs</Link>
         <h1>{program.name}</h1>
-        {error && <p className="error">{error}</p>}
+        {error && <p className="state state--error" role="alert">{error}</p>}
         <p className="friend-banner">
           From {program.assigned_by_name ?? "a former coach"} · kept in sync · read-only · private
         </p>
@@ -133,7 +133,7 @@ function ProgramDetail() {
           keep the program as it was.
         </p>
         <h4>Days</h4>
-        {program.days.length === 0 && <p>No days yet.</p>}
+        {program.days.length === 0 && <p className="state">No days yet.</p>}
         {program.days.map((day) => (
           <ProgramDayCard key={day.id} day={day} exercises={exercises} readOnly />
         ))}
@@ -146,9 +146,9 @@ function ProgramDetail() {
 
   return (
     <div>
-      <Link to="/programs">← All programs</Link>
+      <Link className="back-link" to="/programs">← All programs</Link>
       <h1>{program.name}</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
       {fromCoach && (
         <p className="friend-banner">Sent by a coach · no longer kept in sync · private</p>
@@ -192,7 +192,7 @@ function ProgramDetail() {
       </form>
 
       <h4>Days</h4>
-      {program.days.length === 0 && <p>No days yet.</p>}
+      {program.days.length === 0 && <p className="state">No days yet.</p>}
       {program.days.map((day) => (
         <ProgramDayCard
           key={day.id}

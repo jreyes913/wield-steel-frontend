@@ -177,13 +177,13 @@ function Friends() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   return (
     <div>
       <h1>Friends</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
       {notice && <p className="success">{notice}</p>}
 
       <section className="card">
@@ -280,7 +280,7 @@ function Friends() {
 
       <section className="card">
         <h4>Friends</h4>
-        {friends.length === 0 && <p>No friends yet.</p>}
+        {friends.length === 0 && <p className="state">No friends yet.</p>}
         {friends.length > 0 && (
           <div className="table-wrap">
             <table className="data-table">

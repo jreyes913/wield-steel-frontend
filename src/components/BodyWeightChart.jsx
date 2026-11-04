@@ -29,7 +29,7 @@ function BodyWeightChart() {
   }, []);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   const chartData = {
@@ -45,8 +45,8 @@ function BodyWeightChart() {
   return (
     <div className="chart">
       <h4>Body weight</h4>
-      {error && <p className="error">{error}</p>}
-      {points.length === 0 ? <p>No body weight logged yet.</p> : <Line data={chartData} />}
+      {error && <p className="state state--error" role="alert">{error}</p>}
+      {points.length === 0 ? <p className="state">No body weight logged yet.</p> : <Line data={chartData} />}
     </div>
   );
 }

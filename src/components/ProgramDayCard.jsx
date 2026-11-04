@@ -99,7 +99,7 @@ function ProgramDayCard({ day, readOnly = false, exercises, muscleGroups, onChan
             onChange={(e) => setDayName(e.target.value)}
             required
           />
-          <button type="submit">Rename</button>
+          <button type="submit" className="secondary">Rename</button>
           <button type="button" className="danger" onClick={handleDeleteDay}>Delete day</button>
         </form>
       )}
@@ -139,7 +139,7 @@ function ProgramDayCard({ day, readOnly = false, exercises, muscleGroups, onChan
                 )}
                 <th className="set-cell">Set</th>
                 <th>Exercise</th>
-                <th>Reps</th>
+                <th className="num">Reps</th>
                 {!readOnly && <th></th>}
               </tr>
             </thead>

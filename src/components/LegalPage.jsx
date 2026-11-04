@@ -13,7 +13,7 @@ function LegalPage({ title, updated, children }) {
   return (
     <div className="app">
       <main className="page legal">
-        <p><Link to="/">Back to the app</Link></p>
+        <p><Link className="back-link" to="/">Back to the app</Link></p>
         <p className="error">Draft: have a lawyer review before launch.</p>
         <h1>{title}</h1>
         <p>Last updated: {updated}</p>

@@ -56,21 +56,21 @@ function CoachedAthlete() {
   }, [athleteId]);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   // The athlete failed to load (for example a 404), so there is nothing else to show.
   if (!athlete) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/coaching">Back to coaching</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/coaching">Back to coaching</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to="/coaching">← Coaching</Link>
+      <Link className="back-link" to="/coaching">← Coaching</Link>
       <h1>{displayName(athlete)}</h1>
       <FriendBanner athlete={athlete} what="training" />
       <p>Username: {athlete.username}</p>
@@ -79,10 +79,10 @@ function CoachedAthlete() {
         <section className="card">
           <h4>Programs</h4>
           <p>Only the programs they have made public.</p>
-          {programs.length === 0 && <p>No public programs.</p>}
+          {programs.length === 0 && <p className="state">No public programs.</p>}
           {programs.length > 0 && (
             <div className="table-wrap">
-              <table className="data-table">
+              <table className="data-table data-table--compact">
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -108,21 +108,21 @@ function CoachedAthlete() {
 
         <section className="card">
           <h4>Lifts</h4>
-          {lifts.length === 0 && <p>No lifts yet.</p>}
+          {lifts.length === 0 && <p className="state">No lifts yet.</p>}
           {lifts.length > 0 && (
             <div className="table-wrap">
-              <table className="data-table">
+              <table className="data-table data-table--compact">
                 <thead>
                   <tr>
                     <th>Date</th>
-                    {athlete.can_see_body_weight && <th>Body weight</th>}
+                    {athlete.can_see_body_weight && <th className="num">Body weight</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {lifts.map((lift) => (
                     <tr key={lift.id}>
                       <td><Link to={`/coaching/${athlete.id}/lifts/${lift.id}`}>{lift.date}</Link></td>
-                      {athlete.can_see_body_weight && <td>{lift.body_weight ?? "–"}</td>}
+                      {athlete.can_see_body_weight && <td className="num">{lift.body_weight ?? "–"}</td>}
                     </tr>
                   ))}
                 </tbody>

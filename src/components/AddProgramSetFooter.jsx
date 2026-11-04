@@ -57,7 +57,7 @@ function AddProgramSetFooter({ dayId, position, exercises, muscleGroups, onChang
             onChange={setSelectedExerciseId}
           />
         </td>
-        <td>
+        <td className="num">
           <input
             type="number"
             step="1"

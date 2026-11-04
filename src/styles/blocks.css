@@ -1,7 +1,7 @@
 /* Blocks: one table per group of sets with the same exercises. */
 
 .block {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 /* The bar on top of each block's table. Solid colours, so it reads the same on
@@ -10,21 +10,21 @@
 .app .block-header {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
+  gap: var(--space-1) var(--space-3);
 
   align-items: baseline;
 
   width: 100%;
   min-height: 0;
   margin: 0;
-  padding: 8px 14px;
+  padding: var(--space-2) var(--space-4);
 
   text-align: left;
 
   color: var(--color-text);
   background: var(--color-surface-raised);
 
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   border-bottom: none;
 
   box-shadow: none;
@@ -38,7 +38,7 @@
 
 .block--collapsed .block-header,
 .app .block--collapsed .block-header {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-width) solid var(--color-border);
 }
 
 .block-toggle {
@@ -47,16 +47,17 @@
 }
 
 .block-label {
-  font-size: 12px;
-  font-weight: 700;
+  font-family: var(--font-subheading);
+  font-size: var(--text-label);
+  font-weight: 600;
 
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .block-summary {
-  color: var(--color-muted);
-  font-size: 13px;
+  color: var(--color-medium);
+  font-size: var(--text-small);
   font-weight: 400;
 }
 
@@ -71,19 +72,19 @@
 }
 
 .blocks-table .col-select {
-  width: 36px;
+  width: var(--tap);
 }
 
 .blocks-table .col-set {
-  width: 64px;
+  width: 4rem;
 }
 
 .blocks-table .col-num {
-  width: 100px;
+  width: 6.5rem;
 }
 
 .blocks-table .col-actions {
-  width: 170px;
+  width: 11rem;
 }
 
 /* Wide enough for the exercise dropdown beside three number inputs and the buttons. */
@@ -94,23 +95,51 @@
 .set-toolbar-count {
   margin-right: auto;
 
-  color: var(--color-muted);
+  color: var(--color-medium);
 
-  font-size: 13px;
-}
-
-.app .set-toolbar button {
-  min-height: auto;
-  font-size: 11px;
-  padding: 6px 12px;
+  font-size: var(--text-small);
 }
 
 /* A heavier line where one set ends and the next begins. */
 .data-table tbody + tbody tr:first-child td,
 .data-table tbody + tfoot tr:first-child td {
-  border-top: 2px solid var(--color-border);
+  border-top: var(--border-heavy) solid var(--color-border);
 }
 
 .data-table .new-row td {
   background: var(--color-surface-raised);
+}
+
+/* Phones: the exercise table is wider than the screen and scrolls sideways. The tick
+   box and set number stay in place, so you always see which set you are on. */
+@media (max-width: 768px) {
+  .blocks-table.lift-sets-table {
+    min-width: 640px;
+  }
+
+  .blocks-table .select-cell,
+  .blocks-table .set-cell {
+    position: sticky;
+    z-index: 1;
+
+    background: var(--color-surface);
+  }
+
+  .blocks-table th.select-cell,
+  .blocks-table th.set-cell {
+    background: var(--color-background);
+  }
+
+  .blocks-table .select-cell {
+    left: 0;
+  }
+
+  .blocks-table .set-cell {
+    left: var(--tap);
+  }
+
+  .blocks-table .new-row .select-cell,
+  .blocks-table .new-row .set-cell {
+    background: var(--color-surface-raised);
+  }
 }

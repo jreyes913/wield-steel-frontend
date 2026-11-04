@@ -31,13 +31,13 @@ function Exercises() {
   }, []);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   return (
     <div>
       <h1>Exercises</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
       <dl className="card glossary">
         {[DIFFICULTY, COMPLEXITY].map(({ term, meaning }) => (
@@ -48,7 +48,7 @@ function Exercises() {
         ))}
       </dl>
 
-      {exercises.length === 0 && !error && <p>No exercises yet.</p>}
+      {exercises.length === 0 && !error && <p className="state">No exercises yet.</p>}
       {muscleGroups.map((muscleGroup) => {
         // The backend already sends exercises sorted by name.
         const groupExercises = exercises.filter(
@@ -61,7 +61,7 @@ function Exercises() {
           <section key={muscleGroup.id}>
             <h4>{muscleGroup.name}</h4>
             <div className="table-wrap">
-              <table className="data-table">
+              <table className="data-table data-table--compact">
                 <thead>
                   <tr>
                     <th>Exercise</th>

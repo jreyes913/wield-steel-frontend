@@ -106,7 +106,7 @@ function SendProgram({ programId }) {
         exercise here, they see it too. It works even if this program is private. If you delete
         this program or stop coaching them, they keep the program as it was.
       </p>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
       <GroupFilter groups={groups} value={groupId} onChange={setGroupId} />
       <p>
         <label>
@@ -114,7 +114,7 @@ function SendProgram({ programId }) {
           Select all ({visible.length})
         </label>
       </p>
-      {visible.length === 0 && <p>No athletes in this group.</p>}
+      {visible.length === 0 && <p className="state">No athletes in this group.</p>}
       {visible.map(({ athlete }) => (
         <div key={athlete.id}>
           <label>

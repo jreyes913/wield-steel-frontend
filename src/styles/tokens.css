@@ -43,10 +43,34 @@
   --space-7: 48px;
   --space-8: 64px;
 
+  /* Lines and sizes that are not spacing. */
+  --border-width: 1px;
+  --border-heavy: 2px;
+  --focus-ring: 2px;
+  --tap: 44px; /* smallest touch target */
+  --width-page: 960px;
+  --width-wide: 1440px;
+  --width-prose: 68ch;
+
   /* ---- Fonts ---- (loaded in index.html) */
   --font-heading: "Poppins", sans-serif;
   --font-subheading: "Parkinsans", sans-serif;
   --font-body: "Noto Serif Kannada", serif;
+
+  /* ---- Type scale ---- (rem, so text follows the browser's font-size setting)
+     display: page title (h1) | heading: long-page sections | title: card and section
+     titles (h4) | body: paragraphs and inputs | data: table cells | small: help text
+     label: table headers, form labels, buttons */
+  --text-display: clamp(2rem, 7vw, 3rem);
+  --text-heading: clamp(1.5rem, 5vw, 2rem);
+  --text-title: 1.25rem;
+  --text-body: 1rem;
+  --text-data: 0.9375rem;
+  --text-small: 0.875rem;
+  --text-label: 0.8125rem;
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-prose: 1.6;
 
   /* ---- What the app's CSS uses ---- */
   --color-brand: var(--dark-primary);
@@ -61,16 +85,26 @@
   --color-background: var(--dark-background);
   /* The guide has one background, so panels are that background lifted a little
      towards the text colour. Raised is for header bars and the "new" rows. */
-  --color-surface: color-mix(in srgb, var(--dark-neutral) 5%, var(--dark-background));
-  --color-surface-raised: color-mix(in srgb, var(--dark-neutral) 10%, var(--dark-background));
-  --color-border: var(--dark-disabled);
+  --color-surface: color-mix(in srgb, var(--dark-neutral) 7%, var(--dark-background));
+  --color-surface-raised: color-mix(in srgb, var(--dark-neutral) 12%, var(--dark-background));
+  /* Strong: the edges of cards, tables and inputs (at least 3:1 against the surfaces).
+     Subtle: lines inside a table, so the grouping of sets stands out instead. */
+  --color-border: color-mix(in srgb, var(--dark-medium) 35%, var(--dark-disabled));
+  --color-border-subtle: var(--dark-disabled);
+  --color-disabled-text: color-mix(in srgb, var(--dark-muted) 70%, var(--dark-background));
+  --color-pressed: color-mix(in srgb, var(--dark-primary) 28%, transparent);
+  --color-danger-tint: color-mix(in srgb, var(--dark-error) 14%, var(--dark-background));
+  --color-selected: color-mix(in srgb, var(--dark-primary) 18%, var(--dark-background));
 
   --color-button: var(--color-surface-raised);
-  --color-button-border: var(--dark-disabled);
+  --color-button-border: var(--color-border);
   --color-button-hover: var(--color-brand-tint);
 
   --color-danger: var(--dark-error);
   --color-success: var(--dark-success);
+
+  /* The chart line. (Chart.js reads it as a plain colour, so no color-mix() here.) */
+  --chart-line: var(--dark-primary);
 
   /* Boxed look: edges come from borders, not shadows. */
   --shadow: none;

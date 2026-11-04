@@ -154,14 +154,14 @@ function LiftDetail() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   // The lift failed to load (for example a 404), so there is nothing else to show.
   if (!lift) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/">Back to lifts</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/">Back to lifts</Link>
       </div>
     );
   }
@@ -169,7 +169,7 @@ function LiftDetail() {
   return (
     <div>
       <div className="lift-toolbar">
-        <Link to="/">← All lifts</Link>
+        <Link className="back-link" to="/">← All lifts</Link>
         {!isPicking && !activeComparison && (
           <div className="lift-toolbar-actions">
             <button type="button" onClick={() => openPicker(false)}>
@@ -181,7 +181,7 @@ function LiftDetail() {
           </div>
         )}
       </div>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
       {isPicking && pickingFriendLift && (
         <CompareFriendLiftPicker

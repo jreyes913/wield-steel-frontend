@@ -56,21 +56,21 @@ function FriendLiftPage() {
   }, [athleteId, liftId]);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   // The lift failed to load (for example a 404), so there is nothing else to show.
   if (!friend || !lift) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/friends">Back to friends</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/friends">Back to friends</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to={`/friends/${friend.id}`}>← {displayName(friend)}</Link>
+      <Link className="back-link" to={`/friends/${friend.id}`}>← {displayName(friend)}</Link>
       <FriendBanner athlete={friend} what="lift" />
       <h1>Lift on {lift.date}</h1>
 

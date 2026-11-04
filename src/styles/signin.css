@@ -3,16 +3,16 @@
 [data-amplify-authenticator] {
   min-height: 100vh;
   background: var(--color-background);
-  padding: 24px;
+  padding: var(--space-5);
 }
 
 [data-amplify-authenticator] [data-amplify-container] {
-  max-width: 420px;
+  max-width: 26rem;
   margin: auto;
 }
 
 [data-amplify-authenticator] [data-amplify-router] {
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   overflow: hidden;
 }
 
@@ -21,12 +21,12 @@
 }
 
 [data-amplify-authenticator] h3 {
-  font-size: 2.369rem;
+  font-size: var(--text-heading);
   font-weight: 700;
 }
 
 [data-amplify-authenticator] button {
-  min-height: 44px;
+  min-height: var(--tap);
   background-color: var(--color-brand);
   color: var(--color-on-brand);
 }
@@ -37,7 +37,7 @@
 }
 
 [data-amplify-authenticator] input {
-  min-height: 44px;
+  min-height: var(--tap);
 }
 
 [data-amplify-authenticator] a {

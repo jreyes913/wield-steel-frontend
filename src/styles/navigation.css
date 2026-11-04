@@ -1,29 +1,56 @@
-/* The navigation bar shown once signed in. */
+/* The navigation bar shown once signed in.
+   Three groups: training pages, people, then the account. On a phone the training
+   pages are the first row and everything else is the second. */
 
 .navbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-2) var(--space-5);
 
   align-items: center;
 
-  margin-bottom: 20px;
-  padding: 14px 18px;
+  margin-bottom: var(--space-5);
+  padding: var(--space-2) var(--space-4);
 
   background: var(--color-surface);
 
-  border: 1px solid var(--color-border);
-
-  box-shadow: var(--shadow);
+  border: var(--border-width) solid var(--color-border);
 }
 
-.navbar a {
-  color: var(--color-muted);
+.navbar-group,
+.navbar-secondary {
+  display: flex;
+  gap: var(--space-1);
+
+  align-items: center;
+}
+
+/* Pushes the people and account groups to the right edge of the bar. */
+.navbar-secondary {
+  flex: 1;
+  justify-content: flex-end;
+  gap: var(--space-5);
+}
+
+.navbar a,
+.app .navbar-signout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+
+  font-family: var(--font-subheading);
+  font-size: var(--text-small);
+  font-weight: 600;
+
+  color: var(--color-medium);
 
   text-decoration: none;
-  font-weight: 500;
 
-  padding: 6px 10px;
+  /* The active page is marked by a line under it, not only by colour and weight. */
+  border-bottom: var(--focus-ring) solid transparent;
 
   transition:
     color 0.15s ease,
@@ -31,11 +58,54 @@
 }
 
 .navbar a:hover {
-  color: var(--color-brand);
+  color: var(--color-brand-hover);
   background: var(--color-brand-tint);
 }
 
 .navbar a.active {
   color: var(--color-text);
-  font-weight: 700;
+  border-bottom-color: var(--color-brand);
+}
+
+/* Sign out is a button (it acts, it does not go to a page) but sits in the bar as a link. */
+.app .navbar-signout {
+  background: transparent;
+  border: none;
+  border-bottom: var(--focus-ring) solid transparent;
+}
+
+.app .navbar-signout:hover {
+  color: var(--color-danger);
+  background: var(--color-brand-tint);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .navbar-group--main {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* The two groups dissolve into one row of five. */
+  .navbar-secondary,
+  .navbar-group--people,
+  .navbar-group--account {
+    display: contents;
+  }
+
+  .navbar a,
+  .app .navbar-signout {
+    padding: 0 var(--space-1);
+
+    font-size: var(--text-label);
+    text-align: center;
+  }
 }

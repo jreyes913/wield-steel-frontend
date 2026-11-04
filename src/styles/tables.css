@@ -5,43 +5,57 @@
 
   background: var(--color-surface);
 
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
 
   box-shadow: var(--shadow);
 
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .data-table {
   width: 100%;
-  min-width: 600px;
+  min-width: 600px; /* wide enough for the buttons in the last column */
   border-collapse: collapse;
 }
 
 .data-table th {
-  padding: 12px 14px;
+  padding: var(--space-3) var(--space-4);
 
   text-align: left;
 
   background: var(--color-background);
 
-  color: var(--color-muted);
+  color: var(--color-medium);
 
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--font-subheading);
+  font-size: var(--text-label);
+  font-weight: 600;
 
   text-transform: uppercase;
   letter-spacing: 0.06em;
 
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: var(--border-heavy) solid var(--color-border);
 }
 
 .data-table td {
-  padding: 10px 14px;
+  padding: var(--space-2) var(--space-4);
 
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-width) solid var(--color-border-subtle);
 
-  font-size: 14px;
+  font-size: var(--text-data);
+
+  /* Digits all the same width, so columns of numbers line up. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* Numbers are right-aligned under right-aligned headers, so they compare by size. */
+.data-table .num {
+  text-align: right;
+}
+
+.data-table input.num,
+.data-table .num input {
+  text-align: right;
 }
 
 .data-table .actions {
@@ -49,20 +63,26 @@
   white-space: nowrap;
 }
 
-.data-table .actions button {
-  min-height: auto;
+.data-table .actions button,
+.app .set-toolbar button {
+  min-height: 0; /* compact for a mouse; 44px on touch screens, below */
 
-  font-size: 11px;
+  font-size: var(--text-label);
 
-  padding: 6px 12px;
+  padding: var(--space-1) var(--space-3);
 
-  margin-left: 6px;
+  margin-left: var(--space-2);
+}
+
+/* Two or three short columns and no buttons: fits a phone without scrolling. */
+.data-table--compact {
+  min-width: 0;
 }
 
 .data-table input,
 .data-table select {
-  font-size: 14px;
-  padding: 6px 8px;
+  font-size: var(--text-data);
+  padding: var(--space-1) var(--space-2);
 }
 
 .data-table input[type="number"] {
@@ -82,10 +102,12 @@
   padding-right: 0;
 }
 
+/* The box is drawn small but the cell around it is the touch target. */
 .app .data-table .select-cell input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: var(--space-5);
+  height: var(--space-5);
   min-width: 0;
+  min-height: 0;
   margin: 0;
   padding: 0;
 
@@ -99,17 +121,34 @@
 .set-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 
   align-items: center;
 
-  margin-bottom: 12px;
-  padding: 10px 14px;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) var(--space-4);
 
   color: var(--color-text);
   background: var(--color-surface);
 
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
 
   box-shadow: var(--shadow);
+}
+
+/* Delete sits apart from the safe actions, at the far end of the bar. */
+.set-toolbar .danger {
+  margin-left: var(--space-4);
+}
+
+/* Touch screens: tables stay compact for a mouse, but everything tappable is 44px. */
+@media (pointer: coarse) {
+  .data-table .actions button,
+  .app .set-toolbar button {
+    min-height: var(--tap);
+  }
+
+  .data-table .select-cell {
+    padding: var(--space-2) var(--space-3);
+  }
 }

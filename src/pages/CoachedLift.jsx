@@ -55,20 +55,20 @@ function CoachedLift() {
   }, [athleteId, liftId]);
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   if (!athlete || !lift) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/coaching">Back to coaching</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/coaching">Back to coaching</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to={`/coaching/${athlete.id}`}>← {displayName(athlete)}</Link>
+      <Link className="back-link" to={`/coaching/${athlete.id}`}>← {displayName(athlete)}</Link>
       <FriendBanner athlete={athlete} what="lift" />
       <h1>Lift on {lift.date}</h1>
       {lift.body_weight != null && <p>Body weight: {lift.body_weight}</p>}

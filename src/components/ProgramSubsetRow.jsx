@@ -62,7 +62,7 @@ function ProgramSubsetRow({
       <tr>
         {leadingCells}
         <td>{subset.exercise.name}</td>
-        <td>{subset.reps ?? "–"}</td>
+        <td className="num">{subset.reps ?? "–"}</td>
         {!readOnly && (
           <td className="actions">
             <button type="button" onClick={() => setIsEditing(true)}>Edit</button>
@@ -84,7 +84,7 @@ function ProgramSubsetRow({
           onChange={setSelectedExerciseId}
         />
       </td>
-      <td>
+      <td className="num">
         <input
           type="number"
           step="1"

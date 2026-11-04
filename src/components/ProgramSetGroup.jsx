@@ -113,7 +113,7 @@ function ProgramSetGroup({
               onChange={setSelectedExerciseId}
             />
           </td>
-          <td>
+          <td className="num">
             <input
               type="number"
               step="1"

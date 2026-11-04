@@ -3,17 +3,17 @@
 .lift-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
 
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 /* Two columns need more room than the normal 960px page. */
 .page:has(.lift-layout--comparing) {
-  max-width: 1440px;
+  max-width: var(--width-wide);
 }
 
 .lift-layout--comparing {
@@ -21,7 +21,7 @@
   /* The past lift's table has no buttons or inputs, so it needs less room than
      the editable current lift. */
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: 24px;
+  gap: var(--space-5);
 
   align-items: start;
 }
@@ -32,51 +32,50 @@
 .lift-toolbar-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .lift-history {
-  background: color-mix(in srgb, var(--color-brand) 18%, var(--color-background));
-  border: 1px solid var(--color-brand);
+  background: var(--color-selected);
+  border: var(--border-width) solid var(--color-brand);
 
   box-shadow: var(--shadow);
 
-  padding: 20px;
+  padding: var(--space-5);
 }
 
 .lift-history-header {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
 
   align-items: flex-start;
   justify-content: space-between;
 
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .lift-history-label {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 
-  font-size: 12px;
-  font-weight: 700;
+  font-family: var(--font-subheading);
+  font-size: var(--text-label);
+  font-weight: 600;
 
   text-transform: uppercase;
   letter-spacing: 0.06em;
-
-  opacity: 0.9;
 }
 
 .lift-history .lift-history-date {
   margin-bottom: 0;
 
-  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-size: var(--text-title);
 }
 
 .lift-history-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .app .lift-history-actions button {
@@ -102,8 +101,8 @@
    scrolling on a normal monitor. */
 .lift-layout--comparing .data-table th,
 .lift-layout--comparing .data-table td {
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
 }
 
 .lift-layout--comparing .data-table input[type="number"] {
@@ -115,11 +114,11 @@
 }
 
 .lift-layout--comparing .blocks-table .col-num {
-  width: 80px;
+  width: 5rem;
 }
 
 .lift-layout--comparing .blocks-table .col-actions {
-  width: 150px;
+  width: 9.5rem;
 }
 
 .lift-layout--comparing .blocks-table.lift-sets-table {
@@ -128,15 +127,15 @@
 
 /* The past lift's numbers are plain text, so their columns can be narrower. */
 .lift-layout--comparing .blocks-table.data-table--read-only .col-num {
-  width: 64px;
+  width: 4rem;
 }
 
 .lift-layout--comparing .blocks-table.data-table--read-only .col-set {
-  width: 48px;
+  width: 3rem;
 }
 
 .app .lift-layout--comparing .data-table .actions button {
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-left: 4px;
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  margin-left: var(--space-1);
 }

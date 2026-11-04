@@ -44,13 +44,13 @@ function Lifts() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
 
   return (
     <div>
       <h1>Lifts</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
       <form onSubmit={handleSubmit} className="card">
         <h4>Log a lift</h4>
@@ -70,21 +70,21 @@ function Lifts() {
         <button type="submit">Add lift</button>
       </form>
 
-      {lifts.length === 0 && <p>No lifts yet.</p>}
+      {lifts.length === 0 && <p className="state">No lifts yet. Use Log a lift above to add the first one.</p>}
       {lifts.length > 0 && (
         <div className="table-wrap">
-          <table className="data-table">
+          <table className="data-table data-table--compact">
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Body weight</th>
+                <th className="num">Body weight</th>
               </tr>
             </thead>
             <tbody>
               {lifts.map((lift) => (
                 <tr key={lift.id}>
                   <td><Link to={`/lifts/${lift.id}`}>{lift.date}</Link></td>
-                  <td>{lift.body_weight ?? "–"}</td>
+                  <td className="num">{lift.body_weight ?? "–"}</td>
                 </tr>
               ))}
             </tbody>

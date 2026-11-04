@@ -71,24 +71,24 @@ function FriendDetail() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   // The friend failed to load (for example a 404), so there is nothing else to show.
   if (!friend) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/friends">Back to friends</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/friends">Back to friends</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to="/friends">← All friends</Link>
+      <Link className="back-link" to="/friends">← All friends</Link>
       <h1>{displayName(friend)}</h1>
       <FriendBanner athlete={friend} what="profile" />
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
       <p>Username: {friend.username}</p>
       <p>
         <button type="button" className="danger" onClick={handleBlock}>Block</button>
@@ -97,10 +97,10 @@ function FriendDetail() {
       <div className="friend-cards">
         <section className="card">
           <h4>Programs</h4>
-          {programs.length === 0 && <p>No programs yet.</p>}
+          {programs.length === 0 && <p className="state">No programs yet.</p>}
           {programs.length > 0 && (
             <div className="table-wrap">
-              <table className="data-table">
+              <table className="data-table data-table--compact">
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -126,10 +126,10 @@ function FriendDetail() {
 
         <section className="card">
           <h4>Lifts</h4>
-          {lifts.length === 0 && <p>No lifts yet.</p>}
+          {lifts.length === 0 && <p className="state">No lifts yet.</p>}
           {lifts.length > 0 && (
             <div className="table-wrap">
-              <table className="data-table">
+              <table className="data-table data-table--compact">
                 <thead>
                   <tr>
                     <th>Date</th>

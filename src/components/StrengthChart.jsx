@@ -69,15 +69,15 @@ function StrengthChart({ exercises, muscleGroups }) {
 
   function renderChart() {
     if (loading) {
-      return <p>Loading…</p>;
+      return <p className="state">Loading…</p>;
     }
     if (!strength) {
-      return <p>Choose an exercise to see its progress.</p>;
+      return <p className="state">Choose an exercise to see its progress.</p>;
     }
     // A metric is null when no set that day qualified; skip those points.
     const points = buildPoints().filter((point) => point.value !== null);
     if (points.length === 0) {
-      return <p>No data for this metric yet.</p>;
+      return <p className="state">No data for this metric yet.</p>;
     }
     const chartData = {
       labels: points.map((point) => point.label),
@@ -94,7 +94,7 @@ function StrengthChart({ exercises, muscleGroups }) {
   return (
     <div className="chart">
       <h4>Strength</h4>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
       <form onSubmit={(event) => event.preventDefault()}>
         <label>

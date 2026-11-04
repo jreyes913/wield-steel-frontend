@@ -6,17 +6,17 @@
 
 @media (max-width: 768px) {
   .page {
-    padding: 16px;
+    padding: var(--space-4);
   }
 
   .card,
   .chart {
-    padding: 16px;
+    padding: var(--space-4);
   }
 
   .app form label {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   .inline-form {
@@ -28,15 +28,6 @@
   .inline-form button {
     width: 100%;
   }
-
-  .navbar {
-    gap: 8px;
-  }
-
-  .navbar a {
-    flex: 1 1 auto;
-    text-align: center;
-  }
 }
 
 /* =========================================================
@@ -45,12 +36,12 @@
 
 @media (max-width: 480px) {
   .page {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .card,
   .chart {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .data-table {

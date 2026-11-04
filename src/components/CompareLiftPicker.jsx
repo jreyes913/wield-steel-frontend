@@ -38,7 +38,7 @@ function CompareLiftPicker({ currentLift, selectedLiftId, onPick, onCancel, onEr
   if (lifts === null) {
     return (
       <div className="card">
-        <p>Loading past lifts…</p>
+        <p className="state">Loading past lifts…</p>
       </div>
     );
   }

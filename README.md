@@ -69,10 +69,10 @@ src/
   styles/
     index.css         Imports the files below, in the order they apply. Keep that order.
     amplify.css       The part of Amplify UI's stylesheet the sign-in page needs.
-    tokens.css        The brand guide's dark palette, spacing and fonts, plus the colours the app uses
+    tokens.css        The brand guide's dark palette, spacing and fonts, plus the colours the app uses The type scale (--text-*), border and tap-size tokens are here too.
                       (the only place the brand is set). The site is dark only, with no rounded corners.
     signin.css        Sign-in page overrides.
-    base.css          Reset, layout, headings, error/success messages.
+    base.css          Reset, layout, headings, focus ring, error/success/empty-state boxes.
     navigation.css    Top navigation bar.
     cards.css         The white panels (.card, .chart).
     forms.css         Forms, inline forms, buttons.

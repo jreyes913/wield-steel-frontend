@@ -66,24 +66,24 @@ function FriendProgram() {
   }
 
   if (loading) {
-    return <p>Loading…</p>;
+    return <p className="state">Loading…</p>;
   }
   // The program failed to load (for example a 404), so there is nothing else to show.
   if (!friend || !program) {
     return (
       <div>
-        <p className="error">{error}</p>
-        <Link to="/friends">Back to friends</Link>
+        <p className="state state--error" role="alert">{error}</p>
+        <Link className="back-link" to="/friends">Back to friends</Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Link to={`/friends/${friend.id}`}>← {displayName(friend)}</Link>
+      <Link className="back-link" to={`/friends/${friend.id}`}>← {displayName(friend)}</Link>
       <FriendBanner athlete={friend} what="program" />
       <h1>{program.name}</h1>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
       <p>
         {program.start_date ?? "–"} to {program.end_date ?? "–"}
       </p>
@@ -92,7 +92,7 @@ function FriendProgram() {
       </p>
 
       <h4>Days</h4>
-      {program.days.length === 0 && <p>No days yet.</p>}
+      {program.days.length === 0 && <p className="state">No days yet.</p>}
       {program.days.map((day) => (
         <ProgramDayCard key={day.id} day={day} exercises={exercises} readOnly />
       ))}

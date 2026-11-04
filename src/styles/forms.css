@@ -8,41 +8,56 @@
   display: grid;
   grid-template-columns: 12rem 1fr;
 
-  gap: 8px 16px;
+  gap: var(--space-2) var(--space-4);
   align-items: center;
 
-  margin-bottom: 14px;
-
-  font-weight: 500;
+  margin-bottom: var(--space-4);
 }
 
 .app input,
 .app select,
 .app textarea {
   width: 100%;
+  min-height: var(--tap);
 
   font: inherit;
-  font-size: 16px;
+  font-size: var(--text-body); /* 16px, so phones do not zoom in on focus */
 
   color: var(--color-text);
   background: var(--color-background);
 
-  border: 1.5px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
 
-  padding: 10px 12px;
+  padding: var(--space-2) var(--space-3);
 
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
+/* Ticks and radio buttons keep their own size; the label around them is the tap target. */
+.app input[type="checkbox"],
+.app input[type="radio"] {
+  width: var(--space-5);
+  height: var(--space-5);
+  min-height: 0;
+  padding: 0;
+
+  accent-color: var(--color-brand);
+}
+
+/* The focus ring itself is in base.css; the border also turns brand. */
 .app input:focus,
 .app select:focus,
 .app textarea:focus {
-  outline: none;
-
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px var(--color-brand-tint);
+}
+
+.app input:disabled,
+.app select:disabled,
+.app textarea:disabled {
+  color: var(--color-disabled-text);
+  border-style: dashed;
+
+  cursor: not-allowed;
 }
 
 /* =========================================================
@@ -52,11 +67,11 @@
 .inline-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 
   align-items: center;
 
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .inline-form input {
@@ -69,20 +84,20 @@
    ========================================================= */
 
 .app button {
-  min-height: 44px;
+  min-height: var(--tap);
 
   font: inherit;
-  font-size: 13px;
+  font-size: var(--text-small);
   font-weight: 600;
 
   color: var(--color-text);
   background: var(--color-button);
 
-  border: 1.5px solid var(--color-button-border);
+  border: var(--border-width) solid var(--color-button-border);
 
   box-shadow: var(--shadow-button);
 
-  padding: 10px 18px;
+  padding: var(--space-2) var(--space-4);
 
   cursor: pointer;
 
@@ -99,11 +114,21 @@
   border-color: var(--color-brand);
 }
 
-.app button:disabled:not(.calendar-day) {
-  opacity: 0.45;
-  pointer-events: none;
+.app button:active {
+  background: var(--color-pressed);
 }
 
+/* Disabled: dimmer text and a dashed edge, so it is not only the fade that says so. */
+.app button:disabled:not(.calendar-day) {
+  color: var(--color-disabled-text);
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--color-border-subtle);
+
+  cursor: not-allowed;
+}
+
+/* The one main action on a screen: filled with the brand colour. */
 .app button.primary,
 .app button[type="submit"] {
   color: var(--color-on-brand);
@@ -120,6 +145,28 @@
   border-color: var(--color-brand-hover);
 }
 
+.app button.primary:active,
+.app button[type="submit"]:active {
+  background: var(--dark-primary-active);
+  border-color: var(--dark-primary-active);
+}
+
+/* A submit button that is not the screen's main action, such as Rename on each day. */
+.app button.secondary,
+.app button.secondary:hover:not(:disabled) {
+  color: var(--color-text);
+
+  background: var(--color-button);
+  border-color: var(--color-button-border);
+}
+
+.app button.secondary:hover:not(:disabled) {
+  color: var(--color-brand-hover);
+
+  background: var(--color-button-hover);
+  border-color: var(--color-brand);
+}
+
 .app button.danger {
   color: var(--color-danger);
   border-color: var(--color-danger);
@@ -130,4 +177,9 @@
 
   background: var(--color-danger);
   border-color: var(--color-danger);
+}
+
+.app button.danger:disabled:not(.calendar-day) {
+  color: var(--color-disabled-text);
+  border-color: var(--color-border-subtle);
 }

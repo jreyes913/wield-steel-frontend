@@ -79,9 +79,9 @@ function CompareFriendLiftPicker({ onPick, onCancel }) {
   return (
     <div className="card compare-picker">
       <h4>Compare with a friend's lift</h4>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="state state--error" role="alert">{error}</p>}
 
-      {friends === null && <p>Loading friends…</p>}
+      {friends === null && <p className="state">Loading friends…</p>}
       {friends !== null && friends.length === 0 && <p>You have no friends to compare with yet.</p>}
       {friends !== null && friends.length > 0 && (
         <div className="compare-picker-choices">
@@ -99,8 +99,8 @@ function CompareFriendLiftPicker({ onPick, onCancel }) {
         </div>
       )}
 
-      {friend && lifts === null && <p>Loading lifts…</p>}
-      {friend && lifts !== null && lifts.length === 0 && <p>No lifts to compare with</p>}
+      {friend && lifts === null && <p className="state">Loading lifts…</p>}
+      {friend && lifts !== null && lifts.length === 0 && <p className="state">No lifts to compare with</p>}
       {friend && lifts !== null && lifts.length > 0 && (
         <>
           <p className="compare-picker-hint">

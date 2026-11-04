@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { updateLiftSubset, deleteLiftSubset } from "../api.js";
 import ExerciseSelect from "./ExerciseSelect.jsx";
-import { numberOrNull } from "../formHelpers.js";
+import { formatWeight, numberOrNull } from "../formHelpers.js";
 
 /**
  * exercises, muscleGroups, onChanged and onError are only needed when it is editable.
@@ -67,9 +67,9 @@ function LiftSubsetRow({
       <tr>
         {leadingCells}
         <td>{subset.exercise.name}</td>
-        <td>{subset.reps ?? "–"}</td>
-        <td>{subset.rir ?? "–"}</td>
-        <td>{subset.weight ?? "–"}</td>
+        <td className="num">{subset.reps ?? "–"}</td>
+        <td className="num">{subset.rir ?? "–"}</td>
+        <td className="num">{formatWeight(subset.weight)}</td>
         {!readOnly && (
           <td className="actions">
             <button type="button" onClick={() => setIsEditing(true)}>Edit</button>
@@ -91,7 +91,7 @@ function LiftSubsetRow({
           onChange={setSelectedExerciseId}
         />
       </td>
-      <td>
+      <td className="num">
         <input
           type="number"
           step="1"
@@ -100,7 +100,7 @@ function LiftSubsetRow({
           onChange={(e) => setReps(e.target.value)}
         />
       </td>
-      <td>
+      <td className="num">
         <input
           type="number"
           step="1"
@@ -109,7 +109,7 @@ function LiftSubsetRow({
           onChange={(e) => setRir(e.target.value)}
         />
       </td>
-      <td>
+      <td className="num">
         <input
           type="number"
           step="any"
