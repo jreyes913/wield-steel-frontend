@@ -26,9 +26,8 @@ function Coaching() {
     /** @type {CoachingOverview} */ ({ coaches: [], athletes: [], incoming: [], outgoing: [], groups: [] })
   );
   const [username, setUsername] = useState("");
-  // Groups: the name typed for a new group, and the group whose athletes are being edited.
+  // The name typed for a new group.
   const [groupName, setGroupName] = useState("");
-  const [editingGroupId, setEditingGroupId] = useState(/** @type {import("../types.js").Id | null} */ (null));
   // The group the "Athletes I coach" list is filtered to ("" is everyone).
   const [groupFilter, setGroupFilter] = useState("");
   // The athlete whose "Add to group" menu is open.
@@ -82,8 +81,7 @@ function Coaching() {
     run(async () => {
       const group = await createCoachGroup(groupName);
       setGroupName("");
-      setEditingGroupId(group.id);
-      return `Group "${group.name}" created. Tick its athletes below.`;
+      return `Group "${group.name}" created. Use "Add to group" next to an athlete below.`;
     });
   }
 
@@ -113,21 +111,12 @@ function Coaching() {
   }
 
   /** @param {import("../types.js").CoachGroup} group */
-  function handleRenameGroup(group) {
-    const name = window.prompt("New name for the group", group.name);
-    if (name && name.trim() !== "" && name !== group.name) {
-      run(() => updateCoachGroup(group.id, { name }));
-    }
-  }
-
-  /** @param {import("../types.js").CoachGroup} group */
   function handleDeleteGroup(group) {
     if (!window.confirm(`Delete the group "${group.name}"? Its athletes stay; only the group goes.`)) {
       return;
     }
     run(async () => {
       await deleteCoachGroup(group.id);
-      setEditingGroupId(null);
       setGroupFilter("");
     });
   }
@@ -362,8 +351,8 @@ function Coaching() {
       <section className="card">
         <h4>Groups</h4>
         <p>
-          Create groups here, then use "Add to group" next to an athlete below. You can filter by group
-          when you stop coaching or send a program. Only you can see your groups; athletes never do.
+          Create and delete groups here. Put athletes in them with "Add to group" next to an athlete below,
+          and filter by group when you stop coaching or send a program. Only you can see your groups; athletes never do.
         </p>
         <form onSubmit={handleCreateGroup} className="inline-form">
           <input
@@ -384,31 +373,8 @@ function Coaching() {
               <span>
                 {group.athlete_ids.length} athlete{group.athlete_ids.length === 1 ? "" : "s"}
               </span>
-              <button
-                type="button"
-                onClick={() => setEditingGroupId(editingGroupId === group.id ? null : group.id)}
-              >
-                {editingGroupId === group.id ? "Done" : "Choose athletes"}
-              </button>
-              <button type="button" onClick={() => handleRenameGroup(group)}>Rename</button>
               <button type="button" className="danger" onClick={() => handleDeleteGroup(group)}>Delete</button>
             </div>
-            {editingGroupId === group.id && overview.athletes.length === 0 && (
-              <p>You don&apos;t coach anyone yet.</p>
-            )}
-            {editingGroupId === group.id &&
-              overview.athletes.map(({ athlete }) => (
-                <div key={athlete.id}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={group.athlete_ids.includes(Number(athlete.id))}
-                      onChange={(e) => handleToggleMember(group, athlete.id, e.target.checked)}
-                    />{" "}
-                    {displayName(athlete)} ({athlete.username})
-                  </label>
-                </div>
-              ))}
           </div>
         ))}
       </section>
