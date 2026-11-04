@@ -243,12 +243,22 @@ export const createProgram = (fields) => request("POST", "/programs", fields);
 
 /**
  * @param {Id} programId
- * @param {{ name?: string, start_date?: string | null, end_date?: string | null }} fields
- *   Send only what changed.
+ * @param {{ name?: string, start_date?: string | null, end_date?: string | null, is_public?: boolean }} fields
+ *   Send only what changed. is_public makes it visible to my friends and my coaches.
  * @returns {Promise<ProgramSummary>}
  */
 export const updateProgram = (programId, fields) =>
   request("PUT", `/programs/${programId}`, fields);
+
+/**
+ * Puts a copy of one of my programs into each chosen athlete's programs. The athletes must be
+ * ones I coach; they need to do nothing. One athlete failing doesn't stop the others.
+ * @param {Id} programId
+ * @param {Id[]} athleteIds
+ * @returns {Promise<{ results: { athlete_id: Id, ok: boolean, program_id?: Id, error?: string }[] }>}
+ */
+export const sendProgram = (programId, athleteIds) =>
+  request("POST", `/programs/${programId}/send`, { athlete_ids: athleteIds });
 
 /** @param {Id} programId */
 export const deleteProgram = (programId) => request("DELETE", `/programs/${programId}`);

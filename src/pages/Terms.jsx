@@ -5,7 +5,7 @@ import LegalPage from "../components/LegalPage.jsx";
 /** The Terms of Service page (draft until a lawyer has reviewed it). */
 function Terms() {
   return (
-    <LegalPage title="Terms of Service" updated="2026-11-04">
+    <LegalPage title="Terms of Service" updated="2026-11-05">
       <h2>The service</h2>
       <p>
         This is a workout tracker: you log lifts, follow progress, build programs and share them
@@ -39,6 +39,11 @@ function Terms() {
         <li>
           If you coach someone, use what you see only to coach them. Do not copy, share or
           publish their data, and stop if they end the arrangement.
+        </li>
+        <li>
+          A coach can send programs to the athletes they coach. Only send programs you have the
+          right to share, and do not use sending to spam or pressure anyone. Athletes can delete
+          what they receive or remove the coach.
         </li>
         <li>We may end a coaching link or an account that is used to harass people or to misuse their data.</li>
         <li>[Rules for users under 18 to be decided before they can be coached.]</li>

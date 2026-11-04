@@ -287,3 +287,8 @@ choose whether each coach sees my body weight, and open the athletes I coach
 friend banner. See `src/pages/Coaching.jsx` and the backend README. The Privacy Policy and Terms
 (`src/pages/Privacy.jsx`, `Terms.jsx`) describe coaching and carry a "Last updated" date: change
 `updated` on the `LegalPage` whenever the text changes.
+
+Programs are private until the owner ticks "Public" on the program page (friends and coaches
+then see it; friends can copy it). A coach opens a program's page and uses "Send to my athletes"
+(`SendProgram.jsx`) to put a copy in each ticked athlete's programs; the athlete sees it marked
+"from <coach>" on Programs.

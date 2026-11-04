@@ -78,7 +78,8 @@ function CoachedAthlete() {
       <div className="friend-cards">
         <section className="card">
           <h4>Programs</h4>
-          {programs.length === 0 && <p>No programs yet.</p>}
+          <p>Only the programs they have made public.</p>
+          {programs.length === 0 && <p>No public programs.</p>}
           {programs.length > 0 && (
             <div className="table-wrap">
               <table className="data-table">

@@ -95,6 +95,7 @@ function Programs() {
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Visibility</th>
                 <th>Start</th>
                 <th>End</th>
                 <th></th>
@@ -104,6 +105,12 @@ function Programs() {
               {programs.map((program) => (
                 <tr key={program.id}>
                   <td><Link to={`/programs/${program.id}`}>{program.name}</Link></td>
+                  <td>
+                    {program.is_public ? "Public" : "Private"}
+                    {program.assigned_by != null && (
+                      <> · from {program.assigned_by_name ?? "a former coach"}</>
+                    )}
+                  </td>
                   <td>{program.start_date ?? "–"}</td>
                   <td>{program.end_date ?? "–"}</td>
                   <td className="actions">

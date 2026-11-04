@@ -11,6 +11,7 @@ import {
   getMuscleGroups,
 } from "../api.js";
 import ProgramDayCard from "../components/ProgramDayCard.jsx";
+import SendProgram from "../components/SendProgram.jsx";
 
 /** @typedef {import("../types.js").Program} Program */
 /** @typedef {import("../types.js").Exercise} Exercise */
@@ -79,6 +80,16 @@ function ProgramDetail() {
     }
   }
 
+  async function handleSetPublic(isPublic) {
+    setError("");
+    try {
+      await updateProgram(id, { is_public: isPublic });
+      await loadProgram();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   async function handleAddDay(event) {
     event.preventDefault();
     try {
@@ -108,6 +119,25 @@ function ProgramDetail() {
       <Link to="/programs">← All programs</Link>
       <h1>{program.name}</h1>
       {error && <p className="error">{error}</p>}
+
+      <section className="card">
+        <h4>Who can see this program</h4>
+        <label>
+          <input
+            type="checkbox"
+            checked={Boolean(program.is_public)}
+            onChange={(e) => handleSetPublic(e.target.checked)}
+          />{" "}
+          Public: my friends and my coaches can see it
+        </label>
+        <p>
+          {program.is_public
+            ? "Friends and coaches can open this program, and friends can copy it."
+            : "Private: only you can see it."}
+        </p>
+      </section>
+
+      <SendProgram programId={program.id} />
 
       <form onSubmit={handleSaveProgram} className="card">
         <h4>Edit program</h4>
