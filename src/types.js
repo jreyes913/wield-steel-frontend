@@ -152,6 +152,15 @@
  * @property {CoachLink[]} athletes  Athletes I coach.
  * @property {CoachLink[]} incoming  Coaches asking to coach me.
  * @property {CoachLink[]} outgoing  Athletes I asked to coach.
+ * @property {CoachGroup[]} groups  My own groups of athletes (only I see them), by name.
+ */
+
+/**
+ * A coach's private group of the athletes they coach.
+ * @typedef {object} CoachGroup
+ * @property {Id} id
+ * @property {string} name
+ * @property {number[]} athlete_ids  Ids of the athletes in it.
  */
 
 /**

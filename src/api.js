@@ -483,6 +483,26 @@ export const getCoachedPrograms = (athleteId) => request("GET", `/coached/${athl
 export const getCoachedProgram = (athleteId, programId) =>
   request("GET", `/coached/${athleteId}/programs/${programId}`);
 
+/**
+ * Creates one of my coaching groups (private to me; athletes never see them).
+ * @param {string} name
+ * @param {Id[]} [athleteIds]  Athletes I coach to put in it.
+ * @returns {Promise<import("./types.js").CoachGroup>}
+ */
+export const createCoachGroup = (name, athleteIds = []) =>
+  request("POST", "/coach-groups", { name, athlete_ids: athleteIds });
+
+/**
+ * Renames a group and/or replaces its athletes. Send only what changed.
+ * @param {Id} groupId
+ * @param {{ name?: string, athlete_ids?: Id[] }} fields
+ * @returns {Promise<import("./types.js").CoachGroup>}
+ */
+export const updateCoachGroup = (groupId, fields) => request("PUT", `/coach-groups/${groupId}`, fields);
+
+/** @param {Id} groupId  Deletes the group; its athletes stay. */
+export const deleteCoachGroup = (groupId) => request("DELETE", `/coach-groups/${groupId}`);
+
 // ---------- Blocks ----------
 
 /** @returns {Promise<BlockedAthlete[]>} The athletes I've blocked, newest first. */

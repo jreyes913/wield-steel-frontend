@@ -294,3 +294,7 @@ then see it; friends can copy it). A coach opens a program's page and uses "Send
 marked "from <coach> · synced" on Programs, read-only and always private; it changes when the
 coach's program changes. If the coach deletes it or coaching ends, the athlete keeps a frozen,
 still-private copy. A friend's copy (Copy to my programs) is a clean copy with no syncing.
+
+Coaches can sort their athletes into private groups on the Coaching page (a "Groups" section: create,
+rename, choose athletes, delete). A group filter (`GroupFilter.jsx`) narrows "Athletes I coach" and
+the "Send to my athletes" panel; "Select all" ticks the athletes the filter shows.

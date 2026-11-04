@@ -7,21 +7,30 @@ import { Link } from "react-router-dom";
 import {
   answerCoachingRequest,
   cancelCoachingRequest,
+  createCoachGroup,
+  deleteCoachGroup,
   getCoaching,
   removeCoach,
   sendCoachingRequest,
   setCoachBodyWeight,
   stopCoaching,
+  updateCoachGroup,
 } from "../api.js";
+import GroupFilter from "../components/GroupFilter.jsx";
 import { displayName, shortDate } from "../friendHelpers.js";
 
 /** @typedef {import("../types.js").CoachingOverview} CoachingOverview */
 
 function Coaching() {
   const [overview, setOverview] = useState(
-    /** @type {CoachingOverview} */ ({ coaches: [], athletes: [], incoming: [], outgoing: [] })
+    /** @type {CoachingOverview} */ ({ coaches: [], athletes: [], incoming: [], outgoing: [], groups: [] })
   );
   const [username, setUsername] = useState("");
+  // Groups: the name typed for a new group, and the group whose athletes are being edited.
+  const [groupName, setGroupName] = useState("");
+  const [editingGroupId, setEditingGroupId] = useState(/** @type {import("../types.js").Id | null} */ (null));
+  // The group the "Athletes I coach" list is filtered to ("" is everyone).
+  const [groupFilter, setGroupFilter] = useState("");
   // Per incoming request: whether to also share body weight when accepting.
   const [shareWeight, setShareWeight] = useState(/** @type {Record<number, boolean>} */ ({}));
   const [loading, setLoading] = useState(true);
@@ -42,7 +51,7 @@ function Coaching() {
   }, []);
 
   // Runs one action, then reloads so the page shows what the backend now holds.
-  /** @param {() => Promise<string | void>} action  May return the notice to show. */
+  /** @param {() => Promise<unknown>} action  May return a string: the notice to show. */
   async function run(action) {
     setError("");
     setNotice("");
@@ -66,6 +75,48 @@ function Coaching() {
     });
   }
 
+  function handleCreateGroup(event) {
+    event.preventDefault();
+    run(async () => {
+      const group = await createCoachGroup(groupName);
+      setGroupName("");
+      setEditingGroupId(group.id);
+      return `Group "${group.name}" created. Tick its athletes below.`;
+    });
+  }
+
+  /**
+   * @param {import("../types.js").CoachGroup} group
+   * @param {import("../types.js").Id} athleteId
+   * @param {boolean} inGroup
+   */
+  function handleToggleMember(group, athleteId, inGroup) {
+    const ids = inGroup
+      ? [...group.athlete_ids, Number(athleteId)]
+      : group.athlete_ids.filter((id) => id !== Number(athleteId));
+    run(() => updateCoachGroup(group.id, { athlete_ids: ids }));
+  }
+
+  /** @param {import("../types.js").CoachGroup} group */
+  function handleRenameGroup(group) {
+    const name = window.prompt("New name for the group", group.name);
+    if (name && name.trim() !== "" && name !== group.name) {
+      run(() => updateCoachGroup(group.id, { name }));
+    }
+  }
+
+  /** @param {import("../types.js").CoachGroup} group */
+  function handleDeleteGroup(group) {
+    if (!window.confirm(`Delete the group "${group.name}"? Its athletes stay; only the group goes.`)) {
+      return;
+    }
+    run(async () => {
+      await deleteCoachGroup(group.id);
+      setEditingGroupId(null);
+      setGroupFilter("");
+    });
+  }
+
   /** @param {import("../types.js").PublicProfile} coach */
   function handleRemoveCoach(coach) {
     if (!window.confirm(`Remove ${displayName(coach)} as your coach? They can no longer see your data.`)) {
@@ -85,6 +136,12 @@ function Coaching() {
   if (loading) {
     return <p>Loading…</p>;
   }
+
+  // "Athletes I coach", narrowed to the chosen group.
+  const filterGroup = overview.groups.find((g) => String(g.id) === groupFilter);
+  const shownAthletes = filterGroup
+    ? overview.athletes.filter(({ athlete }) => filterGroup.athlete_ids.includes(Number(athlete.id)))
+    : overview.athletes;
 
   return (
     <div>
@@ -206,7 +263,9 @@ function Coaching() {
       <section className="card">
         <h4>Athletes I coach</h4>
         {overview.athletes.length === 0 && <p>You don&apos;t coach anyone yet.</p>}
-        {overview.athletes.length > 0 && (
+        <GroupFilter groups={overview.groups} value={groupFilter} onChange={setGroupFilter} />
+        {overview.athletes.length > 0 && shownAthletes.length === 0 && <p>No athletes in this group.</p>}
+        {shownAthletes.length > 0 && (
           <div className="table-wrap">
             <table className="data-table">
               <thead>
@@ -218,7 +277,7 @@ function Coaching() {
                 </tr>
               </thead>
               <tbody>
-                {overview.athletes.map(({ athlete, since }) => (
+                {shownAthletes.map(({ athlete, since }) => (
                   <tr key={athlete.id}>
                     <td><Link to={`/coaching/${athlete.id}`}>{displayName(athlete)}</Link></td>
                     <td>{athlete.username}</td>
@@ -234,6 +293,60 @@ function Coaching() {
             </table>
           </div>
         )}
+      </section>
+
+      <section className="card">
+        <h4>Groups</h4>
+        <p>
+          Sort the athletes you coach into groups, then pick a group when you stop coaching or send
+          a program. Only you can see your groups; athletes never do.
+        </p>
+        <form onSubmit={handleCreateGroup} className="inline-form">
+          <input
+            aria-label="New group name"
+            placeholder="New group name"
+            maxLength={40}
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+            required
+          />
+          <button type="submit">Create group</button>
+        </form>
+        {overview.groups.length === 0 && <p>No groups yet.</p>}
+        {overview.groups.map((group) => (
+          <div key={group.id} className="card">
+            <div className="inline-form">
+              <strong>{group.name}</strong>
+              <span>
+                {group.athlete_ids.length} athlete{group.athlete_ids.length === 1 ? "" : "s"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setEditingGroupId(editingGroupId === group.id ? null : group.id)}
+              >
+                {editingGroupId === group.id ? "Done" : "Choose athletes"}
+              </button>
+              <button type="button" onClick={() => handleRenameGroup(group)}>Rename</button>
+              <button type="button" className="danger" onClick={() => handleDeleteGroup(group)}>Delete</button>
+            </div>
+            {editingGroupId === group.id && overview.athletes.length === 0 && (
+              <p>You don&apos;t coach anyone yet.</p>
+            )}
+            {editingGroupId === group.id &&
+              overview.athletes.map(({ athlete }) => (
+                <div key={athlete.id}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={group.athlete_ids.includes(Number(athlete.id))}
+                      onChange={(e) => handleToggleMember(group, athlete.id, e.target.checked)}
+                    />{" "}
+                    {displayName(athlete)} ({athlete.username})
+                  </label>
+                </div>
+              ))}
+          </div>
+        ))}
       </section>
 
       {overview.outgoing.length > 0 && (

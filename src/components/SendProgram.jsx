@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { getCoaching, sendProgram } from "../api.js";
 import { displayName } from "../friendHelpers.js";
+import GroupFilter from "./GroupFilter.jsx";
 
 /** @typedef {import("../types.js").CoachLink} CoachLink */
 /** @typedef {import("../types.js").Id} Id */
@@ -15,6 +16,9 @@ import { displayName } from "../friendHelpers.js";
  */
 function SendProgram({ programId }) {
   const [athletes, setAthletes] = useState(/** @type {CoachLink[]} */ ([]));
+  const [groups, setGroups] = useState(/** @type {import("../types.js").CoachGroup[]} */ ([]));
+  // The group shown in the filter ("" is everyone). Ticks are kept when the filter changes.
+  const [groupId, setGroupId] = useState("");
   const [selected, setSelected] = useState(/** @type {Set<Id>} */ (new Set()));
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -26,6 +30,7 @@ function SendProgram({ programId }) {
       .then((overview) => {
         if (isCurrent) {
           setAthletes(overview.athletes);
+          setGroups(overview.groups);
         }
       })
       .catch((err) => {
@@ -49,8 +54,22 @@ function SendProgram({ programId }) {
     setSelected(next);
   }
 
+  // The athletes the filter shows.
+  const group = groups.find((g) => String(g.id) === groupId);
+  const visible = group ? athletes.filter((a) => group.athlete_ids.includes(Number(a.athlete.id))) : athletes;
+  const allVisibleSelected = visible.length > 0 && visible.every((a) => selected.has(a.athlete.id));
+
+  // Ticks every athlete the filter shows, or clears them when they are all ticked already.
   function toggleAll() {
-    setSelected(selected.size === athletes.length ? new Set() : new Set(athletes.map((a) => a.athlete.id)));
+    const next = new Set(selected);
+    for (const a of visible) {
+      if (allVisibleSelected) {
+        next.delete(a.athlete.id);
+      } else {
+        next.add(a.athlete.id);
+      }
+    }
+    setSelected(next);
   }
 
   async function handleSend() {
@@ -88,17 +107,15 @@ function SendProgram({ programId }) {
         this program or stop coaching them, they keep the program as it was.
       </p>
       {error && <p className="error">{error}</p>}
+      <GroupFilter groups={groups} value={groupId} onChange={setGroupId} />
       <p>
         <label>
-          <input
-            type="checkbox"
-            checked={selected.size === athletes.length}
-            onChange={toggleAll}
-          />{" "}
-          Select all ({athletes.length})
+          <input type="checkbox" checked={allVisibleSelected} onChange={toggleAll} />{" "}
+          Select all ({visible.length})
         </label>
       </p>
-      {athletes.map(({ athlete }) => (
+      {visible.length === 0 && <p>No athletes in this group.</p>}
+      {visible.map(({ athlete }) => (
         <div key={athlete.id}>
           <label>
             <input type="checkbox" checked={selected.has(athlete.id)} onChange={() => toggle(athlete.id)} />{" "}
@@ -111,6 +128,9 @@ function SendProgram({ programId }) {
           {sending ? "Sending…" : `Send to ${selected.size} athlete${selected.size === 1 ? "" : "s"}`}
         </button>
       </p>
+      {selected.size > visible.filter((a) => selected.has(a.athlete.id)).length && (
+        <p>Some of the athletes you ticked are hidden by the group filter; they will still get it.</p>
+      )}
       {outcome.map((line) => (
         <p key={line}>{line}</p>
       ))}

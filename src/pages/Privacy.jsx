@@ -5,7 +5,7 @@ import LegalPage from "../components/LegalPage.jsx";
 /** The Privacy Policy page (draft until a lawyer has reviewed it). */
 function Privacy() {
   return (
-    <LegalPage title="Privacy Policy" updated="2026-11-06">
+    <LegalPage title="Privacy Policy" updated="2026-11-07">
       <h2>What we store</h2>
       <ul>
         <li>Your sign-in: your email address and a password (held by AWS Cognito, not by us in plain text).</li>
@@ -15,6 +15,10 @@ function Privacy() {
           programs you build. A program is private until you make it public.
         </li>
         <li>Programs a coach sends you, with the coach who sent them.</li>
+        <li>
+          If you coach, your private groups of athletes (a name and who is in it). Only you see
+          them; the athletes never do.
+        </li>
         <li>Your friendships: who you have sent requests to, who sent requests to you, who you are friends with, and who you have blocked.</li>
         <li>Your coaching links: who has asked to coach you or who you asked to coach, who coaches you, who you coach, and whether you let a coach see your body weight.</li>
         <li>
