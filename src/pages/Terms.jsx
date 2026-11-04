@@ -5,11 +5,11 @@ import LegalPage from "../components/LegalPage.jsx";
 /** The Terms of Service page (draft until a lawyer has reviewed it). */
 function Terms() {
   return (
-    <LegalPage title="Terms of Service">
+    <LegalPage title="Terms of Service" updated="2026-11-04">
       <h2>The service</h2>
       <p>
         This is a workout tracker: you log lifts, follow progress, build programs and share them
-        with friends. Accounts are currently by invitation.
+        with friends and coaches. Accounts are currently by invitation.
       </p>
 
       <h2>Your account</h2>
@@ -24,6 +24,24 @@ function Terms() {
         <li>Use the app for your own training and to share with people who agree to be your friends.</li>
         <li>Do not send friend requests in bulk, probe for other people&apos;s usernames, or try to break or overload the service.</li>
         <li>Do not add misleading or offensive entries to the shared exercise list.</li>
+      </ul>
+
+      <h2>Coaches and athletes</h2>
+      <ul>
+        <li>
+          Anyone can ask to coach another user, and nobody is a coach of yours unless you accept.
+          A coach can only read what you allow; they cannot change your data.
+        </li>
+        <li>
+          Coaches are other users, not us. We do not check their qualifications, we do not
+          endorse them, and we are not responsible for what they say or advise outside the app.
+        </li>
+        <li>
+          If you coach someone, use what you see only to coach them. Do not copy, share or
+          publish their data, and stop if they end the arrangement.
+        </li>
+        <li>We may end a coaching link or an account that is used to harass people or to misuse their data.</li>
+        <li>[Rules for users under 18 to be decided before they can be coached.]</li>
       </ul>
 
       <h2>Not medical advice</h2>

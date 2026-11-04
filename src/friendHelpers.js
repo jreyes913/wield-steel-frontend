@@ -4,6 +4,17 @@
 /** Shown when a friend's data comes back 404: never a friend, or no longer one. */
 export const NOT_FRIENDS_MESSAGE = "Not found, or you're no longer friends";
 
+/** Shown when a coached athlete's data comes back 404: never coached, or no longer. */
+export const NOT_COACHING_MESSAGE = "Not found, or you no longer coach this athlete";
+
+/**
+ * @param {Error & { status?: number }} err
+ * @returns {string}  What to say when loading a coached athlete's page failed.
+ */
+export function coachLoadError(err) {
+  return err.status === 404 ? NOT_COACHING_MESSAGE : err.message;
+}
+
 // "Alex Smith", or the username when they haven't set a name.
 /**
  * @param {import("./types.js").PublicProfile} athlete

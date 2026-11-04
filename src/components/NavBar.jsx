@@ -16,6 +16,7 @@ function NavBar({ signOut }) {
       <NavLink to="/exercises">Exercises</NavLink>
       {/* The count is of requests waiting for me; nothing shows when there are none. */}
       <NavLink to="/friends">{count > 0 ? `Friends (${count})` : "Friends"}</NavLink>
+      <NavLink to="/coaching">Coaching</NavLink>
       <NavLink to="/profile">Profile</NavLink>
       <NavLink to="/get-started">Get Started</NavLink>
       <button type="button" onClick={signOut}>Sign out</button>

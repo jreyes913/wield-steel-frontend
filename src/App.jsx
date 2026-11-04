@@ -26,6 +26,10 @@ const Friends = lazy(() => import("./pages/Friends.jsx"));
 const FriendDetail = lazy(() => import("./pages/FriendDetail.jsx"));
 const FriendLift = lazy(() => import("./pages/FriendLift.jsx"));
 const FriendProgram = lazy(() => import("./pages/FriendProgram.jsx"));
+const Coaching = lazy(() => import("./pages/Coaching.jsx"));
+const CoachedAthlete = lazy(() => import("./pages/CoachedAthlete.jsx"));
+const CoachedLift = lazy(() => import("./pages/CoachedLift.jsx"));
+const CoachedProgram = lazy(() => import("./pages/CoachedProgram.jsx"));
 const GetStarted = lazy(() => import("./pages/GetStarted.jsx"));
 
 /** Links under the sign-in form, so the legal pages can be read before signing in. */
@@ -65,6 +69,10 @@ function SignedInApp() {
                   <Route path="/friends/:athleteId" element={<FriendDetail />} />
                   <Route path="/friends/:athleteId/lifts/:liftId" element={<FriendLift />} />
                   <Route path="/friends/:athleteId/programs/:programId" element={<FriendProgram />} />
+                  <Route path="/coaching" element={<Coaching />} />
+                  <Route path="/coaching/:athleteId" element={<CoachedAthlete />} />
+                  <Route path="/coaching/:athleteId/lifts/:liftId" element={<CoachedLift />} />
+                  <Route path="/coaching/:athleteId/programs/:programId" element={<CoachedProgram />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/get-started" element={<GetStarted />} />
                 </Routes>

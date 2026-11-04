@@ -133,6 +133,32 @@
  */
 
 /**
+ * One end of a coaching link. GET /coaching returns lists of these.
+ * @typedef {object} CoachLink
+ * @property {PublicProfile} athlete  The other person (my coach, or the athlete I coach).
+ * @property {string} [since]  When coaching began (accepted links).
+ * @property {string} [sent_at]  When the request was sent (pending requests).
+ * @property {boolean} can_see_body_weight  Whether the coach may see the athlete's body weight.
+ */
+
+/**
+ * GET /coaching.
+ * @typedef {object} CoachingOverview
+ * @property {CoachLink[]} coaches  People who coach me.
+ * @property {CoachLink[]} athletes  Athletes I coach.
+ * @property {CoachLink[]} incoming  Coaches asking to coach me.
+ * @property {CoachLink[]} outgoing  Athletes I asked to coach.
+ */
+
+/**
+ * A lift in an athlete's list, as a coach sees it.
+ * @typedef {object} CoachedLiftSummary
+ * @property {Id} id
+ * @property {string} date
+ * @property {number | null} [body_weight]  Present only when the athlete allowed it.
+ */
+
+/**
  * An athlete I've blocked. GET /blocks returns a list of these.
  * @typedef {object} BlockedAthlete
  * @property {PublicProfile} athlete
@@ -153,6 +179,8 @@
  */
 
 /** A friend's lift: a Lift without body_weight. @typedef {Omit<Lift, "body_weight">} FriendLift */
+
+/** A coached athlete's lift: body_weight is present only when they allowed it. @typedef {FriendLift & { body_weight?: number | null }} CoachedLift */
 
 /** A friend's lift as listed by GET /athletes/{id}/lifts: just id and date. @typedef {Pick<Lift, "id" | "date">} FriendLiftSummary */
 

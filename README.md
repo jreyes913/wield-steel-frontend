@@ -278,3 +278,12 @@ otherwise.
 Give the Amplify staging branch its own branch environment variables: `VITE_API_URL`,
 `VITE_USER_POOL_ID` and `VITE_USER_POOL_CLIENT_ID`, pointing at the staging API and Cognito pool.
 Locally, put the same three in `.env.local`. Don't put real user data in staging.
+
+## Coaching
+
+The Coaching page (`/coaching`) lets me ask to coach someone by username, accept or decline coaches,
+choose whether each coach sees my body weight, and open the athletes I coach
+(`/coaching/:athleteId`, with lift and program pages). Those pages are read-only and reuse the
+friend banner. See `src/pages/Coaching.jsx` and the backend README. The Privacy Policy and Terms
+(`src/pages/Privacy.jsx`, `Terms.jsx`) describe coaching and carry a "Last updated" date: change
+`updated` on the `LegalPage` whenever the text changes.

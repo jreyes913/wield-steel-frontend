@@ -398,6 +398,80 @@ export const setHideMyLifts = (athleteId, hide) =>
 export const copyFriendProgram = (athleteId, programId) =>
   request("POST", `/athletes/${athleteId}/programs/${programId}/copy`);
 
+// ---------- Coaching ----------
+// A coach reads an athlete's programs and lifts, read-only, after the athlete accepts.
+// Anyone who isn't an accepted coach of that athlete comes back as 404.
+
+/** @returns {Promise<import("./types.js").CoachingOverview>} My coaches, athletes and requests. */
+export const getCoaching = () => request("GET", "/coaching");
+
+/**
+ * Asks to coach someone, by exact username. They have to accept.
+ * @param {string} username
+ * @returns {Promise<{ status: "pending", athlete: PublicProfile }>}
+ */
+export const sendCoachingRequest = (username) => request("POST", "/coaching-requests", { username });
+
+/**
+ * Answers a coach's request.
+ * @param {Id} coachId
+ * @param {"accepted" | "declined"} status
+ * @param {boolean} [canSeeBodyWeight]  Also let this coach see my body weight (default no).
+ */
+export const answerCoachingRequest = (coachId, status, canSeeBodyWeight = false) =>
+  request("PUT", `/coaching-requests/${coachId}`, { status, can_see_body_weight: canSeeBodyWeight });
+
+/** @param {Id} athleteId  Withdraws my own request to coach them. */
+export const cancelCoachingRequest = (athleteId) => request("DELETE", `/coaching-requests/${athleteId}`);
+
+/**
+ * Lets one of my coaches see my body weight, or stops that.
+ * @param {Id} coachId
+ * @param {boolean} canSeeBodyWeight
+ */
+export const setCoachBodyWeight = (coachId, canSeeBodyWeight) =>
+  request("PUT", `/coaches/${coachId}`, { can_see_body_weight: canSeeBodyWeight });
+
+/** @param {Id} coachId  Ends coaching: they can no longer see my data. */
+export const removeCoach = (coachId) => request("DELETE", `/coaches/${coachId}`);
+
+/** @param {Id} athleteId  I stop coaching this athlete. */
+export const stopCoaching = (athleteId) => request("DELETE", `/coached/${athleteId}`);
+
+/**
+ * @param {Id} athleteId
+ * @returns {Promise<PublicProfile & { can_see_body_weight: boolean }>}
+ */
+export const getCoachedAthlete = (athleteId) => request("GET", `/coached/${athleteId}`);
+
+/**
+ * @param {Id} athleteId
+ * @returns {Promise<import("./types.js").CoachedLiftSummary[]>} Newest first. Has body_weight only if allowed.
+ */
+export const getCoachedLifts = (athleteId) => request("GET", `/coached/${athleteId}/lifts`);
+
+/**
+ * @param {Id} athleteId
+ * @param {Id} liftId
+ * @returns {Promise<import("./types.js").CoachedLift>} The lift with its sets (and body weight if allowed).
+ */
+export const getCoachedLift = (athleteId, liftId) =>
+  request("GET", `/coached/${athleteId}/lifts/${liftId}`);
+
+/**
+ * @param {Id} athleteId
+ * @returns {Promise<ProgramSummary[]>}
+ */
+export const getCoachedPrograms = (athleteId) => request("GET", `/coached/${athleteId}/programs`);
+
+/**
+ * @param {Id} athleteId
+ * @param {Id} programId
+ * @returns {Promise<Program>}
+ */
+export const getCoachedProgram = (athleteId, programId) =>
+  request("GET", `/coached/${athleteId}/programs/${programId}`);
+
 // ---------- Blocks ----------
 
 /** @returns {Promise<BlockedAthlete[]>} The athletes I've blocked, newest first. */
