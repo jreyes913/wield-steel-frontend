@@ -5,7 +5,7 @@ import LegalPage from "../components/LegalPage.jsx";
 /** The Privacy Policy page (draft until a lawyer has reviewed it). */
 function Privacy() {
   return (
-    <LegalPage title="Privacy Policy" updated="2026-11-05">
+    <LegalPage title="Privacy Policy" updated="2026-11-06">
       <h2>What we store</h2>
       <ul>
         <li>Your sign-in: your email address and a password (held by AWS Cognito, not by us in plain text).</li>
@@ -45,8 +45,12 @@ function Privacy() {
         </li>
         <li>
           A coach can send a program into your programs without asking each time, as long as you
-          have accepted them as your coach. It appears as a private copy marked with their name,
-          and you can edit or delete it. Remove the coach to stop receiving programs.
+          have accepted them as your coach. It appears marked with their name, is kept in sync with
+          the coach&apos;s own program (so it changes when they change it), and you cannot edit it
+          or make it public; only you and the coach can see it. You can delete it from your list.
+          If the coach deletes their program, you stop being coached by them, or either of you
+          blocks the other or deletes their account, you keep a copy of the program as it was. It
+          then stops updating and stays private.
         </li>
         <li>People who are not your friends or coaches cannot see your data. Someone you have blocked cannot find you by username.</li>
         <li>

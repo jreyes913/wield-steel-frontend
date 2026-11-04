@@ -114,12 +114,46 @@ function ProgramDetail() {
     );
   }
 
+  // A program a coach sent: shown exactly as the coach has it right now, and never editable.
+  if (program.synced) {
+    return (
+      <div>
+        <Link to="/programs">← All programs</Link>
+        <h1>{program.name}</h1>
+        {error && <p className="error">{error}</p>}
+        <p className="friend-banner">
+          From {program.assigned_by_name ?? "a former coach"} · kept in sync · read-only · private
+        </p>
+        <p>
+          {program.start_date ?? "–"} to {program.end_date ?? "–"}
+        </p>
+        <p>
+          This program changes when your coach changes it. Only you can see it. You can use its
+          days when you log a lift, or delete it from your list. If you stop being coached, you
+          keep the program as it was.
+        </p>
+        <h4>Days</h4>
+        {program.days.length === 0 && <p>No days yet.</p>}
+        {program.days.map((day) => (
+          <ProgramDayCard key={day.id} day={day} exercises={exercises} readOnly />
+        ))}
+      </div>
+    );
+  }
+
+  // Once a coach's program stops syncing the athlete keeps it, but it stays private for good.
+  const fromCoach = program.assigned_by != null;
+
   return (
     <div>
       <Link to="/programs">← All programs</Link>
       <h1>{program.name}</h1>
       {error && <p className="error">{error}</p>}
 
+      {fromCoach && (
+        <p className="friend-banner">Sent by a coach · no longer kept in sync · private</p>
+      )}
+      {!fromCoach && (
       <section className="card">
         <h4>Who can see this program</h4>
         <label>
@@ -136,8 +170,9 @@ function ProgramDetail() {
             : "Private: only you can see it."}
         </p>
       </section>
+      )}
 
-      <SendProgram programId={program.id} />
+      {!fromCoach && <SendProgram programId={program.id} />}
 
       <form onSubmit={handleSaveProgram} className="card">
         <h4>Edit program</h4>

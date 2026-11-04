@@ -290,5 +290,7 @@ friend banner. See `src/pages/Coaching.jsx` and the backend README. The Privacy 
 
 Programs are private until the owner ticks "Public" on the program page (friends and coaches
 then see it; friends can copy it). A coach opens a program's page and uses "Send to my athletes"
-(`SendProgram.jsx`) to put a copy in each ticked athlete's programs; the athlete sees it marked
-"from <coach>" on Programs.
+(`SendProgram.jsx`) to give each ticked athlete a program that follows it. The athlete sees it
+marked "from <coach> · synced" on Programs, read-only and always private; it changes when the
+coach's program changes. If the coach deletes it or coaching ends, the athlete keeps a frozen,
+still-private copy. A friend's copy (Copy to my programs) is a clean copy with no syncing.

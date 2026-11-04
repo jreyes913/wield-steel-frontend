@@ -108,7 +108,10 @@ function Programs() {
                   <td>
                     {program.is_public ? "Public" : "Private"}
                     {program.assigned_by != null && (
-                      <> · from {program.assigned_by_name ?? "a former coach"}</>
+                      <>
+                        {" "}· from {program.assigned_by_name ?? "a former coach"}
+                        {program.synced ? " · synced" : ""}
+                      </>
                     )}
                   </td>
                   <td>{program.start_date ?? "–"}</td>

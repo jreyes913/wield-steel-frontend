@@ -62,7 +62,10 @@ function SendProgram({ programId }) {
       /** @type {Map<Id, string>} */
       const byId = new Map(athletes.map((a) => [a.athlete.id, displayName(a.athlete)]));
       setOutcome(
-        results.map((r) => `${byId.get(r.athlete_id) ?? r.athlete_id}: ${r.ok ? "sent" : r.error}`)
+        results.map(
+          (r) =>
+            `${byId.get(r.athlete_id) ?? r.athlete_id}: ${r.ok ? (r.already_sent ? "already had it" : "sent") : r.error}`
+        )
       );
       setSelected(new Set(results.filter((r) => !r.ok).map((r) => r.athlete_id)));
     } catch (err) {
@@ -79,8 +82,10 @@ function SendProgram({ programId }) {
     <section className="card">
       <h4>Send to my athletes</h4>
       <p>
-        Puts a copy in each chosen athlete&apos;s programs, marked as from you. It works even if
-        this program is private, and later edits here do not change their copy.
+        Gives each chosen athlete this program, marked as from you. They can&apos;t change it, it
+        stays private to them, and it is kept in sync: when you add or delete a day, set or
+        exercise here, they see it too. It works even if this program is private. If you delete
+        this program or stop coaching them, they keep the program as it was.
       </p>
       {error && <p className="error">{error}</p>}
       <p>

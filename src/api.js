@@ -251,11 +251,12 @@ export const updateProgram = (programId, fields) =>
   request("PUT", `/programs/${programId}`, fields);
 
 /**
- * Puts a copy of one of my programs into each chosen athlete's programs. The athletes must be
- * ones I coach; they need to do nothing. One athlete failing doesn't stop the others.
+ * Gives each chosen athlete a read-only, private program that follows one of mine and changes
+ * when it does. The athletes must be ones I coach; they need to do nothing. One athlete failing
+ * doesn't stop the others.
  * @param {Id} programId
  * @param {Id[]} athleteIds
- * @returns {Promise<{ results: { athlete_id: Id, ok: boolean, program_id?: Id, error?: string }[] }>}
+ * @returns {Promise<{ results: { athlete_id: Id, ok: boolean, program_id?: Id, already_sent?: boolean, error?: string }[] }>}
  */
 export const sendProgram = (programId, athleteIds) =>
   request("POST", `/programs/${programId}/send`, { athlete_ids: athleteIds });

@@ -90,7 +90,8 @@
  * @property {string | null} end_date  YYYY-MM-DD.
  * @property {boolean | null} [is_public]  Visible to my friends and my coaches. Private unless true.
  * @property {number | null} [assigned_by]  The coach who sent me this program, if one did.
- * @property {string | null} [assigned_by_name]  That coach's name (in the list only).
+ * @property {string | null} [assigned_by_name]  That coach's name.
+ * @property {boolean} [synced]  True while it follows the coach's program: read-only, always private.
  * @property {ProgramDay[]} days
  */
 
